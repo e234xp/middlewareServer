@@ -1,0 +1,1 @@
+webpack --config main_service_server.config_static.js
