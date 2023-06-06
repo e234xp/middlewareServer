@@ -22,6 +22,25 @@ const airaFaceLiteManagerSettings = require("./service/airaFaceLiteManagerSettin
 
 const apiServiceAiraFaceLite = require("./service/apiServiceAiraFaceLite");
 const apiSystemAiraFaceLite = require("./service/apiSystemAiraFaceLite");
+const db = require('./utility/db')({
+  workingFolder: '/Users/liaoguanjie/城智/middlewareServer/db',
+  collections: [
+    {
+      name: 'accounts',
+      defaultData: [{
+        uuid: '0',
+        username: 'Admin',
+        password: '123456',
+        permission: 'Admin',
+        fixed: true,
+        remarks: '',
+        create_date: 1628380800000,
+        last_modify_date: 1628380800000,
+      }],
+    },
+  ],
+});
+global.db = db.connect();
 
 expressApp.use( express.json( { limit: "50mb" } ) );
 expressApp.use( express.text( { limit: "50mb" } ) );

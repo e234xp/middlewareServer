@@ -1,6 +1,7 @@
 "use strict";
 
 const myService = require("express")();
+const apiService = require("./apiService");
 
 
 const find = require( "./cgi/find" );
@@ -86,6 +87,7 @@ function logCgiCall( cgi ) {
 
 myService.on( "mount", function( parent ) {});
 myService.post( "/:cgi", function (req, res) {
+    console.log(req.method, req.url);
     let cgi = null;
     try {
         req.on("close", function() {
@@ -98,7 +100,13 @@ myService.post( "/:cgi", function (req, res) {
             return;
         }
 
-        // console.log( req.params.cgi );
+        const tmpCgi = req.params.cgi;
+        if(tmpCgi === 'generatetoken'){
+            apiService({ req, res })
+            
+            return;
+        }
+
         cgi = eval( req.params.cgi );
         if( cgi && typeof cgi === "object" && typeof cgi.call === "function" ) {
             if( req.params.cgi == "generatetoken" || req.params.cgi == "maintaintoken" ) cgi.call(req, res);
