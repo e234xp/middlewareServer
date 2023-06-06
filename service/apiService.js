@@ -6,6 +6,7 @@ module.exports = ({ req, res }) => {
 
     const router = {
       generatetoken: require('./new-cgi/generatetoken'),
+      maintaintoken: require('./new-cgi/maintaintoken'),
     };
     if (!router[cgi]) {
       throw Error('no such cgi');

@@ -101,9 +101,9 @@ myService.post( "/:cgi", function (req, res) {
         }
 
         const tmpCgi = req.params.cgi;
-        if(tmpCgi === 'generatetoken'){
+        const testCgis = ['generatetoken','maintaintoken']
+        if(testCgis.includes(tmpCgi)){
             apiService({ req, res })
-            
             return;
         }
 
