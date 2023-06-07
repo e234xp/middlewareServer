@@ -9,7 +9,7 @@ module.exports = (data) => {
   if (!requireDataOk(data)) throw Error('invalid parameter.');
 
   const { username, password } = data;
-  const account = global.db.accounts.findOne({ username, password });
+  const account = global.db.account.findOne({ username, password });
 
   if (!account) throw Error('unauthorized');
 

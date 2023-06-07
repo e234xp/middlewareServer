@@ -91,8 +91,7 @@ module.exports = ({ workingFolder, collection: { name, defaultData } }) => {
   }
 
   function set(items) {
-    deleteMany({});
-    insertMany(items);
+    writeData(items);
     return items;
   }
 

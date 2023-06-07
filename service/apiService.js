@@ -9,12 +9,14 @@ module.exports = ({ req, res }) => {
       generatetoken: require('./new-cgi/generatetoken'),
       maintaintoken: require('./new-cgi/maintaintoken'),
       findperson: require('./new-cgi/findperson'),
+      createaccount: require('./new-cgi/createaccount'),
     };
     if (!router[cgi]) throw Error('no such cgi');
     authorize({ req, publicCgi: ['generatetoken', 'maintaintoken', 'test'] });
 
     const body = dataParser.circularJsonParser(req.body);
-    res.status(200).json(router[cgi](body));
+    const { token } = req.headers;
+    res.status(200).json(router[cgi](body, token));
   } catch (error) {
     handleError(error, res);
   }

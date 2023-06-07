@@ -12,7 +12,7 @@ module.exports = (data) => {
   if (!validAccountData) throw Error('token has expired');
 
   const { u: username, p: password } = validAccountData;
-  const account = global.db.accounts.findOne({ username, password });
+  const account = global.db.account.findOne({ username, password });
 
   if (!account) throw Error('unauthorized');
 

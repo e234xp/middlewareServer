@@ -26,7 +26,7 @@ const db = require('./utility/db')({
   workingFolder: '/Users/liaoguanjie/城智/middlewareServer/db',
   collections: [
     {
-      name: 'accounts',
+      name: 'account',
       defaultData: [{
         uuid: '0',
         username: 'Admin',
