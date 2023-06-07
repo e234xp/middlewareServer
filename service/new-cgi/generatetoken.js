@@ -6,16 +6,12 @@ function requireDataOk(data) {
 }
 
 module.exports = (data) => {
-  if (!requireDataOk(data)) {
-    throw Error('invalid parameter.');
-  }
+  if (!requireDataOk(data)) throw Error('invalid parameter.');
 
   const { username, password } = data;
   const account = global.db.accounts.findOne({ username, password });
 
-  if (!account) {
-    throw Error('unauthorized');
-  }
+  if (!account) throw Error('unauthorized');
 
   return {
     message: 'ok',

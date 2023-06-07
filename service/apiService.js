@@ -5,8 +5,10 @@ module.exports = ({ req, res }) => {
     const { cgi } = req.params;
 
     const router = {
+      test: require('./new-cgi/test'),
       generatetoken: require('./new-cgi/generatetoken'),
       maintaintoken: require('./new-cgi/maintaintoken'),
+      findperson: require('./new-cgi/findperson'),
     };
     if (!router[cgi]) {
       throw Error('no such cgi');

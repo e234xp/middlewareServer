@@ -38,9 +38,18 @@ const db = require('./utility/db')({
         last_modify_date: 1628380800000,
       }],
     },
+    {
+      name: 'person',
+    },
+    {
+      name: 'photo',
+      type: 'image'
+    },
   ],
 });
 global.db = db.connect();
+const models = require('./models/index')
+global.models = models.init();
 
 expressApp.use( express.json( { limit: "50mb" } ) );
 expressApp.use( express.text( { limit: "50mb" } ) );
