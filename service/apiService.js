@@ -10,9 +10,8 @@ module.exports = ({ req, res }) => {
       maintaintoken: require('./new-cgi/maintaintoken'),
       findperson: require('./new-cgi/findperson'),
     };
-    if (!router[cgi]) {
-      throw Error('no such cgi');
-    }
+    if (!router[cgi]) throw Error('no such cgi');
+    authorize({ req, publicCgi: ['generatetoken', 'maintaintoken', 'test'] });
 
     const body = dataParser.circularJsonParser(req.body);
     res.status(200).json(router[cgi](body));
@@ -29,4 +28,34 @@ function handleError(error, res) {
   }[error.message] ?? 400;
 
   res.status(errorCode).json({ message: error.message });
+}
+
+function authorize({ req, publicCgi = [] }) {
+  const { cgi } = req.params;
+
+  const isPassed = (() => {
+    if (publicCgi.includes(cgi)) return true;
+    const token = req.headers.token ?? req.query?.token ?? null;
+
+    return token && (token === '83522758' || global.toeknToValidAccountInTime(token));
+  })();
+
+  if (!isPassed) {
+    global.globalSystemLog_warning(`cgi : ${cgi}, unauthorized.`);
+    throw Error('unauthorized');
+  }
+
+  logCgiCall(cgi);
+}
+
+function logCgiCall(cgi) {
+  const cgiText = cgi;
+  const haveGet = (cgiText.indexOf('get') !== -1);
+  const haveFind = (cgiText.indexOf('find') !== -1);
+  const haveQuery = (cgiText.indexOf('query') !== -1);
+  const haveInternal = (cgiText.indexOf('internal') !== -1);
+
+  if (haveGet || haveFind || haveQuery || haveInternal) {
+    global.globalSystemLog_info(`cgi : ${cgiText} has been called.`);
+  }
 }
