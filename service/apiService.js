@@ -8,8 +8,12 @@ module.exports = ({ req, res }) => {
       test: require('./new-cgi/test'),
       generatetoken: require('./new-cgi/generatetoken'),
       maintaintoken: require('./new-cgi/maintaintoken'),
-      findperson: require('./new-cgi/findperson'),
       createaccount: require('./new-cgi/createaccount'),
+      findaccount: require('./new-cgi/findaccount'),
+      modifyaccount: require('./new-cgi/modifyaccount'),
+      removeaccount: require('./new-cgi/removeaccount'),
+
+      findperson: require('./new-cgi/findperson'),
     };
     if (!router[cgi]) throw Error('no such cgi');
     authorize({ req, publicCgi: ['generatetoken', 'maintaintoken', 'test'] });
