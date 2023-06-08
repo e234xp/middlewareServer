@@ -12,6 +12,7 @@ module.exports = ({ req, res }) => {
       findaccount: require('./new-cgi/findaccount'),
       modifyaccount: require('./new-cgi/modifyaccount'),
       removeaccount: require('./new-cgi/removeaccount'),
+      resetadmin: require('./new-cgi/resetadmin'),
 
       findperson: require('./new-cgi/findperson'),
     };

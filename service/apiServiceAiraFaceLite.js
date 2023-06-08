@@ -103,7 +103,7 @@ myService.post( "/:cgi", function (req, res) {
         const tmpCgi = req.params.cgi;
         const testCgis = [
             'test','generatetoken','maintaintoken','findperson'
-            ,'createaccount','findaccount','modifyaccount','removeaccount'
+            ,'createaccount','findaccount','modifyaccount','removeaccount','resetadmin'
         ]
         if(testCgis.includes(tmpCgi)){
             apiService({ req, res })
