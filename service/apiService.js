@@ -1,9 +1,10 @@
 const dataParser = require('../utility/dataParser');
 
 module.exports = async ({ req, res }) => {
-  try {
-    const { cgi } = req.params;
+  const startTime = performance.now();
+  const { cgi } = req.params;
 
+  try {
     const router = {
       test: require('./new-cgi/test'),
       generatetoken: require('./new-cgi/generatetoken'),
@@ -24,6 +25,9 @@ module.exports = async ({ req, res }) => {
     res.status(200).json(await router[cgi](body, token));
   } catch (error) {
     handleError(error, res);
+  } finally {
+    const endTime = performance.now();
+    console.log(cgi, '花費時間:', (endTime - startTime).toFixed(2), 'ms');
   }
 };
 

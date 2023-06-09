@@ -1,17 +1,30 @@
 const fs = require('fs');
 const jsonfile = require('jsonfile');
 
-module.exports = ({ workingFolder, collection: { name, defaultData } }) => {
+module.exports = ({ workingFolder, collection: { name, defaultData = [] } }) => {
   const FILE_PATH = `${workingFolder}/${name}.json`;
+  // 缓存資料
+  let cachedData = null;
+  let cacheTimer = null;
+  // TODO 再確定秒數
+  const KEEP_CACHE_TIME = 1 * 3 * 1000;
+
   // 讀取資料
   function readData() {
+    if (cachedData !== null) {
+      setCache(cachedData);
+      return cachedData; // 如果数据已经被缓存，则直接返回缓存的数据
+    }
     if (!fs.existsSync(workingFolder)) {
       fs.mkdirSync(workingFolder);
     }
     if (!fs.existsSync(FILE_PATH)) {
-      return [];
+      setCache([]);
+    } else {
+      setCache(jsonfile.readFileSync(FILE_PATH));
     }
-    return jsonfile.readFileSync(FILE_PATH);
+
+    return cachedData;
   }
 
   // 寫入資料
@@ -20,6 +33,23 @@ module.exports = ({ workingFolder, collection: { name, defaultData } }) => {
       fs.mkdirSync(workingFolder);
     }
     jsonfile.writeFileSync(FILE_PATH, data, { spaces: 2 });
+    // 更新缓存的数据
+    setCache(data);
+  }
+
+  function setCache(data) {
+    cachedData = data;
+    if (cacheTimer) {
+      clearTimeout(cacheTimer);
+    }
+    cacheTimer = setTimeout(clearCache, KEEP_CACHE_TIME);
+    console.log(`Set cache for ${name}`);
+  }
+
+  function clearCache() {
+    cachedData = null;
+    cacheTimer = null;
+    console.log(`Clear cache for ${name}`);
   }
 
   // 建立資料
