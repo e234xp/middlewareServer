@@ -11,7 +11,7 @@ module.exports = {
         return;
       }
 
-      const newFiles = files.filter((file) => (file !== 'index.js') && (file === 'validate.js'));
+      const newFiles = files.filter((file) => (file !== 'index.js') && (file === 'validate.js' || file === 'calculate.js'));
 
       newFiles.forEach((file) => {
         const name = file.split('.')[0];

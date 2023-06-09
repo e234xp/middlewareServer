@@ -38,13 +38,13 @@ module.exports = (data, token) => {
   }
 
   // 更新帳號資料
-  account.last_modify_date = Date.now();
-  account.password = data.new_password;
-  if (data.new_permission) {
-    account.permission = data.new_permission;
-  }
+  const set = {
+    last_modify_date: Date.now(),
+    password: data.new_password,
+    ...data.new_permission ? { permission: data.new_permission } : {},
+  };
 
-  global.db.account.set(accounts);
+  global.db.account.updateOne({ username: account.username }, set);
 
   return {
     message: 'ok',

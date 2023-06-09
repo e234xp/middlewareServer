@@ -29,7 +29,7 @@ module.exports = (data, token) => {
     username, password, permission, remarks,
   } = data;
 
-  accounts.push({
+  const account = {
     uuid: uuid(),
     username,
     password,
@@ -38,9 +38,9 @@ module.exports = (data, token) => {
     fixed: false,
     create_date: Date.now(),
     last_modify_date: Date.now(),
-  });
+  };
 
-  global.db.account.set(accounts);
+  global.db.account.insertOne(account);
 
   return {
     message: 'ok',
