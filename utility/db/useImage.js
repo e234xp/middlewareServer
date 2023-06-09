@@ -10,7 +10,14 @@ module.exports = ({ workingFolder, collection: { name } }) => {
     return image;
   }
 
+  function imageInsertOne(fileName, image) {
+    const FILE_PATH = `${FOLIDER_PATH}/${fileName}`;
+
+    fs.writeFileSync(FILE_PATH, image);
+  }
+
   return {
     imageFindOne,
+    imageInsertOne,
   };
 };

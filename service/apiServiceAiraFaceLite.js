@@ -86,7 +86,7 @@ function logCgiCall( cgi ) {
 }
 
 myService.on( "mount", function( parent ) {});
-myService.post( "/:cgi", function (req, res) {
+myService.post( "/:cgi", async function (req, res) {
     console.log(req.method, req.url);
     let cgi = null;
     try {
@@ -102,11 +102,13 @@ myService.post( "/:cgi", function (req, res) {
 
         const tmpCgi = req.params.cgi;
         const testCgis = [
-            'test','generatetoken','maintaintoken','findperson'
+            'test','generatetoken','maintaintoken'
             ,'createaccount','findaccount','modifyaccount','removeaccount','resetadmin'
+            ,'findperson','createperson',
+            // 'modifyperson','removeperson','removeallpersons','removegroupfromperson'
         ]
         if(testCgis.includes(tmpCgi)){
-            apiService({ req, res })
+            await apiService({ req, res })
             return;
         }
 

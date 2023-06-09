@@ -1,6 +1,6 @@
 const dataParser = require('../utility/dataParser');
 
-module.exports = ({ req, res }) => {
+module.exports = async ({ req, res }) => {
   try {
     const { cgi } = req.params;
 
@@ -13,15 +13,15 @@ module.exports = ({ req, res }) => {
       modifyaccount: require('./new-cgi/modifyaccount'),
       removeaccount: require('./new-cgi/removeaccount'),
       resetadmin: require('./new-cgi/resetadmin'),
-
       findperson: require('./new-cgi/findperson'),
+      createperson: require('./new-cgi/createperson'),
     };
     if (!router[cgi]) throw Error('no such cgi');
     authorize({ req, publicCgi: ['generatetoken', 'maintaintoken', 'test'] });
 
     const body = dataParser.circularJsonParser(req.body);
     const { token } = req.headers;
-    res.status(200).json(router[cgi](body, token));
+    res.status(200).json(await router[cgi](body, token));
   } catch (error) {
     handleError(error, res);
   }

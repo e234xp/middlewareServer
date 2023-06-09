@@ -22,6 +22,7 @@ const airaFaceLiteManagerSettings = require("./service/airaFaceLiteManagerSettin
 
 const apiServiceAiraFaceLite = require("./service/apiServiceAiraFaceLite");
 const apiSystemAiraFaceLite = require("./service/apiSystemAiraFaceLite");
+
 const db = require('./utility/db')({
   workingFolder: '/Users/liaoguanjie/城智/middlewareServer/db',
   collections: [
@@ -48,6 +49,10 @@ const db = require('./utility/db')({
   ],
 });
 global.db = db.connect();
+
+const utility = require('./utility/index')
+global.utility = utility.init();
+
 const models = require('./models/index')
 global.models = models.init();
 

@@ -1,4 +1,9 @@
 module.exports = () => {
+  function savePhoto({ uuid, displayImage, registerImage }) {
+    global.db.photo.imageInsertOne(`${uuid}.display`, displayImage);
+    global.db.photo.imageInsertOne(`${uuid}.register`, registerImage);
+  }
+
   function fetchPhoto(uuid) {
     const isFetch = uuid && uuid.length > 0;
 
@@ -14,6 +19,7 @@ module.exports = () => {
   }
 
   return {
+    savePhoto,
     fetchPhoto,
   };
 };
