@@ -28,6 +28,7 @@ const db = require('./utility/db')({
   collections: [
     {
       name: 'account',
+      type: 'general',
       defaultData: [{
         uuid: '0',
         username: 'Admin',
@@ -38,9 +39,11 @@ const db = require('./utility/db')({
         create_date: 1628380800000,
         last_modify_date: 1628380800000,
       }],
+      cache: { isOpen: true, maxBytes: 10 * 1024 * 1024 }
     },
     {
       name: 'person',
+      type: 'general',
     },
     {
       name: 'photo',

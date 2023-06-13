@@ -1,30 +1,35 @@
 const fs = require('fs');
 const jsonfile = require('jsonfile');
 
-module.exports = ({ workingFolder, collection: { name, defaultData = [] } }) => {
+module.exports = ({
+  workingFolder,
+  collection: {
+    name, defaultData = [],
+    cache: { isOpen: isOpenCache = false, maxBytes: maxBytesCache = 0 },
+  },
+}) => {
   const FILE_PATH = `${workingFolder}/${name}.json`;
   // 缓存資料
   let cachedData = null;
-  let cacheTimer = null;
-  // TODO 再確定秒數
-  const KEEP_CACHE_TIME = 1 * 3 * 1000;
 
   // 讀取資料
   function readData() {
     if (cachedData !== null) {
-      setCache(cachedData);
-      return cachedData; // 如果数据已经被缓存，则直接返回缓存的数据
+      console.log(`Get cache for ${name}`);
+
+      return cachedData;
     }
     if (!fs.existsSync(workingFolder)) {
       fs.mkdirSync(workingFolder);
     }
     if (!fs.existsSync(FILE_PATH)) {
       setCache([]);
-    } else {
-      setCache(jsonfile.readFileSync(FILE_PATH));
+      return [];
     }
+    const file = jsonfile.readFileSync(FILE_PATH);
+    setCache(file);
 
-    return cachedData;
+    return file;
   }
 
   // 寫入資料
@@ -38,18 +43,19 @@ module.exports = ({ workingFolder, collection: { name, defaultData = [] } }) => 
   }
 
   function setCache(data) {
-    cachedData = data;
-    if (cacheTimer) {
-      clearTimeout(cacheTimer);
+    if (!isOpenCache) {
+      cachedData = null;
+      return;
     }
-    cacheTimer = setTimeout(clearCache, KEEP_CACHE_TIME);
-    console.log(`Set cache for ${name}`);
-  }
 
-  function clearCache() {
-    cachedData = null;
-    cacheTimer = null;
-    console.log(`Clear cache for ${name}`);
+    if (global.utility.calculate.size(data) > maxBytesCache) {
+      console.log(`${name} file too big: ${global.utility.calculate.size(data)}, cache null`);
+      cachedData = null;
+      return;
+    }
+
+    cachedData = data;
+    console.log(`Set cache for ${name}`);
   }
 
   // 建立資料
@@ -129,6 +135,10 @@ module.exports = ({ workingFolder, collection: { name, defaultData = [] } }) => 
     return set(defaultData);
   }
 
+  function consoleCache() {
+    console.log(cachedData);
+  }
+
   return {
     insertOne,
     insertMany,
@@ -139,5 +149,6 @@ module.exports = ({ workingFolder, collection: { name, defaultData = [] } }) => 
     deleteMany,
     set,
     reset,
+    consoleCache,
   };
 };
