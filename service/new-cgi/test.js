@@ -5,11 +5,18 @@ module.exports = () => {
 
   // const account = findOne();
 
-  const cache = global.db.account.consoleCache();
+  const r = global.db.personverifyresult
+    .find({
+      startTime: 1685404812102,
+      endTime: 1685577599999 - 100000,
+      query: {
+        uuid: { $in: ['8c196432-3aca-4da4-a237-a9ebf87613e6'] },
+      },
+    });
 
   return {
+    r,
     message: 'ok',
-    cache,
   };
 };
 

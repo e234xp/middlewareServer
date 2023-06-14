@@ -1,5 +1,6 @@
 const useFile = require('./useFile');
 const useImage = require('./useImage');
+const useRecord = require('./useRecord');
 
 module.exports = ({ workingFolder, collections }) => ({
   init: () => {
@@ -25,9 +26,14 @@ module.exports = ({ workingFolder, collections }) => ({
             instance = useImage({ workingFolder, collection: { name } });
             break;
 
+          case 'record':
+            instance = useRecord({ workingFolder, collection: { name } });
+            break;
+
             // use mysql,...
 
           default:
+            instance = {};
             console.log(`Sorry, we are out of ${type}.`);
         }
 

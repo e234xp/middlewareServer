@@ -49,6 +49,10 @@ const db = require('./utility/db')({
       name: 'photo',
       type: 'image'
     },
+    {
+      name: 'personverifyresult',
+      type: 'record'
+    },
   ],
 });
 global.db = db.init();

@@ -105,6 +105,7 @@ myService.post( "/:cgi", async function (req, res) {
             'test','generatetoken','maintaintoken'
             ,'createaccount','findaccount','modifyaccount','removeaccount','resetadmin'
             ,'findperson','createperson',
+            'querypersonverifyresult'
             // 'modifyperson','removeperson','removeallpersons','removegroupfromperson'
         ]
         if(testCgis.includes(tmpCgi)){

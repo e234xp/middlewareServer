@@ -16,6 +16,7 @@ module.exports = async ({ req, res }) => {
       resetadmin: require('./new-cgi/resetadmin'),
       findperson: require('./new-cgi/findperson'),
       createperson: require('./new-cgi/createperson'),
+      querypersonverifyresult: require('./new-cgi/querypersonverifyresult'),
     };
     if (!router[cgi]) throw Error('no such cgi');
     authorize({ req, publicCgi: ['generatetoken', 'maintaintoken', 'test'] });
