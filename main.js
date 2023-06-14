@@ -24,11 +24,11 @@ const apiServiceAiraFaceLite = require("./service/apiServiceAiraFaceLite");
 const apiSystemAiraFaceLite = require("./service/apiSystemAiraFaceLite");
 
 const db = require('./utility/db')({
-  workingFolder: '/Users/liaoguanjie/城智/middlewareServer/db',
+  workingFolder: '/Users/liaoguanjie/城智/middlewareServer/database',
   collections: [
     {
       name: 'account',
-      type: 'general',
+      type: 'file',
       defaultData: [{
         uuid: '0',
         username: 'Admin',
@@ -43,7 +43,7 @@ const db = require('./utility/db')({
     },
     {
       name: 'person',
-      type: 'general',
+      type: 'file',
     },
     {
       name: 'photo',
@@ -51,7 +51,7 @@ const db = require('./utility/db')({
     },
   ],
 });
-global.db = db.connect();
+global.db = db.init();
 
 const utility = require('./utility/index')
 global.utility = utility.init();

@@ -1,32 +1,49 @@
-const use = require('./use');
+const useFile = require('./useFile');
 const useImage = require('./useImage');
 
 module.exports = ({ workingFolder, collections }) => ({
-  connect: () => {
+  init: () => {
     const db = {};
     collections.forEach(({
-      name, type = 'general', defaultData = [], cache = {},
+      name, type = 'file', defaultData = [], cache = {},
     }) => {
-      if (type === 'general') {
-        const dbInstance = use({
-          workingFolder,
-          collection: {
-            name,
-            defaultData,
-            cache,
-          },
-        });
-        db[name] = dbInstance;
-      }
+      const dbInstance = (() => {
+        let instance;
+        switch (type) {
+          case 'file':
+            instance = useFile({
+              workingFolder,
+              collection: {
+                name,
+                defaultData,
+                cache,
+              },
+            });
+            break;
 
-      // if (type === 'read-only') {
+          case 'image':
+            instance = useImage({ workingFolder, collection: { name } });
+            break;
 
-      // }
+            // use mysql,...
 
-      if (type === 'image') {
-        const dbInstance = useImage({ workingFolder, collection: { name } });
-        db[name] = dbInstance;
-      }
+          default:
+            console.log(`Sorry, we are out of ${type}.`);
+        }
+
+        return instance;
+      })();
+
+      const dbInstanceProxy = new Proxy(dbInstance, {
+        get(target, prop) {
+          if (!(prop in target)) {
+            throw Error(`Function ${prop} does not exist in ${name}.`);
+          }
+          return target[prop];
+        },
+      });
+
+      db[name] = dbInstanceProxy;
     });
 
     return db;

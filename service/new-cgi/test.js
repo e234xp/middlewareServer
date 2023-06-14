@@ -1,15 +1,14 @@
 module.exports = () => {
   // insertOne();
   // insertMany();
-  updateOne();
+  // updateOne();
 
-  const account = findOne();
+  // const account = findOne();
 
   const cache = global.db.account.consoleCache();
 
   return {
     message: 'ok',
-    account,
     cache,
   };
 };
