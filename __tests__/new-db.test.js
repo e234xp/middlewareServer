@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-promise-executor-return */
 /* eslint-disable no-undef */
-const db = require('../utility/db')({
+const db = require('../db')({
   workingFolder: '/Users/liaoguanjie/城智/middlewareServer/db',
   collections: [
     {
