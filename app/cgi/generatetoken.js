@@ -1,12 +1,21 @@
-function requireDataOk(data) {
-  if (data == null || data.username == null || data.password == null) {
-    return false;
-  }
-  return true;
-}
+const fieldChecks = [
+  {
+    fieldName: 'username',
+    fieldType: 'string',
+    required: true,
+  },
+  {
+    fieldName: 'password',
+    fieldType: 'string',
+    required: true,
+  },
+];
 
 module.exports = (data) => {
-  if (!requireDataOk(data)) throw Error('invalid parameter.');
+  data = global.spiderman.validate.data({
+    data,
+    fieldChecks,
+  });
 
   const { username, password } = data;
   const account = global.spiderman.db.account.findOne({ username, password });
@@ -18,11 +27,11 @@ module.exports = (data) => {
     username: account.username,
     permission: account.permission,
     expire: Date.now(),
-    token: global.encryptAccountToToken(JSON.stringify({
+    token: global.spiderman.token.encryptFromAccount({
       u: account.username,
       p: account.password,
       t: Date.now(),
       x: account.permission,
-    })),
+    }),
   };
 };

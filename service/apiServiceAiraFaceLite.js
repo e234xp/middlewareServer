@@ -101,7 +101,8 @@ myService.post( "/:cgi", async function (req, res, next) {
 
         const tmpCgi = req.params.cgi;
         const testCgis = [
-            'test','generatetoken','maintaintoken'
+            'test','generatetoken',
+            'maintaintoken'
             ,'createaccount','findaccount','modifyaccount','removeaccount','resetadmin'
             ,'findperson','createperson',
             'querypersonverifyresult'

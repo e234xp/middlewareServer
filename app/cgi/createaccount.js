@@ -1,16 +1,35 @@
 const { uuid } = require('uuidv4');
 
-function requireDataOk(data) {
-  if (data == null || data.username == null || data.password == null || data.permission == null) {
-    return false;
-  }
-  return true;
-}
+const fieldChecks = [
+  {
+    fieldName: 'username',
+    fieldType: 'string',
+    required: true,
+  },
+  {
+    fieldName: 'password',
+    fieldType: 'string',
+    required: true,
+  },
+  {
+    fieldName: 'permission',
+    fieldType: 'string',
+    required: true,
+  },
+  {
+    fieldName: 'remarks',
+    fieldType: 'string',
+    required: true,
+  },
+];
 
 module.exports = (data, token) => {
-  if (!requireDataOk(data)) throw Error('invalid parameter.');
+  data = global.spiderman.validate.data({
+    data,
+    fieldChecks,
+  });
 
-  const tokenUser = JSON.parse(global.decryptToeknToAccount(token));
+  const tokenUser = global.spiderman.token.decryptToAccount(token);
   const isPassed = tokenUser.u.length > 0
   && data.username.length > 0
   && data.password.length > 0

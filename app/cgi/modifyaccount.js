@@ -1,14 +1,27 @@
-function requireDataOk(data) {
-  if (!data || !data.username || !data.new_password) {
-    return false;
-  }
-  return true;
-}
+const fieldChecks = [
+  {
+    fieldName: 'username',
+    fieldType: 'string',
+    required: true,
+  },
+  {
+    fieldName: 'new_password',
+    fieldType: 'string',
+    required: true,
+  },
+  {
+    fieldName: 'new_permission',
+    fieldType: 'string',
+    required: false,
+  },
+];
 
 module.exports = (data, token) => {
-  if (!requireDataOk(data)) throw Error('invalid parameter.');
-
-  const tokenUser = JSON.parse(global.decryptToeknToAccount(token));
+  data = global.spiderman.validate.data({
+    data,
+    fieldChecks,
+  });
+  const tokenUser = global.spiderman.token.decryptToAccount(token);
 
   // 檢查使用者名稱和新密碼是否為空
   if (!tokenUser.u || !data.username || !data.new_password) {

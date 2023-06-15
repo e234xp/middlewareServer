@@ -16,6 +16,7 @@ myService.post('/:cgi', async (req, res) => {
       modifyaccount: require(`${cgiPath}/modifyaccount`),
       removeaccount: require(`${cgiPath}/removeaccount`),
       resetadmin: require(`${cgiPath}/resetadmin`),
+
       findperson: require(`${cgiPath}/findperson`),
       createperson: require(`${cgiPath}/createperson`),
       querypersonverifyresult: require(`${cgiPath}/querypersonverifyresult`),

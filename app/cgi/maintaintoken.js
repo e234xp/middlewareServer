@@ -1,14 +1,18 @@
-function requireDataOk(data) {
-  if (data == null || data.token == null) {
-    return false;
-  }
-  return true;
-}
+const fieldChecks = [
+  {
+    fieldName: 'token',
+    fieldType: 'string',
+    required: false,
+  },
+];
 
 module.exports = (data) => {
-  if (!requireDataOk(data)) throw Error('invalid parameter.');
+  data = global.spiderman.validate.data({
+    data,
+    fieldChecks,
+  });
 
-  const validAccountData = global.toeknToValidAccountInTime(data.token);
+  const validAccountData = global.spiderman.token.decryptToAccountInTime(data.token);
   if (!validAccountData) throw Error('token has expired');
 
   const { u: username, p: password } = validAccountData;
@@ -21,11 +25,11 @@ module.exports = (data) => {
     username: account.username,
     permission: account.permission,
     expire: Date.now(),
-    token: global.encryptAccountToToken(JSON.stringify({
+    token: global.spiderman.token.encryptFromAccount({
       u: account.username,
       p: account.password,
       t: Date.now(),
       x: account.permission,
-    })),
+    }),
   };
 };

@@ -1,14 +1,18 @@
-function requireDataOk(data) {
-  if (data == null || data.account_uuid_list == null) {
-    return false;
-  }
-  return true;
-}
+const fieldChecks = [
+  {
+    fieldName: 'account_uuid_list',
+    fieldType: 'array',
+    required: true,
+  },
+];
 
 module.exports = (data, token) => {
-  if (!requireDataOk(data)) throw Error('invalid parameter.');
+  data = global.spiderman.validate.data({
+    data,
+    fieldChecks,
+  });
 
-  const tokenUser = JSON.parse(global.decryptToeknToAccount(token));
+  const tokenUser = global.spiderman.token.decryptToAccount(token);
   if (!tokenUser.u || data.account_uuid_list.length === 0) {
     throw new Error('list cannot be empty');
   }
