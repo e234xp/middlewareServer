@@ -1,5 +1,4 @@
 const myService = require('express')();
-const dataParser = require('../utility/dataParser');
 
 const cgiPath = '../app/cgi';
 myService.post('/:cgi', async (req, res) => {
@@ -24,7 +23,7 @@ myService.post('/:cgi', async (req, res) => {
     if (!router[cgi]) throw Error('no such cgi');
     authorize({ req, publicCgi: ['generatetoken', 'maintaintoken', 'test'] });
 
-    const body = dataParser.circularJsonParser(req.body);
+    const body = global.spiderman.parse.circularJson(req.body);
     const { token } = req.headers;
     res.status(200).json(await router[cgi](body, token));
   } catch (error) {
