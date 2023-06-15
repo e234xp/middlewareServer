@@ -1,5 +1,5 @@
 module.exports = () => {
-  const accounts = global.db.account.find();
+  const accounts = global.spiderman.db.account.find();
   const adminAccount = accounts.find((a) => a.username === 'Admin');
 
   if (!adminAccount) {
@@ -8,7 +8,7 @@ module.exports = () => {
 
   adminAccount.last_modify_date = Date.now();
   adminAccount.password = '123456';
-  global.db.account.set(accounts);
+  global.spiderman.db.account.set(accounts);
 
   return {
     message: 'ok',

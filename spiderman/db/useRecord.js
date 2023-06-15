@@ -23,7 +23,7 @@ module.exports = ({
     }
 
     // 檢查 size 是否過大
-    const size = global.utility.calculate.size(item);
+    const size = global.spiderman.calculate.size(item);
     const isSetMax = maxBytesCache > 0;
     if (isSetMax && size > maxBytesCache) {
       console.log(`${id} is too big: ${size}, it won't set cache.`);
@@ -150,7 +150,7 @@ module.exports = ({
       .filter(({ timestamp }) => startTime <= timestamp && endTime >= timestamp);
 
     const queriedRecords = Object.keys(query).length > 0
-      ? global.utility.query({
+      ? global.spiderman.query({
         data: recordsInTimeRanges,
         queryObject: query,
       })

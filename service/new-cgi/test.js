@@ -5,7 +5,7 @@ module.exports = () => {
 
   // const account = findOne();
 
-  const r = global.db.personverifyresult
+  const r = global.spiderman.db.personverifyresult
     .find({
       startTime: 1685404812102,
       endTime: 1685577599999 - 100000,
@@ -21,7 +21,7 @@ module.exports = () => {
 };
 
 function findOne() {
-  const account = global.db.account.findOne({ uuid: 'd7745790-e482-4eff-bc15-5487bcf8a4ab' });
+  const account = global.spiderman.db.account.findOne({ uuid: 'd7745790-e482-4eff-bc15-5487bcf8a4ab' });
 
   return account;
 }
@@ -36,7 +36,7 @@ function insertOne() {
     create_date: Date.now(),
     last_modify_date: Date.now(),
   };
-  global.db.account.insertOne(account);
+  global.spiderman.db.account.insertOne(account);
 }
 
 function insertMany() {
@@ -70,10 +70,10 @@ function insertMany() {
     },
   ];
 
-  global.db.account.insertMany(accounts);
+  global.spiderman.db.account.insertMany(accounts);
 }
 
 function updateOne() {
-  const account = global.db.account.updateOne({ username: 'Test' }, { permission: 'C' });
+  const account = global.spiderman.db.account.updateOne({ username: 'Test' }, { permission: 'C' });
   console.log(account);
 }

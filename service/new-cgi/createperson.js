@@ -59,18 +59,18 @@ const fieldChecks = [
 ];
 
 module.exports = async (data) => {
-  data = global.utility.validate.data({
+  data = global.spiderman.validate.data({
     data,
     fieldChecks,
   });
 
   // 檢查是否超過
   const MAX_AMOUNT_OF_PERSON = 3;
-  const people = global.db.person.find();
+  const people = global.spiderman.db.person.find();
   if (people.length >= MAX_AMOUNT_OF_PERSON) throw Error(`the numbers of persons in database has exceeded ${MAX_AMOUNT_OF_PERSON} (max).`);
 
   // 檢查 id 是否重複
-  const existPerson = global.db.person.findOne({
+  const existPerson = global.spiderman.db.person.findOne({
     id: data.id,
   });
   if (existPerson) throw Error('Id existed.');
@@ -116,11 +116,11 @@ async function insertData({
   // displayImage = (await global.resizeImage(displayImage)).base64_image;
 
   const registerImage = faceImage;
-  global.models.person.savePhoto({
+  global.domain.person.savePhoto({
     uuid: dataToWrite.uuid,
     displayImage,
     registerImage,
   });
 
-  global.db.person.insertOne(dataToWrite);
+  global.spiderman.db.person.insertOne(dataToWrite);
 }

@@ -27,7 +27,7 @@ const fieldChecks = [
 ];
 
 module.exports = async (data) => {
-  data = global.utility.validate.data({
+  data = global.spiderman.validate.data({
     data,
     fieldChecks,
   });
@@ -35,7 +35,7 @@ module.exports = async (data) => {
   const shift = data.slice_shift != null ? data.slice_shift : 0;
   const sliceLength = 10000;
 
-  const resultList = global.db.personverifyresult
+  const resultList = global.spiderman.db.personverifyresult
     .find({
       startTime: data.start_time,
       endTime: data.end_time,

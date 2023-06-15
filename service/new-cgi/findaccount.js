@@ -9,7 +9,7 @@ module.exports = (data, token) => {
   if (!requireDataOk(data)) throw Error('invalid parameter.');
 
   const accounts = (() => {
-    const accountsTmp = global.db.account.find();
+    const accountsTmp = global.spiderman.db.account.find();
     const tokenUser = JSON.parse(global.decryptToeknToAccount(token));
 
     return tokenUser.x === 'Admin'

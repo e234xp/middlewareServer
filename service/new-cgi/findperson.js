@@ -11,7 +11,7 @@ module.exports = (data) => {
   const shift = data.slice_shift ? data.slice_shift : 0;
   const sliceLength = data.slice_length ? data.slice_length : 100;
   const { uuid } = data;
-  const personList = global.db.person
+  const personList = global.spiderman.db.person
     .find({ ...(uuid === '' ? {} : { uuid }) })
     .slice(shift, shift + sliceLength)
     .map((item) => {
@@ -19,7 +19,7 @@ module.exports = (data) => {
       delete item.___s;
       if (!data.download_face_feature) delete item.face_feature;
       if (data.download_register_image || data.download_display_image) {
-        const photo = global.models.person.fetchPhoto(item.uuid);
+        const photo = global.domain.person.fetchPhoto(item.uuid);
         if (data.download_register_image) item.register_image = photo.register_image;
         if (data.download_display_image) item.display_image = photo.display_image;
       }

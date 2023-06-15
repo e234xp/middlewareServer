@@ -59,11 +59,11 @@ const db = require('./db')({
 });
 global.db = db.init();
 
-const utility = require('./utility/index')
-global.utility = utility.init();
+const spiderman = require('./spiderman/index')
+global.spiderman = spiderman.init();
 
-const models = require('./models/index')
-global.models = models.init();
+const domain = require('./domain/index')
+global.domain = domain.init();
 
 expressApp.use( express.json( { limit: "50mb" } ) );
 expressApp.use( express.text( { limit: "50mb" } ) );

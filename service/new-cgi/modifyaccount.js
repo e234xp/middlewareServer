@@ -20,7 +20,7 @@ module.exports = (data, token) => {
     throw Error('no permission');
   }
 
-  const accounts = global.db.account.find();
+  const accounts = global.spiderman.db.account.find();
 
   // 檢查是否為使用Admin權限
   const isAdmin = accounts.some((a) => a.username === tokenUser.u && a.permission === 'Admin');
@@ -44,7 +44,7 @@ module.exports = (data, token) => {
     ...data.new_permission ? { permission: data.new_permission } : {},
   };
 
-  global.db.account.updateOne({ username: account.username }, set);
+  global.spiderman.db.account.updateOne({ username: account.username }, set);
 
   return {
     message: 'ok',

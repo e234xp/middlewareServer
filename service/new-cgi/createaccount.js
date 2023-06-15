@@ -17,7 +17,7 @@ module.exports = (data, token) => {
   && data.permission.length > 0;
   if (!isPassed) throw Error('username or password cannot be empty.');
 
-  const accounts = global.db.account.find();
+  const accounts = global.spiderman.db.account.find();
 
   const adminAccount = accounts.find((item) => (item.username === tokenUser.u) && (item.permission === 'Admin'));
   if (!adminAccount) throw Error('no permission');
@@ -40,7 +40,7 @@ module.exports = (data, token) => {
     last_modify_date: Date.now(),
   };
 
-  global.db.account.insertOne(account);
+  global.spiderman.db.account.insertOne(account);
 
   return {
     message: 'ok',

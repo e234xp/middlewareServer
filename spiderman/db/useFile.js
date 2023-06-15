@@ -49,8 +49,8 @@ module.exports = ({
       return;
     }
 
-    if (global.utility.calculate.size(data) > maxBytesCache) {
-      console.log(`${name} file too big: ${global.utility.calculate.size(data)}, cache null`);
+    if (global.spiderman.calculate.size(data) > maxBytesCache) {
+      console.log(`${name} file too big: ${global.spiderman.calculate.size(data)}, cache null`);
       cachedData = null;
       return;
     }
