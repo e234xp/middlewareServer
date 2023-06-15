@@ -1,7 +1,6 @@
 "use strict";
 
 const myService = require("express")();
-const apiService = require("./apiService");
 
 
 const find = require( "./cgi/find" );
@@ -86,7 +85,7 @@ function logCgiCall( cgi ) {
 }
 
 myService.on( "mount", function( parent ) {});
-myService.post( "/:cgi", async function (req, res) {
+myService.post( "/:cgi", async function (req, res, next) {
     console.log(req.method, req.url);
     let cgi = null;
     try {
@@ -106,10 +105,9 @@ myService.post( "/:cgi", async function (req, res) {
             ,'createaccount','findaccount','modifyaccount','removeaccount','resetadmin'
             ,'findperson','createperson',
             'querypersonverifyresult'
-            // 'modifyperson','removeperson','removeallpersons','removegroupfromperson'
         ]
         if(testCgis.includes(tmpCgi)){
-            await apiService({ req, res })
+            next();
             return;
         }
 

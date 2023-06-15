@@ -20,44 +20,9 @@ const airaFaceLiteAttendanceSettings = require("./service/airaFaceLiteAttendance
 
 const airaFaceLiteManagerSettings = require("./service/airaFaceLiteManagerSettings");
 
+const interfaceApi = require("./interface/api");
 const apiServiceAiraFaceLite = require("./service/apiServiceAiraFaceLite");
 const apiSystemAiraFaceLite = require("./service/apiSystemAiraFaceLite");
-
-const db = require('./db')({
-  workingFolder: '/Users/liaoguanjie/城智/middlewareServer/database',
-  collections: [
-    {
-      name: 'account',
-      type: 'file',
-      defaultData: [{
-        uuid: '0',
-        username: 'Admin',
-        password: '123456',
-        permission: 'Admin',
-        fixed: true,
-        remarks: '',
-        create_date: 1628380800000,
-        last_modify_date: 1628380800000,
-      }],
-      cache: { isOpen: true, maxBytes: 10 * 1024 * 1024 }
-    },
-    {
-      name: 'person',
-      type: 'file',
-      cache: { isOpen: false }
-    },
-    {
-      name: 'personverifyresult',
-      type: 'record',
-      cache: { isOpen: true, maxBytes: 20 * 1024 * 1024 }
-    },
-    {
-      name: 'photo',
-      type: 'image'
-    },
-  ],
-});
-global.db = db.init();
 
 const spiderman = require('./spiderman/index')
 global.spiderman = spiderman.init();
@@ -439,6 +404,7 @@ if( _dev_mode ) {
 else {
 
   expressApp.use( "/airafacelite", apiServiceAiraFaceLite );
+  expressApp.use( "/airafacelite", interfaceApi );
   expressApp.use( "/system", apiSystemAiraFaceLite );
     expressApp.use( express.static( `${sw_root_path}/wwwdist` ) );
   // expressHttpApp.use( '*', function(req, res) {  
