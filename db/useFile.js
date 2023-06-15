@@ -4,8 +4,9 @@ const jsonfile = require('jsonfile');
 module.exports = ({
   workingFolder,
   collection: {
-    name, defaultData = [],
+    name,
     cache: { isOpen: isOpenCache = false, maxBytes: maxBytesCache = 0 },
+    defaultData = [],
   },
 }) => {
   const FILE_PATH = `${workingFolder}/${name}.json`;

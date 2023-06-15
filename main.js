@@ -44,14 +44,16 @@ const db = require('./db')({
     {
       name: 'person',
       type: 'file',
+      cache: { isOpen: false }
+    },
+    {
+      name: 'personverifyresult',
+      type: 'record',
+      cache: { isOpen: true, maxBytes: 20 * 1024 * 1024 }
     },
     {
       name: 'photo',
       type: 'image'
-    },
-    {
-      name: 'personverifyresult',
-      type: 'record'
     },
   ],
 });

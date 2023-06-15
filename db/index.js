@@ -16,18 +16,29 @@ module.exports = ({ workingFolder, collections }) => ({
               workingFolder,
               collection: {
                 name,
+                cache,
                 defaultData,
+              },
+            });
+            break;
+
+          case 'record':
+            instance = useRecord({
+              workingFolder,
+              collection: {
+                name,
                 cache,
               },
             });
             break;
 
           case 'image':
-            instance = useImage({ workingFolder, collection: { name } });
-            break;
-
-          case 'record':
-            instance = useRecord({ workingFolder, collection: { name } });
+            instance = useImage({
+              workingFolder,
+              collection: {
+                name,
+              },
+            });
             break;
 
             // use mysql,...
