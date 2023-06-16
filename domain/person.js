@@ -79,6 +79,12 @@ module.exports = () => {
     removePhoto(uuid);
   }
 
+  function removeAll() {
+    const items = global.spiderman.db.person.deleteMany({});
+    const uuids = items.map(({ uuid }) => uuid);
+    removePhoto(uuids);
+  }
+
   function savePhoto({ uuid, displayImage, registerImage }) {
     global.spiderman.db.photo.insertOne(`${uuid}.display`, displayImage);
     global.spiderman.db.photo.insertOne(`${uuid}.register`, registerImage);
@@ -116,5 +122,6 @@ module.exports = () => {
     insert,
     modify,
     remove,
+    removeAll,
   };
 };

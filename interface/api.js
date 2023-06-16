@@ -11,18 +11,19 @@ myService.post('/:cgi', async (req, res) => {
       generatetoken: require(`${cgiPath}/generatetoken`),
       maintaintoken: require(`${cgiPath}/maintaintoken`),
 
-      createaccount: require(`${cgiPath}/createaccount`),
-      findaccount: require(`${cgiPath}/findaccount`),
-      modifyaccount: require(`${cgiPath}/modifyaccount`),
-      removeaccount: require(`${cgiPath}/removeaccount`),
-      resetadmin: require(`${cgiPath}/resetadmin`),
+      createaccount: require(`${cgiPath}/accountcreate`),
+      findaccount: require(`${cgiPath}/accountfind`),
+      modifyaccount: require(`${cgiPath}/accountmodify`),
+      removeaccount: require(`${cgiPath}/accountremove`),
+      resetadmin: require(`${cgiPath}/accountresetadmin`),
 
-      createperson: require(`${cgiPath}/createperson`),
-      findperson: require(`${cgiPath}/findperson`),
-      modifyperson: require(`${cgiPath}/modifyperson`),
-      removeperson: require(`${cgiPath}/removeperson`),
+      createperson: require(`${cgiPath}/personcreate`),
+      findperson: require(`${cgiPath}/personfind`),
+      modifyperson: require(`${cgiPath}/personmodify`),
+      removeperson: require(`${cgiPath}/personremove`),
+      removeallpersons: require(`${cgiPath}/personremoveall`),
 
-      querypersonverifyresult: require(`${cgiPath}/querypersonverifyresult`),
+      querypersonverifyresult: require(`${cgiPath}/personverifyresultquery`),
     };
     if (!router[cgi]) throw Error('no such cgi');
     authorize({ req, publicCgi: ['generatetoken', 'maintaintoken', 'test'] });
