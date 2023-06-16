@@ -1,5 +1,5 @@
 module.exports = () => {
-  global.domain.person.removeAll();
+  global.domain.visitor.removeAll();
 
   return {
     message: 'ok',

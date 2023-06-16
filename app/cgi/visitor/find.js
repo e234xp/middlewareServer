@@ -41,16 +41,16 @@ module.exports = (data) => {
   const sliceLength = data.slice_length ? data.slice_length : 100;
   const { uuid } = data;
 
-  const personList = global.domain.person
+  const visitorList = global.domain.visitor
     .find({
       query: { ...(uuid === '' ? {} : { uuid }) }, shift, sliceLength, data,
     });
 
   return {
     message: 'ok',
-    total_length: personList.length,
+    total_length: visitorList.length,
     slice_shift: shift,
     slice_length: sliceLength,
-    person_list: personList,
+    visitor_list: visitorList,
   };
 };

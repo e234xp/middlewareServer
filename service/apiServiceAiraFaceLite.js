@@ -105,8 +105,7 @@ myService.post( "/:cgi", async function (req, res, next) {
             'maintaintoken'
             ,'createaccount','findaccount','modifyaccount','removeaccount','resetadmin'
             ,'findperson','createperson','modifyperson','removeperson','removeallpersons','removegroupfromperson',
-            'createvisitor'
-            // ,'findvisitor','modifyvisitor','removevisitor','removeallvisitors'
+            'createvisitor','findvisitor','modifyvisitor','removevisitor','removeallvisitors'
             // 'findgroup',
             ,'querypersonverifyresult'
         ]

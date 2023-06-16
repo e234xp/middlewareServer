@@ -12,7 +12,7 @@ module.exports = (data) => {
     fieldChecks,
   });
 
-  global.domain.person.remove(data);
+  global.domain.visitor.remove(data);
 
   return {
     message: 'ok',

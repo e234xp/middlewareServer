@@ -81,11 +81,11 @@ module.exports = async (rData) => {
   });
 
   if (!data.register_image) {
-    await global.domain.person.modify({ uuid, data });
+    await global.domain.visitor.modify({ uuid, data });
   } else {
     const { faceImage, faceFeature, upperFaceFeature } = global.domain
       .facefeature.engineGenerate();
-    await global.domain.person.modify({
+    await global.domain.visitor.modify({
       uuid, data, faceImage, faceFeature, upperFaceFeature,
     });
   }
