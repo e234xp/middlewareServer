@@ -10,14 +10,17 @@ myService.post('/:cgi', async (req, res) => {
       test: require(`${cgiPath}/test`),
       generatetoken: require(`${cgiPath}/generatetoken`),
       maintaintoken: require(`${cgiPath}/maintaintoken`),
+
       createaccount: require(`${cgiPath}/createaccount`),
       findaccount: require(`${cgiPath}/findaccount`),
       modifyaccount: require(`${cgiPath}/modifyaccount`),
       removeaccount: require(`${cgiPath}/removeaccount`),
       resetadmin: require(`${cgiPath}/resetadmin`),
 
-      findperson: require(`${cgiPath}/findperson`),
       createperson: require(`${cgiPath}/createperson`),
+      findperson: require(`${cgiPath}/findperson`),
+      modifyperson: require(`${cgiPath}/modifyperson`),
+
       querypersonverifyresult: require(`${cgiPath}/querypersonverifyresult`),
     };
     if (!router[cgi]) throw Error('no such cgi');

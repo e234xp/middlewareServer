@@ -1,5 +1,3 @@
-const { uuid } = require('uuidv4');
-
 const fieldChecks = [
   {
     fieldName: 'id',
@@ -65,7 +63,7 @@ module.exports = async (data) => {
   });
 
   // 檢查是否超過
-  const MAX_AMOUNT_OF_PERSON = 3;
+  const MAX_AMOUNT_OF_PERSON = 3000;
   const people = global.spiderman.db.person.find();
   if (people.length >= MAX_AMOUNT_OF_PERSON) throw Error(`the numbers of persons in database has exceeded ${MAX_AMOUNT_OF_PERSON} (max).`);
 
@@ -80,47 +78,22 @@ module.exports = async (data) => {
     data.group_list.push('All Person');
   }
 
-  if (data.register_image === '') {
-    await insertData({ data });
+  if (!data.register_image) {
+    await global.domain.person.insert({ data });
 
     return {
       message: 'ok',
     };
   }
 
-  // TODO 改為 global.engineGenerateFaceFeature
-  const { faceImage, faceFeature, upperFaceFeature } = { faceImage: 'faceImage', faceFeature: 'faceFeature', upperFaceFeature: 'upperFaceFeature' };
-  await insertData({
+  // TODO 等待傳入參數： 參考 engineGenerateFaceFeature
+  const { faceImage, faceFeature, upperFaceFeature } = global.domain
+    .facefeature.engineGenerate();
+  await global.domain.person.insert({
     data, faceImage, faceFeature, upperFaceFeature,
   });
+
   return {
     message: 'ok',
   };
 };
-
-async function insertData({
-  data: { display_image: displayImage, register_image: _, ...otherData }, faceImage = '', faceFeature = '', upperFaceFeature = '',
-}) {
-  const now = Date.now();
-  const dataToWrite = {
-    uuid: uuid(),
-    ...otherData,
-    face_feature: faceFeature,
-    upper_face_feature: upperFaceFeature,
-    create_date: now,
-    last_modify_date: now,
-    last_modify_date_by_manager: now,
-  };
-
-  // TODO 改為 global.resizeImage
-  // displayImage = (await global.resizeImage(displayImage)).base64_image;
-
-  const registerImage = faceImage;
-  global.domain.person.savePhoto({
-    uuid: dataToWrite.uuid,
-    displayImage,
-    registerImage,
-  });
-
-  global.spiderman.db.person.insertOne(dataToWrite);
-}

@@ -1,21 +1,15 @@
-module.exports = () => {
-  // insertOne();
-  // insertMany();
-  // updateOne();
+module.exports = async () => {
+  const data = await global.spiderman.request.make({
+    url: 'https://jsonplaceholder.typicode.com/todos/1',
+    method: 'GET',
+  });
 
-  // const account = findOne();
-
-  const r = global.spiderman.db.personverifyresult
-    .find({
-      startTime: 1685404812102,
-      endTime: 1685577599999 - 100000,
-      query: {
-        uuid: { $in: ['8c196432-3aca-4da4-a237-a9ebf87613e6'] },
-      },
-    });
+  const data2 = global.domain
+    .facefeature.engineGenerate();
 
   return {
-    r,
+    data,
+    data2,
     message: 'ok',
   };
 };

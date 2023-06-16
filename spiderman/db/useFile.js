@@ -79,8 +79,10 @@ module.exports = ({
     if (!query) {
       return data;
     }
-    return data
+    const filterd = data
       .filter((item) => Object.keys(query).every((key) => item[key] === query[key]));
+
+    return filterd;
   }
 
   // 搜尋符合條件的單一資料
