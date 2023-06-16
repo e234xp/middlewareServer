@@ -11,17 +11,17 @@ myService.post('/:cgi', async (req, res) => {
       generatetoken: require(`${cgiPath}/generatetoken`),
       maintaintoken: require(`${cgiPath}/maintaintoken`),
 
-      createaccount: require(`${cgiPath}/accountcreate`),
-      findaccount: require(`${cgiPath}/accountfind`),
-      modifyaccount: require(`${cgiPath}/accountmodify`),
-      removeaccount: require(`${cgiPath}/accountremove`),
-      resetadmin: require(`${cgiPath}/accountresetadmin`),
+      createaccount: require(`${cgiPath}/account/create`),
+      findaccount: require(`${cgiPath}/account/find`),
+      modifyaccount: require(`${cgiPath}/account/modify`),
+      removeaccount: require(`${cgiPath}/account/remove`),
+      resetadmin: require(`${cgiPath}/account/resetadmin`),
 
-      createperson: require(`${cgiPath}/personcreate`),
-      findperson: require(`${cgiPath}/personfind`),
-      modifyperson: require(`${cgiPath}/personmodify`),
-      removeperson: require(`${cgiPath}/personremove`),
-      removeallpersons: require(`${cgiPath}/personremoveall`),
+      createperson: require(`${cgiPath}/person/create`),
+      findperson: require(`${cgiPath}/person/find`),
+      modifyperson: require(`${cgiPath}/person/modify`),
+      removeperson: require(`${cgiPath}/person/remove`),
+      removeallpersons: require(`${cgiPath}/person/removeall`),
 
       querypersonverifyresult: require(`${cgiPath}/personverifyresultquery`),
     };
