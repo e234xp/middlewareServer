@@ -20,6 +20,7 @@ myService.post('/:cgi', async (req, res) => {
       createperson: require(`${cgiPath}/createperson`),
       findperson: require(`${cgiPath}/findperson`),
       modifyperson: require(`${cgiPath}/modifyperson`),
+      removeperson: require(`${cgiPath}/removeperson`),
 
       querypersonverifyresult: require(`${cgiPath}/querypersonverifyresult`),
     };

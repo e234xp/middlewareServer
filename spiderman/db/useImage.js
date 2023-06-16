@@ -16,8 +16,20 @@ module.exports = ({ workingFolder, collection: { name } }) => {
     fs.writeFileSync(FILE_PATH, image);
   }
 
+  function deleteOne(fileName) {
+    const FILE_PATH = `${FOLIDER_PATH}/${fileName}`;
+
+    fs.unlinkSync(FILE_PATH);
+  }
+
+  async function deleteMany(fileNames) {
+    await Promise.allSettled(fileNames.map((fileName) => deleteOne(fileName)));
+  }
+
   return {
     findOne,
     insertOne,
+    deleteOne,
+    deleteMany,
   };
 };

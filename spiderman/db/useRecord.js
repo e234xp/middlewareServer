@@ -153,7 +153,7 @@ module.exports = ({
       ? global.spiderman.query({
         data: recordsInTimeRanges,
         queryObject: query,
-      })
+      }).data
       : recordsInTimeRanges;
 
     return queriedRecords;

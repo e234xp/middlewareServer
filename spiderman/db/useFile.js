@@ -79,8 +79,7 @@ module.exports = ({
     if (!query) {
       return data;
     }
-    const filterd = data
-      .filter((item) => Object.keys(query).every((key) => item[key] === query[key]));
+    const { data: filterd } = global.spiderman.query({ data, queryObject: query });
 
     return filterd;
   }
@@ -94,36 +93,41 @@ module.exports = ({
   // 更新資料
   function updateOne(query, update) {
     const data = readData();
-    const index = data
-      .findIndex((item) => Object.keys(query).every((key) => item[key] === query[key]));
-    if (index !== -1) {
-      const updatedItem = { ...data[index], ...update };
-      data[index] = updatedItem;
-      writeData(data);
-      return updatedItem;
+
+    const { indexes } = global.spiderman.query({ data, queryObject: query });
+    if (indexes.length === 0) {
+      throw Error('No data found');
     }
-    return null;
+    const index = indexes[0];
+    const updatedItem = { ...data[index], ...update };
+    data[index] = updatedItem;
+    writeData(data);
+    return updatedItem;
   }
 
   // 刪除資料
   function deleteOne(query) {
     const data = readData();
-    const index = data
-      .findIndex((item) => Object.keys(query).every((key) => item[key] === query[key]));
-    if (index !== -1) {
-      const deletedItem = data[index];
-      data.splice(index, 1);
-      writeData(data);
-      return deletedItem;
+    const { indexes } = global.spiderman.query({ data, queryObject: query });
+    if (indexes.length === 0) {
+      throw Error('No data found');
     }
-    return null;
+    const index = indexes[0];
+
+    const deletedItem = data[index];
+    data.splice(index, 1);
+    writeData(data);
+    return deletedItem;
   }
 
   // 刪除符合條件的多筆資料
   function deleteMany(query) {
     const data = readData();
-    const deletedItems = data
-      .filter((item) => Object.keys(query).every((key) => item[key] === query[key]));
+
+    const { data: deletedItems } = global.spiderman.query({ data, queryObject: query });
+    if (deletedItems.length === 0) {
+      throw Error('No data found');
+    }
     const filteredData = data.filter((item) => !deletedItems.includes(item));
     writeData(filteredData);
     return deletedItems;

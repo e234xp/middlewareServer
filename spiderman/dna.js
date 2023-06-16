@@ -20,7 +20,7 @@ module.exports = {
       {
         name: 'person',
         type: 'file',
-        cache: { isOpen: false },
+        cache: { isOpen: true, maxBytes: 10 * 1024 * 1024 },
       },
       {
         name: 'personverifyresult',

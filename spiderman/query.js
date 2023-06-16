@@ -1,5 +1,11 @@
-module.exports = () => ({ data, queryObject }) => data
-  .filter((item) => _isMatchConditions({ item, queryObject }));
+module.exports = () => ({ data, queryObject }) => {
+  const filtered = data
+    .filter((item) => _isMatchConditions({ item, queryObject }));
+
+  const indexes = filtered.map((item) => data.indexOf(item));
+
+  return { data: filtered, indexes };
+};
 
 function _isMatchConditions({ item, queryObject }) {
   return Object.entries(queryObject).every(([key, value]) => {
