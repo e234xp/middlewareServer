@@ -23,6 +23,17 @@ myService.post('/:cgi', async (req, res) => {
       removeperson: require(`${cgiPath}/person/remove`),
       removeallpersons: require(`${cgiPath}/person/removeall`),
 
+      createvisitor: require(`${cgiPath}/visitor/create`),
+      findvisitor: require(`${cgiPath}/visitor/find`),
+      modifyvisitor: require(`${cgiPath}/visitor/modify`),
+      removevisitor: require(`${cgiPath}/visitor/remove`),
+      removeallvisitors: require(`${cgiPath}/visitor/removeall`),
+
+      creategroup: require(`${cgiPath}/group/create`),
+      findgroup: require(`${cgiPath}/group/find`),
+      modifygroup: require(`${cgiPath}/group/modify`),
+      removegroup: require(`${cgiPath}/group/remove`),
+
       querypersonverifyresult: require(`${cgiPath}/personverifyresultquery`),
     };
     if (!router[cgi]) throw Error('no such cgi');

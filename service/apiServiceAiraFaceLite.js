@@ -104,8 +104,11 @@ myService.post( "/:cgi", async function (req, res, next) {
             'test','generatetoken',
             'maintaintoken'
             ,'createaccount','findaccount','modifyaccount','removeaccount','resetadmin'
-            ,'findperson','createperson','modifyperson','removeperson','removeallpersons',
-            'querypersonverifyresult'
+            ,'findperson','createperson','modifyperson','removeperson','removeallpersons','removegroupfromperson',
+            'createvisitor'
+            // ,'findvisitor','modifyvisitor','removevisitor','removeallvisitors'
+            // 'findgroup',
+            ,'querypersonverifyresult'
         ]
         if(testCgis.includes(tmpCgi)){
             next();

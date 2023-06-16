@@ -1,10 +1,10 @@
 const { uuid: uuidv4 } = require('uuidv4');
 
-module.exports = () => {
+module.exports = (collection = global.spiderman.db.person) => {
   function find({
     query, shift, sliceLength, data,
   }) {
-    const result = global.spiderman.db.person
+    const result = collection
       .find(query)
       .slice(shift, shift + sliceLength)
       .map((item) => {
@@ -46,7 +46,7 @@ module.exports = () => {
       registerImage,
     });
 
-    global.spiderman.db.person.insertOne(dataToWrite);
+    collection.insertOne(dataToWrite);
   }
 
   async function modify({
@@ -71,16 +71,16 @@ module.exports = () => {
       registerImage,
     });
 
-    global.spiderman.db.person.updateOne({ uuid }, dataToWrite);
+    collection.updateOne({ uuid }, dataToWrite);
   }
 
   function remove({ uuid }) {
-    global.spiderman.db.person.deleteMany({ uuid: { $in: uuid } });
+    collection.deleteMany({ uuid: { $in: uuid } });
     removePhoto(uuid);
   }
 
   function removeAll() {
-    const items = global.spiderman.db.person.deleteMany({});
+    const items = collection.deleteMany({});
     const uuids = items.map(({ uuid }) => uuid);
     removePhoto(uuids);
   }

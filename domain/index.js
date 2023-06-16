@@ -13,6 +13,11 @@ module.exports = {
       instance[name] = require(`./${file}`)();
     });
 
+    // 額外設定
+    (() => {
+      instance.visitor = require('./person')(global.spiderman.db.visitor);
+    })();
+
     return instance;
   },
 };

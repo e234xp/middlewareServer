@@ -1,3 +1,5 @@
+const { uuid: uuidv4 } = require('uuidv4');
+
 module.exports = {
   db: {
     workingFolder: '/Users/liaoguanjie/城智/middlewareServer/database',
@@ -12,14 +14,42 @@ module.exports = {
           permission: 'Admin',
           fixed: true,
           remarks: '',
-          create_date: 1628380800000,
-          last_modify_date: 1628380800000,
+          create_date: Date.now(),
+          last_modify_date: Date.now(),
         }],
         cache: { isOpen: true, maxBytes: 10 * 1024 * 1024 },
       },
       {
         name: 'person',
         type: 'file',
+        cache: { isOpen: true, maxBytes: 10 * 1024 * 1024 },
+      },
+      {
+        name: 'visitor',
+        type: 'file',
+        cache: { isOpen: true, maxBytes: 10 * 1024 * 1024 },
+      },
+      {
+        name: 'groups',
+        type: 'file',
+        defaultData: [
+          {
+            uuid: uuidv4(),
+            name: 'All Person',
+            remarks: '',
+            fixed: true,
+            no_edit: true,
+            create_date: Date.now(),
+          },
+          {
+            uuid: uuidv4(),
+            name: 'All Visitor',
+            remarks: '',
+            fixed: true,
+            no_edit: true,
+            create_date: Date.now(),
+          },
+        ],
         cache: { isOpen: true, maxBytes: 10 * 1024 * 1024 },
       },
       {
