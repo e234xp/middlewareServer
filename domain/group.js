@@ -1,7 +1,7 @@
 const { uuid: uuidv4 } = require('uuidv4');
 
 module.exports = () => {
-  function findGroupWithPerson({ uuid }) {
+  function findWithPerson({ uuid }) {
     const groups = global.spiderman.db.groups.find();
     const filteredGroups = uuid ? groups.filter((group) => group.uuid === uuid) : groups;
 
@@ -96,7 +96,95 @@ module.exports = () => {
     return [...groupList, ...assignedGroupList];
   }
 
+  function createAndModifyPersonGroup({
+    name, remarks, person_uuid_list: personUuidList, visitor_uuid_list: visitorUuidList,
+  }) {
+    const doesExist = !!global.spiderman.db.groups.findOne({ name });
+
+    if (doesExist) throw Error('the group have already existed.');
+
+    global.spiderman.db.groups.insertOne({
+      uuid: uuidv4(),
+      name,
+      remarks: remarks || '',
+      create_date: Date.now(),
+      fixed: false,
+      no_edit: false,
+    });
+
+    addGroupToPerson({ name, personUuidList, visitorUuidList });
+  }
+
+  function modifyAndModifyPersonGroup({
+    uuid, remarks, person_uuid_list: personUuidList, visitor_uuid_list: visitorUuidList,
+  }) {
+    const group = global.spiderman.db.groups.findOne({ uuid });
+
+    if (!group) throw Error('the group does not existed.');
+
+    global.spiderman.db.groups.updateOne({ uuid }, { remarks });
+
+    removeGroupsFromPerson([group.name]);
+    addGroupToPerson({ name: group.name, personUuidList, visitorUuidList });
+  }
+
+  function removeAndModifyPersonGroup({ uuid }) {
+    const groupList = global.spiderman.db.groups.find({ uuid: { $in: uuid } });
+
+    if (groupList.length === 0) throw Error('the groups do not existed.');
+
+    global.spiderman.db.groups.deleteMany({ uuid: { $in: uuid } });
+
+    const groupNames = groupList.map((group) => group.name);
+    removeGroupsFromPerson(groupNames);
+  }
+
+  function addGroupToPerson({ name, personUuidList, visitorUuidList }) {
+    personUuidList.forEach((uuid) => {
+      const person = global.spiderman.db.person.findOne({ uuid });
+      if (!person) return;
+      global.spiderman.db.person.updateOne({ uuid }, {
+        group_list: [...person.group_list, name],
+      });
+    });
+
+    visitorUuidList.forEach((uuid) => {
+      const visitor = global.spiderman.db.visitor.findOne({ uuid });
+      if (!visitor) return;
+      global.spiderman.db.visitor.updateOne({ uuid }, {
+        group_list: [...visitor.group_list, name],
+      });
+    });
+  }
+
+  function removeGroupsFromPerson(names) {
+    const personList = global.spiderman.db.person.find();
+    const visitorList = global.spiderman.db.visitor.find();
+
+    const newPersonList = personList.map((person) => {
+      const newGroupList = person.group_list.filter((group) => !names.includes(group));
+      return {
+        ...person,
+        group_list: newGroupList,
+      };
+    });
+
+    const newVisitorList = visitorList.map((visitor) => {
+      const newGroupList = visitor.group_list.filter((group) => !names.includes(group));
+      return {
+        ...visitor,
+        group_list: newGroupList,
+      };
+    });
+
+    global.spiderman.db.person.set(newPersonList);
+    global.spiderman.db.visitor.set(newVisitorList);
+  }
+
   return {
-    findGroupWithPerson,
+    findWithPerson,
+    createAndModifyPersonGroup,
+    modifyAndModifyPersonGroup,
+    removeAndModifyPersonGroup,
   };
 };

@@ -12,7 +12,7 @@ module.exports = (data) => {
     fieldChecks,
   });
 
-  const groupList = global.domain.group.findGroupWithPerson(data);
+  const groupList = global.domain.group.findWithPerson(data);
 
   return {
     message: 'ok',

@@ -1,18 +1,6 @@
-const { uuid } = require('uuidv4');
-
 const fieldChecks = [
   {
-    fieldName: 'username',
-    fieldType: 'string',
-    required: true,
-  },
-  {
-    fieldName: 'password',
-    fieldType: 'string',
-    required: true,
-  },
-  {
-    fieldName: 'permission',
+    fieldName: 'name',
     fieldType: 'string',
     required: true,
   },
@@ -21,45 +9,27 @@ const fieldChecks = [
     fieldType: 'string',
     required: true,
   },
+  {
+    fieldName: 'person_uuid_list',
+    fieldType: 'array',
+    required: true,
+  },
+  {
+    fieldName: 'visitor_uuid_list',
+    fieldType: 'array',
+    required: true,
+  },
 ];
 
-module.exports = (data, token) => {
+module.exports = (data) => {
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
   });
 
-  const tokenUser = global.spiderman.token.decryptToAccount(token);
-  const isPassed = tokenUser.u.length > 0
-  && data.username.length > 0
-  && data.password.length > 0
-  && data.permission.length > 0;
-  if (!isPassed) throw Error('username or password cannot be empty.');
+  if (data.name.length === 0) throw Error('name cannot be empty.');
 
-  const accounts = global.spiderman.db.account.find();
-
-  const adminAccount = accounts.find((item) => (item.username === tokenUser.u) && (item.permission === 'Admin'));
-  if (!adminAccount) throw Error('no permission');
-
-  const existededAccount = accounts.find((item) => (item.username === data.username));
-  if (existededAccount) throw Error('account has already existed');
-
-  const {
-    username, password, permission, remarks,
-  } = data;
-
-  const account = {
-    uuid: uuid(),
-    username,
-    password,
-    permission,
-    remarks: remarks || '',
-    fixed: false,
-    create_date: Date.now(),
-    last_modify_date: Date.now(),
-  };
-
-  global.spiderman.db.account.insertOne(account);
+  global.domain.group.createAndModifyPersonGroup(data);
 
   return {
     message: 'ok',
