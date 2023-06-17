@@ -80,6 +80,7 @@ module.exports = async (rData) => {
     fieldChecks: fieldChecksData,
   });
 
+  // TODO 等待傳入參數： 參考 engineGenerateFaceFeature
   if (!data.register_image) {
     await global.domain.person.modify({ uuid, data });
   } else {

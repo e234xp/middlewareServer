@@ -123,5 +123,6 @@ module.exports = (collection = global.spiderman.db.person) => {
     modify,
     remove,
     removeAll,
+    fetchPhoto,
   };
 };
