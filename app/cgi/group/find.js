@@ -1,10 +1,21 @@
-module.exports = (data) => {
-  console.log('hey');
+const fieldChecks = [
+  {
+    fieldName: 'uuid',
+    fieldType: 'string',
+    required: false,
+  },
+];
 
-  const groups = global.spiderman.db.groups.find();
+module.exports = (data) => {
+  data = global.spiderman.validate.data({
+    data,
+    fieldChecks,
+  });
+
+  const groupList = global.domain.group.findGroupWithPerson(data);
 
   return {
     message: 'ok',
-    group_list: groups,
+    group_list: groupList,
   };
 };
