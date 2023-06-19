@@ -42,6 +42,9 @@ myService.post('/:cgi', async (req, res) => {
 
       gettabletsettings: require(`${cgiPath}/tabletsettings/get`),
       settabletsettings: require(`${cgiPath}/tabletsettings/set`),
+
+      geteventsettings: require(`${cgiPath}/eventsettings/get`),
+      seteventsettings: require(`${cgiPath}/eventsettings/set`),
     };
     if (!router[cgi]) throw Error('no such cgi');
     authorize({ req, publicCgi: ['generatetoken', 'maintaintoken', 'test'] });

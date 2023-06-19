@@ -340,6 +340,18 @@ module.exports = {
         }],
         cache: { isOpen: true, maxBytes: 10 * 1024 * 1024 },
       },
+      {
+        name: 'eventsettings',
+        type: 'file',
+        defaultData: [
+          {
+            line_actions_list: [],
+            mail_actions_list: [],
+            http_actions_list: [],
+          },
+        ],
+        cache: { isOpen: true, maxBytes: 10 * 1024 * 1024 },
+      },
     ],
   },
 
