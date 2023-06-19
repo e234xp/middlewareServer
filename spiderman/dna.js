@@ -352,6 +352,11 @@ module.exports = {
         ],
         cache: { isOpen: true, maxBytes: 10 * 1024 * 1024 },
       },
+      {
+        name: 'dashboardsettings',
+        type: 'file',
+        cache: { isOpen: true, maxBytes: 10 * 1024 * 1024 },
+      },
     ],
   },
 

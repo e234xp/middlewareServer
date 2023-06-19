@@ -116,6 +116,8 @@ myService.post( "/:cgi", async function (req, res, next) {
             'settabletsettings',
             'geteventsettings',
             'seteventsettings',
+            'getdashboardsettings',
+            'setdashboardsettings',
         ]
         if(testCgis.includes(tmpCgi)){
             next();
