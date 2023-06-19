@@ -1,3 +1,1310 @@
 {
-    "face_image": "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"
+    "message": "ok",
+    "result": {
+        "total_length": 401,
+        "slice_shift": 0,
+        "slice_length": 100,
+        "data": [
+            {
+                "verify_uuid": "f92bb7f4-0d4f-4e10-a4ff-b21e05061afb",
+                "target_score": 0.9,
+                "timestamp": 1685601816221,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.1511198878288269,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "f92bb7f4-0d4f-4e10-a4ff-b21e05061afb"
+                }
+            },
+            {
+                "verify_uuid": "896e0ef6-36a5-4a60-be00-6d3677f15df3",
+                "target_score": 0.9,
+                "timestamp": 1685601816314,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.35826683044433594,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "896e0ef6-36a5-4a60-be00-6d3677f15df3"
+                }
+            },
+            {
+                "verify_uuid": "49bd979a-2650-439d-9ab2-23e6223bfe8f",
+                "target_score": 0.9,
+                "timestamp": 1685601816270,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.26830974221229553,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "49bd979a-2650-439d-9ab2-23e6223bfe8f"
+                }
+            },
+            {
+                "verify_uuid": "8228329f-343f-4676-a9bc-be94d03d9b15",
+                "target_score": 0.9,
+                "timestamp": 1685601816440,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.1511198878288269,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "8228329f-343f-4676-a9bc-be94d03d9b15"
+                }
+            },
+            {
+                "verify_uuid": "52c58677-8e83-4cd3-810e-ab29a91e25f4",
+                "target_score": 0.9,
+                "timestamp": 1685601816365,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.3510669469833374,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "52c58677-8e83-4cd3-810e-ab29a91e25f4"
+                }
+            },
+            {
+                "verify_uuid": "8fe5c5ed-ba4f-45a8-9f62-d2ce77db97da",
+                "target_score": 0.9,
+                "timestamp": 1685601816473,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.26830974221229553,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "8fe5c5ed-ba4f-45a8-9f62-d2ce77db97da"
+                }
+            },
+            {
+                "verify_uuid": "16d81901-9b60-4439-9468-41699bc6a410",
+                "target_score": 0.9,
+                "timestamp": 1685601816508,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.35826683044433594,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "16d81901-9b60-4439-9468-41699bc6a410"
+                }
+            },
+            {
+                "verify_uuid": "fa2e0e35-5033-4b22-9098-ac0477d7b67e",
+                "target_score": 0.9,
+                "timestamp": 1685601816706,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.1405877023935318,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "fa2e0e35-5033-4b22-9098-ac0477d7b67e"
+                }
+            },
+            {
+                "verify_uuid": "0a5cce2b-f2d0-416e-975e-62fe50a2edbb",
+                "target_score": 0.9,
+                "timestamp": 1685601816559,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.3510669469833374,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "0a5cce2b-f2d0-416e-975e-62fe50a2edbb"
+                }
+            },
+            {
+                "verify_uuid": "7adc34d5-90e1-4e70-a450-86cc15477e02",
+                "target_score": 0.9,
+                "timestamp": 1685601816756,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.22348652780056,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "7adc34d5-90e1-4e70-a450-86cc15477e02"
+                }
+            },
+            {
+                "verify_uuid": "a29bad50-679e-4700-a611-3a2f99c081ad",
+                "target_score": 0.9,
+                "timestamp": 1685601816798,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.2246175855398178,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "a29bad50-679e-4700-a611-3a2f99c081ad"
+                }
+            },
+            {
+                "verify_uuid": "6ddbc026-2e56-429c-8cd7-7e86d6aad6e0",
+                "target_score": 0.9,
+                "timestamp": 1685601816836,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.40047240257263184,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "6ddbc026-2e56-429c-8cd7-7e86d6aad6e0"
+                }
+            },
+            {
+                "verify_uuid": "fa982557-d6ac-420a-887b-ae822208e81a",
+                "target_score": 0.9,
+                "timestamp": 1685601816954,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.11333415657281876,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "fa982557-d6ac-420a-887b-ae822208e81a"
+                }
+            },
+            {
+                "verify_uuid": "50fa0c62-32fc-4b40-ad96-f4e2d7d1844f",
+                "target_score": 0.9,
+                "timestamp": 1685601817004,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.24102206528186798,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "50fa0c62-32fc-4b40-ad96-f4e2d7d1844f"
+                }
+            },
+            {
+                "verify_uuid": "5e592193-5431-4dea-8ca5-0666f39eedbf",
+                "target_score": 0.9,
+                "timestamp": 1685601817065,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.3252914249897003,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "5e592193-5431-4dea-8ca5-0666f39eedbf"
+                }
+            },
+            {
+                "verify_uuid": "0014c9a2-2160-4866-9a06-824f1c8222f5",
+                "target_score": 0.9,
+                "timestamp": 1685601817111,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.27481451630592346,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "0014c9a2-2160-4866-9a06-824f1c8222f5"
+                }
+            },
+            {
+                "verify_uuid": "787f575f-292b-47f8-af36-768497ead663",
+                "target_score": 0.9,
+                "timestamp": 1685601817276,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.15246611833572388,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "787f575f-292b-47f8-af36-768497ead663"
+                }
+            },
+            {
+                "verify_uuid": "979d238f-a502-487c-b2a6-e60dc5687b10",
+                "target_score": 0.9,
+                "timestamp": 1685601817381,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.2690140902996063,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "979d238f-a502-487c-b2a6-e60dc5687b10"
+                }
+            },
+            {
+                "verify_uuid": "31c0b979-bcfe-4c54-b1e8-45f82010764f",
+                "target_score": 0.9,
+                "timestamp": 1685601817423,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.37642890214920044,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "31c0b979-bcfe-4c54-b1e8-45f82010764f"
+                }
+            },
+            {
+                "verify_uuid": "d33c8f52-8d2c-4af3-b704-89be3f43b75e",
+                "target_score": 0.9,
+                "timestamp": 1685601817472,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.1880665421485901,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "d33c8f52-8d2c-4af3-b704-89be3f43b75e"
+                }
+            },
+            {
+                "verify_uuid": "df96d8ef-21cd-4dc4-b82a-5dadb7ed683e",
+                "target_score": 0.9,
+                "timestamp": 1685601817506,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.3744407892227173,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "df96d8ef-21cd-4dc4-b82a-5dadb7ed683e"
+                }
+            },
+            {
+                "verify_uuid": "b363f7f7-95be-4bac-987b-38117b7c6a4b",
+                "target_score": 0.9,
+                "timestamp": 1685601817564,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.27396371960639954,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "b363f7f7-95be-4bac-987b-38117b7c6a4b"
+                }
+            },
+            {
+                "verify_uuid": "f426f431-4c1b-4811-9630-45f3079b4c5e",
+                "target_score": 0.9,
+                "timestamp": 1685601817593,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.16296647489070892,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "f426f431-4c1b-4811-9630-45f3079b4c5e"
+                }
+            },
+            {
+                "verify_uuid": "285c4b17-03bd-4ffd-83fb-263693e14e53",
+                "target_score": 0.9,
+                "timestamp": 1685601817712,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.3744407892227173,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "285c4b17-03bd-4ffd-83fb-263693e14e53"
+                }
+            },
+            {
+                "verify_uuid": "61b0a9e1-69c3-4fef-a462-2e7e7eee2b2f",
+                "target_score": 0.9,
+                "timestamp": 1685601817676,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.3068179786205292,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "61b0a9e1-69c3-4fef-a462-2e7e7eee2b2f"
+                }
+            },
+            {
+                "verify_uuid": "07e70b75-1ab8-4c2e-8e16-aceabb8026d0",
+                "target_score": 0.9,
+                "timestamp": 1685601817766,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.27396371960639954,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "07e70b75-1ab8-4c2e-8e16-aceabb8026d0"
+                }
+            },
+            {
+                "verify_uuid": "800c76db-0719-4f49-9cfe-dc0caabefb35",
+                "target_score": 0.9,
+                "timestamp": 1685601817800,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.16296647489070892,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "800c76db-0719-4f49-9cfe-dc0caabefb35"
+                }
+            },
+            {
+                "verify_uuid": "869de72c-4f49-4fa4-8cac-af994d70be6f",
+                "target_score": 0.9,
+                "timestamp": 1685601817872,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.3068179786205292,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "869de72c-4f49-4fa4-8cac-af994d70be6f"
+                }
+            },
+            {
+                "verify_uuid": "7943ae18-a985-43d3-a1d8-8e2683b3e719",
+                "target_score": 0.9,
+                "timestamp": 1685601817908,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.30142858624458313,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "7943ae18-a985-43d3-a1d8-8e2683b3e719"
+                }
+            },
+            {
+                "verify_uuid": "15efd353-8191-4900-a37e-3176d269a1c1",
+                "target_score": 0.9,
+                "timestamp": 1685601817968,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.25539690256118774,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "15efd353-8191-4900-a37e-3176d269a1c1"
+                }
+            },
+            {
+                "verify_uuid": "ba469790-a3b9-4b60-97da-eabafb6ba3c4",
+                "target_score": 0.9,
+                "timestamp": 1685601818006,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.20006312429904938,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "ba469790-a3b9-4b60-97da-eabafb6ba3c4"
+                }
+            },
+            {
+                "verify_uuid": "9be9f423-6d9b-4cb1-84f9-949de9317f9f",
+                "target_score": 0.9,
+                "timestamp": 1685601818068,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.17322415113449097,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "9be9f423-6d9b-4cb1-84f9-949de9317f9f"
+                }
+            },
+            {
+                "verify_uuid": "decf6cd6-53e1-4b69-9ae3-93e67d5c1d3d",
+                "target_score": 0.9,
+                "timestamp": 1685601818191,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.2843626141548157,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "decf6cd6-53e1-4b69-9ae3-93e67d5c1d3d"
+                }
+            },
+            {
+                "verify_uuid": "f6ee74aa-7af7-455d-8621-ef7fc98222bc",
+                "target_score": 0.9,
+                "timestamp": 1685601818245,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.14960402250289917,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "f6ee74aa-7af7-455d-8621-ef7fc98222bc"
+                }
+            },
+            {
+                "verify_uuid": "cba75ddb-89e4-4d50-9f3f-53d54bdb747f",
+                "target_score": 0.9,
+                "timestamp": 1685601818309,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.30236026644706726,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "cba75ddb-89e4-4d50-9f3f-53d54bdb747f"
+                }
+            },
+            {
+                "verify_uuid": "af498929-5156-4c9c-9dac-79792adee081",
+                "target_score": 0.9,
+                "timestamp": 1685601818278,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.3829571008682251,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "af498929-5156-4c9c-9dac-79792adee081"
+                }
+            },
+            {
+                "verify_uuid": "ec8c088d-531b-42b9-b7d3-c93b680a59be",
+                "target_score": 0.9,
+                "timestamp": 1685601818388,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.2843626141548157,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "ec8c088d-531b-42b9-b7d3-c93b680a59be"
+                }
+            },
+            {
+                "verify_uuid": "206d4893-0675-4a76-8a9e-8c9a3af7a1c1",
+                "target_score": 0.9,
+                "timestamp": 1685601818455,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.14960402250289917,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "206d4893-0675-4a76-8a9e-8c9a3af7a1c1"
+                }
+            },
+            {
+                "verify_uuid": "8889f23e-9a42-48f6-81ac-1549324d0835",
+                "target_score": 0.9,
+                "timestamp": 1685601818491,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.3829571008682251,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "8889f23e-9a42-48f6-81ac-1549324d0835"
+                }
+            },
+            {
+                "verify_uuid": "9741dce8-d8f6-4d07-ab06-70cb354df695",
+                "target_score": 0.9,
+                "timestamp": 1685601818625,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.26223108172416687,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "9741dce8-d8f6-4d07-ab06-70cb354df695"
+                }
+            },
+            {
+                "verify_uuid": "bda8eaf0-3552-475b-bb32-8a57342fc44f",
+                "target_score": 0.9,
+                "timestamp": 1685601818704,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.12511731684207916,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "bda8eaf0-3552-475b-bb32-8a57342fc44f"
+                }
+            },
+            {
+                "verify_uuid": "391f566d-4439-4ad8-8922-542ada693b33",
+                "target_score": 0.9,
+                "timestamp": 1685601818754,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.31769007444381714,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "391f566d-4439-4ad8-8922-542ada693b33"
+                }
+            },
+            {
+                "verify_uuid": "c538ec36-f06e-4b19-817c-850eb67894af",
+                "target_score": 0.9,
+                "timestamp": 1685601818788,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.20243412256240845,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "c538ec36-f06e-4b19-817c-850eb67894af"
+                }
+            },
+            {
+                "verify_uuid": "126f5cfd-fddc-4519-a3d1-6fc911fb3e7c",
+                "target_score": 0.9,
+                "timestamp": 1685601818892,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.33126693964004517,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "126f5cfd-fddc-4519-a3d1-6fc911fb3e7c"
+                }
+            },
+            {
+                "verify_uuid": "3b0bf7c4-6760-4ca6-9ed2-353a8d06128d",
+                "target_score": 0.9,
+                "timestamp": 1685601818949,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.1845427006483078,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "3b0bf7c4-6760-4ca6-9ed2-353a8d06128d"
+                }
+            },
+            {
+                "verify_uuid": "90fe65da-df9d-44bf-b243-94844b998155",
+                "target_score": 0.9,
+                "timestamp": 1685601819045,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.3543733060359955,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "90fe65da-df9d-44bf-b243-94844b998155"
+                }
+            },
+            {
+                "verify_uuid": "aae69aa6-4aea-48ac-9ce8-d5257490fa88",
+                "target_score": 0.9,
+                "timestamp": 1685601818993,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.33951616287231445,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "aae69aa6-4aea-48ac-9ce8-d5257490fa88"
+                }
+            },
+            {
+                "verify_uuid": "a050971a-891a-424f-84d0-c54f8a44d270",
+                "target_score": 0.9,
+                "timestamp": 1685601819240,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.33951616287231445,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "a050971a-891a-424f-84d0-c54f8a44d270"
+                }
+            },
+            {
+                "verify_uuid": "4849b6c6-9448-4de7-98d3-4bf0247d6ee9",
+                "target_score": 0.9,
+                "timestamp": 1685601819180,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.1845427006483078,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "4849b6c6-9448-4de7-98d3-4bf0247d6ee9"
+                }
+            },
+            {
+                "verify_uuid": "a5ee7601-f9a0-4508-b7d4-019d4a1d3611",
+                "target_score": 0.9,
+                "timestamp": 1685601819119,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.33126693964004517,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "a5ee7601-f9a0-4508-b7d4-019d4a1d3611"
+                }
+            },
+            {
+                "verify_uuid": "6dfbdb30-685b-4854-96e0-b2b78f2b80d9",
+                "target_score": 0.9,
+                "timestamp": 1685601819275,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.3543733060359955,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "6dfbdb30-685b-4854-96e0-b2b78f2b80d9"
+                }
+            },
+            {
+                "verify_uuid": "47018fc0-fb19-415f-9294-60e03995efa1",
+                "target_score": 0.9,
+                "timestamp": 1685601819308,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.2777380347251892,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "47018fc0-fb19-415f-9294-60e03995efa1"
+                }
+            },
+            {
+                "verify_uuid": "728d0087-5e35-4417-8efd-ae122be1dc3b",
+                "target_score": 0.9,
+                "timestamp": 1685601819390,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.13123293220996857,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "728d0087-5e35-4417-8efd-ae122be1dc3b"
+                }
+            },
+            {
+                "verify_uuid": "28cb4643-371a-4cae-a6b5-0a528efe6e07",
+                "target_score": 0.9,
+                "timestamp": 1685601819488,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.3344314992427826,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "28cb4643-371a-4cae-a6b5-0a528efe6e07"
+                }
+            },
+            {
+                "verify_uuid": "359c450c-271a-4c72-932d-7086cd84cf28",
+                "target_score": 0.9,
+                "timestamp": 1685601819450,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.3682040572166443,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "359c450c-271a-4c72-932d-7086cd84cf28"
+                }
+            },
+            {
+                "verify_uuid": "19f16bb8-dd44-4991-bd12-8f13269697a5",
+                "target_score": 0.9,
+                "timestamp": 1685601819542,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.31036075949668884,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "19f16bb8-dd44-4991-bd12-8f13269697a5"
+                }
+            },
+            {
+                "verify_uuid": "9f8b14ff-07fd-4b35-b059-2b582ecc1520",
+                "target_score": 0.9,
+                "timestamp": 1685601819605,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.14259451627731323,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "9f8b14ff-07fd-4b35-b059-2b582ecc1520"
+                }
+            },
+            {
+                "verify_uuid": "4a5e54e5-63b3-4527-bab4-3628fabd40d9",
+                "target_score": 0.9,
+                "timestamp": 1685601819701,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.3504466414451599,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "4a5e54e5-63b3-4527-bab4-3628fabd40d9"
+                }
+            },
+            {
+                "verify_uuid": "af424be2-a012-4787-979f-a1dd822be4da",
+                "target_score": 0.9,
+                "timestamp": 1685601819666,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.3454156816005707,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "af424be2-a012-4787-979f-a1dd822be4da"
+                }
+            },
+            {
+                "verify_uuid": "fcc28adc-bd78-4150-bf35-5307fbbaad87",
+                "target_score": 0.9,
+                "timestamp": 1685601819846,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.3191419839859009,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "fcc28adc-bd78-4150-bf35-5307fbbaad87"
+                }
+            },
+            {
+                "verify_uuid": "47a6f48b-79ac-46d9-91a1-da71e2974f79",
+                "target_score": 0.9,
+                "timestamp": 1685601819959,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.15716975927352905,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "47a6f48b-79ac-46d9-91a1-da71e2974f79"
+                }
+            },
+            {
+                "verify_uuid": "88e889ac-22f9-4edc-a6d3-65111778774f",
+                "target_score": 0.9,
+                "timestamp": 1685601819998,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.35429447889328003,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "88e889ac-22f9-4edc-a6d3-65111778774f"
+                }
+            },
+            {
+                "verify_uuid": "dc4a1824-ef57-4c4c-926a-5e58c6b28861",
+                "target_score": 0.9,
+                "timestamp": 1685601820052,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.36726826429367065,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "dc4a1824-ef57-4c4c-926a-5e58c6b28861"
+                }
+            },
+            {
+                "verify_uuid": "b10af964-ecab-472e-8d24-00b2ee3bfbcb",
+                "target_score": 0.9,
+                "timestamp": 1685601820088,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.3191419839859009,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "b10af964-ecab-472e-8d24-00b2ee3bfbcb"
+                }
+            },
+            {
+                "verify_uuid": "c8423f09-1e1e-4b60-a592-844df30aca25",
+                "target_score": 0.9,
+                "timestamp": 1685601820192,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.15716975927352905,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "c8423f09-1e1e-4b60-a592-844df30aca25"
+                }
+            },
+            {
+                "verify_uuid": "cc6c0804-46a3-493c-99b1-64de20c1c61d",
+                "target_score": 0.9,
+                "timestamp": 1685601820245,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.35429447889328003,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "cc6c0804-46a3-493c-99b1-64de20c1c61d"
+                }
+            },
+            {
+                "verify_uuid": "5ba6b702-0b80-4671-a3cc-2c2d9a325410",
+                "target_score": 0.9,
+                "timestamp": 1685601820276,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.36726826429367065,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "5ba6b702-0b80-4671-a3cc-2c2d9a325410"
+                }
+            },
+            {
+                "verify_uuid": "dccae639-c9f5-46d9-8de2-34551b901113",
+                "target_score": 0.9,
+                "timestamp": 1685601820306,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.35344675183296204,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "dccae639-c9f5-46d9-8de2-34551b901113"
+                }
+            },
+            {
+                "verify_uuid": "16ac9533-11cf-42ad-aba7-4bb7a11c4bff",
+                "target_score": 0.9,
+                "timestamp": 1685601820386,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.1492089182138443,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "16ac9533-11cf-42ad-aba7-4bb7a11c4bff"
+                }
+            },
+            {
+                "verify_uuid": "ef582b79-ff81-498a-929f-a77020c0e5ba",
+                "target_score": 0.9,
+                "timestamp": 1685601820447,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.3821185827255249,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "ef582b79-ff81-498a-929f-a77020c0e5ba"
+                }
+            },
+            {
+                "verify_uuid": "e3c89416-9a66-4655-b965-d71d60ed7471",
+                "target_score": 0.9,
+                "timestamp": 1685601820487,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.43709930777549744,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "e3c89416-9a66-4655-b965-d71d60ed7471"
+                }
+            },
+            {
+                "verify_uuid": "0f7672fd-bbe5-46de-9274-a05f262084c7",
+                "target_score": 0.9,
+                "timestamp": 1685601820524,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "0f7672fd-bbe5-46de-9274-a05f262084c7"
+                }
+            },
+            {
+                "verify_uuid": "185c9377-0659-4316-a911-d6e220b48edd",
+                "target_score": 0.9,
+                "timestamp": 1685601820543,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.3019484877586365,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "185c9377-0659-4316-a911-d6e220b48edd"
+                }
+            },
+            {
+                "verify_uuid": "d3227e3e-6428-4dce-9340-efa567403f3f",
+                "target_score": 0.9,
+                "timestamp": 1685601820603,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.34837910532951355,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "d3227e3e-6428-4dce-9340-efa567403f3f"
+                }
+            },
+            {
+                "verify_uuid": "9e8585d3-6f03-4936-9eaf-f3210eb0f621",
+                "target_score": 0.9,
+                "timestamp": 1685601820699,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.2795022130012512,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "9e8585d3-6f03-4936-9eaf-f3210eb0f621"
+                }
+            },
+            {
+                "verify_uuid": "30230ba5-af66-4d22-affe-b6f590515411",
+                "target_score": 0.9,
+                "timestamp": 1685601820662,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.12850874662399292,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "30230ba5-af66-4d22-affe-b6f590515411"
+                }
+            },
+            {
+                "verify_uuid": "b6753045-1743-4e20-abcc-0a566cabff98",
+                "target_score": 0.9,
+                "timestamp": 1685601820854,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.32793116569519043,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "b6753045-1743-4e20-abcc-0a566cabff98"
+                }
+            },
+            {
+                "verify_uuid": "7fa47583-4495-4e9d-84bd-02059ce52319",
+                "target_score": 0.9,
+                "timestamp": 1685601821182,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.3962925672531128,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "7fa47583-4495-4e9d-84bd-02059ce52319"
+                }
+            },
+            {
+                "verify_uuid": "60539005-82db-4a00-b177-ce0d130218f6",
+                "target_score": 0.9,
+                "timestamp": 1685601820905,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.3297487497329712,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "60539005-82db-4a00-b177-ce0d130218f6"
+                }
+            },
+            {
+                "verify_uuid": "ebdc82e2-8b1f-4c5d-82fc-dc8e59d59ac5",
+                "target_score": 0.9,
+                "timestamp": 1685601821149,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.13754874467849731,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "ebdc82e2-8b1f-4c5d-82fc-dc8e59d59ac5"
+                }
+            },
+            {
+                "verify_uuid": "72272ad6-e11d-46c1-b3e0-b7ac00901838",
+                "target_score": 0.9,
+                "timestamp": 1685601821218,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.32793116569519043,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "72272ad6-e11d-46c1-b3e0-b7ac00901838"
+                }
+            },
+            {
+                "verify_uuid": "71b0191d-f83d-42de-b1cc-a992fd3e5f9c",
+                "target_score": 0.9,
+                "timestamp": 1685601821270,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.3297487497329712,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "71b0191d-f83d-42de-b1cc-a992fd3e5f9c"
+                }
+            },
+            {
+                "verify_uuid": "88f673b3-b6be-438e-8c70-a24d8ebaaef5",
+                "target_score": 0.9,
+                "timestamp": 1685601821378,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.3962925672531128,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "88f673b3-b6be-438e-8c70-a24d8ebaaef5"
+                }
+            },
+            {
+                "verify_uuid": "69811bd7-ef52-4762-8150-9ccb64dc0e51",
+                "target_score": 0.9,
+                "timestamp": 1685601821342,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.13754874467849731,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "69811bd7-ef52-4762-8150-9ccb64dc0e51"
+                }
+            },
+            {
+                "verify_uuid": "e8df106d-4e80-4f78-870c-d10084e29ba9",
+                "target_score": 0.9,
+                "timestamp": 1685601821509,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.3060673177242279,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "e8df106d-4e80-4f78-870c-d10084e29ba9"
+                }
+            },
+            {
+                "verify_uuid": "dc77cab5-bbb0-4215-b35c-0aebd7492384",
+                "target_score": 0.9,
+                "timestamp": 1685601821415,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.3075736463069916,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "dc77cab5-bbb0-4215-b35c-0aebd7492384"
+                }
+            },
+            {
+                "verify_uuid": "a8c72e82-a1bb-4962-bd5a-a184d76d25b6",
+                "target_score": 0.9,
+                "timestamp": 1685601821603,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.40144914388656616,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "a8c72e82-a1bb-4962-bd5a-a184d76d25b6"
+                }
+            },
+            {
+                "verify_uuid": "f657ce5a-ffa3-44cb-b0c1-b69b331eaa23",
+                "target_score": 0.9,
+                "timestamp": 1685601821564,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.11846590042114258,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "f657ce5a-ffa3-44cb-b0c1-b69b331eaa23"
+                }
+            },
+            {
+                "verify_uuid": "02e2996f-2100-47bd-ae36-2189d003fa23",
+                "target_score": 0.9,
+                "timestamp": 1685601821652,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.36684590578079224,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "02e2996f-2100-47bd-ae36-2189d003fa23"
+                }
+            },
+            {
+                "verify_uuid": "9edea81e-9f16-4a7c-a044-b40801eb3f1d",
+                "target_score": 0.9,
+                "timestamp": 1685601821735,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.12429042160511017,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "9edea81e-9f16-4a7c-a044-b40801eb3f1d"
+                }
+            },
+            {
+                "verify_uuid": "d11223b1-c67f-4299-9651-8c4779f36b77",
+                "target_score": 0.9,
+                "timestamp": 1685601821773,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.2679184675216675,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "d11223b1-c67f-4299-9651-8c4779f36b77"
+                }
+            },
+            {
+                "verify_uuid": "230996fc-7fc3-414a-bb8d-ca5801166622",
+                "target_score": 0.9,
+                "timestamp": 1685601821809,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.2774793207645416,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "230996fc-7fc3-414a-bb8d-ca5801166622"
+                }
+            },
+            {
+                "verify_uuid": "ce3722ed-36c4-4271-bdd8-c9004cac15ae",
+                "target_score": 0.9,
+                "timestamp": 1685601821862,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "ce3722ed-36c4-4271-bdd8-c9004cac15ae"
+                }
+            },
+            {
+                "verify_uuid": "d3d8946e-f7fd-458e-87f4-8fb2b6f8ebb1",
+                "target_score": 0.9,
+                "timestamp": 1685601822107,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.15458808839321136,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "d3d8946e-f7fd-458e-87f4-8fb2b6f8ebb1"
+                }
+            },
+            {
+                "verify_uuid": "ba565bbd-ffb0-44db-985b-dc3e2c0b486b",
+                "target_score": 0.9,
+                "timestamp": 1685601822160,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.2888226807117462,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "ba565bbd-ffb0-44db-985b-dc3e2c0b486b"
+                }
+            },
+            {
+                "verify_uuid": "ca97545b-202c-44eb-acf8-f81378768b68",
+                "target_score": 0.9,
+                "timestamp": 1685601821970,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.32855117321014404,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "ca97545b-202c-44eb-acf8-f81378768b68"
+                }
+            },
+            {
+                "verify_uuid": "d0f67950-7c49-44db-808d-6e584dd918ae",
+                "target_score": 0.9,
+                "timestamp": 1685601822191,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.2686370611190796,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "d0f67950-7c49-44db-808d-6e584dd918ae"
+                }
+            },
+            {
+                "verify_uuid": "208cfb59-8151-446b-8c39-17d8aee73c42",
+                "target_score": 0.9,
+                "timestamp": 1685601822242,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "208cfb59-8151-446b-8c39-17d8aee73c42"
+                }
+            },
+            {
+                "verify_uuid": "b128ec3e-45c3-4419-a16e-05416af16273",
+                "target_score": 0.9,
+                "timestamp": 1685601822256,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.32855117321014404,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "b128ec3e-45c3-4419-a16e-05416af16273"
+                }
+            },
+            {
+                "verify_uuid": "7c2348ca-c6bb-4efd-87e7-6d7f377f4916",
+                "target_score": 0.9,
+                "timestamp": 1685601822338,
+                "high_temperature": false,
+                "temperature": 0,
+                "verify_score": 0.15458808839321136,
+                "card_number": "",
+                "face_image_id": {
+                    "f": "nvr_1685601780000_1685601839999",
+                    "uuid": "7c2348ca-c6bb-4efd-87e7-6d7f377f4916"
+                }
+            }
+        ]
+    }
 }

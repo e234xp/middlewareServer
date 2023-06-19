@@ -15,6 +15,11 @@ const fieldChecks = [
     required: true,
   },
   {
+    fieldName: 'slice_length',
+    fieldType: 'number',
+    required: false,
+  },
+  {
     fieldName: 'with_image',
     fieldType: 'boolean',
     required: true,
@@ -33,11 +38,11 @@ module.exports = async (data) => {
   });
   const uuidList = data.uuid_list.length > 0 ? data.uuid_list : null;
   const shift = data.slice_shift != null ? data.slice_shift : 0;
-  const sliceLength = 10000;
+  const sliceLength = data.slice_length || 100;
 
   const resultList = global.domain.verifyresult
     .queryResults({
-      collection: 'personverifyresult',
+      collection: 'visitorverifyresult',
       startTime: data.start_time,
       endTime: data.end_time,
       query: {

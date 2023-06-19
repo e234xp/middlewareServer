@@ -1,78 +1,53 @@
-const { uuid } = require('uuidv4');
 const dataParser = require('../../utility/dataParser');
 
 function requireDataOk(data) {
   if (data == null
-        || data.uuid == null) {
+        || data.start_time == null
+        || data.end_time == null
+        || data.slice_shift == null
+        || data.slice_length == null
+        || data.with_image == null) {
     return false;
   }
   return true;
 }
 
-async function modifyGroupAndPerson(groupUuid, remarks, personUuidList, visitorUuidList, cb) {
-  const groupSettings = await global.airaFaceLiteGroupSettings.get();
-  const groupListInDb = groupSettings.group_list ? groupSettings.group_list : [];
-  const groupExisted = groupListInDb.filter((item, index, array) => (groupUuid === item.uuid));
-  if (groupExisted.length > 0) {
-    try {
-      const groupName = groupExisted[0].name;
-      if (remarks != null) {
-        groupExisted[0].remarks = remarks;
-        await global.airaFaceLiteGroupSettings.set(groupSettings);
-      }
-      if (personUuidList != null) {
-        await global.airaFaceLitePersonDb.removeGroupList(null, [groupExisted[0].name]);
-        const personListInDb = await global.airaFaceLitePersonDb.find();
-        const personUuidListToAddGroup = [];
-        personUuidList.forEach((uuid) => {
-          const personToAdd = personListInDb.filter((item, index, array) =>
-            // 找出設定本 group 的 person list
-            (uuid === item.uuid));
-          personToAdd.forEach((person) => {
-            personUuidListToAddGroup.push(person.uuid);
-          });
-        });
-        // 更新 person group
-        if (personUuidListToAddGroup.length > 0) await global.airaFaceLitePersonDb.addGroupList(personUuidListToAddGroup, [groupName], true);
-        else await global.airaFaceLitePersonDb.flush();
-      }
-      if (visitorUuidList != null) {
-        await global.airaFaceLiteVisitorDb.removeGroupList(null, [groupExisted[0].name]);
-        const visitorListInDb = await global.airaFaceLiteVisitorDb.find();
-        const visitorUuidListToAddGroup = [];
-        visitorUuidList.forEach((uuid) => {
-          const visitorToAdd = visitorListInDb.filter((item, index, array) =>
-            // 找出設定本 group 的 visitor list
-            (uuid === item.uuid));
-          visitorToAdd.forEach((visitor) => {
-            visitorUuidListToAddGroup.push(visitor.uuid);
-          });
-        });
-        if (visitorUuidListToAddGroup.length > 0) await global.airaFaceLiteVisitorDb.addGroupList(visitorUuidListToAddGroup, [groupName], true);
-        else await global.airaFaceLiteVisitorDb.flush();
-      }
-      if (cb) cb(null);
-    } catch (e) {
-      if (cb) cb(e.toString());
-    }
-  } else if (cb) cb('group has existed.');
-}
-
-exports.call = function (req, res) {
+exports.call = async function (req, res) {
   const reqData = dataParser.circularJsonParser(req.body);
   if (!requireDataOk(reqData)) {
     res.status(400).json({ message: 'invalid parameter.' });
   } else {
     try {
-      modifyGroupAndPerson(
-        reqData.uuid,
-        reqData.remarks ? reqData.remarks : null,
-        reqData.person_uuid_list ? reqData.person_uuid_list : null,
-        reqData.visitor_uuid_list ? reqData.visitor_uuid_list : null,
-        (error) => {
-          res.status(error == null ? 200 : 400).json({ message: error != null ? error : 'ok' });
+      const shift = (reqData.slice_shift != null ? reqData.slice_shift : 0);
+      const sliceLength = (reqData.slice_length != null ? reqData.slice_length : 100);
+      const withImage = (reqData.with_image != null ? reqData.with_image : true);
+      let resultList = [];
+      if (withImage == true) {
+        resultList = await global.airaTabletLiteNonVerifyResultReader.readDb(reqData.start_time, reqData.end_time, null);
+      } else {
+        resultList = await global.airaTabletLiteNonVerifyResultReader.readDbNoImage(reqData.start_time, reqData.end_time, null);
+      }
+      res.status(200).json({
+        message: 'ok',
+        result: {
+          total_length: resultList ? resultList.length : 0,
+          slice_shift: shift,
+          slice_length: sliceLength,
+          data: resultList ? resultList.slice(shift, shift + sliceLength) : [],
         },
-      );
+      });
+
+      // global.airaTabletLiteNonVerifyResultReader.readDb( reqData.start_time, reqData.end_time, null, function( resultList ) {
+      //     res.status( 200 ).json({ message : "ok", result : {
+      //         total_length : resultList ? resultList.length : 0,
+      //         slice_shift : shift,
+      //         slice_length : sliceLength,
+      //         data : resultList ? resultList.slice( shift, shift + sliceLength ).filter( item => {
+      //             if( withImage != true && item["face_image"] ) delete item["face_image"];
+      //             return true;
+      //         }) : []
+      //     }});
+      // });
     } catch (e) {
       res.status(500).json({ message: `${e}` });
     }

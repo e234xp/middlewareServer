@@ -108,7 +108,10 @@ myService.post( "/:cgi", async function (req, res, next) {
             'createvisitor', 'findvisitor', 'modifyvisitor', 'removevisitor', 'removeallvisitors',
             'findgroup', 'creategroup', 'modifygroup', 'removegroup',
             'fetchphoto',
-            'querypersonverifyresult', 'fetchverifyphoto',
+            'querypersonverifyresult', 
+            'queryvisitorverifyresult', 
+            'querystrangerverifyresult', 
+            'fetchverifyphoto', 
         ]
         if(testCgis.includes(tmpCgi)){
             next();

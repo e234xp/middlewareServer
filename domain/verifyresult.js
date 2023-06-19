@@ -1,26 +1,41 @@
 module.exports = () => {
+  function queryResults({
+    collection, startTime, endTime, query,
+  }) {
+    const collections = [
+      'personverifyresult',
+      'visitorverifyresult',
+      'nonverifyresult',
+    ];
+    if (!collection || !collections.includes(collection)) throw Error('Unknown collection');
+
+    return global.spiderman.db[collection]
+      .find({
+        startTime,
+        endTime,
+        query,
+      });
+  }
+
   function fetchPhoto({ uuid, f }) {
-    const [type] = f.split('_');
-    switch (type) {
-      case 'pvr': {
-        return global.spiderman.db.personverifyresultphoto.findOne(`${f}.db_photos/${uuid}.photo`);
-      }
+    const collection = (() => {
+      const [type] = f.split('_');
+      const typeToCollection = {
+        pvr: 'personverifyresultphoto',
+        vvr: 'visitorverifyresultphoto',
+        nvr: 'nonverifyresultphoto',
+      };
 
-      case 'vvr': {
-        return global.spiderman.db.visitorverifyresultphoto.findOne(`${f}.db_photos/${uuid}.photo`);
-      }
+      return typeToCollection[type];
+    })();
 
-      case 'nvr': {
-        return global.spiderman.db.nonverifyresultphoto.findOne(`${f}.db_photos/${uuid}.photo`);
-      }
+    if (!collection) throw Error('Unknown photo type');
 
-      default: {
-        throw Error('Unknown photo type');
-      }
-    }
+    return global.spiderman.db[collection].findOne(`${f}.db_photos/${uuid}.photo`);
   }
 
   return {
+    queryResults,
     fetchPhoto,
   };
 };

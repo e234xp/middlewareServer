@@ -36,6 +36,8 @@ myService.post('/:cgi', async (req, res) => {
       removegroup: require(`${cgiPath}/group/remove`),
 
       querypersonverifyresult: require(`${cgiPath}/verifyresult/queryperson`),
+      queryvisitorverifyresult: require(`${cgiPath}/verifyresult/queryvisitor`),
+      querystrangerverifyresult: require(`${cgiPath}/verifyresult/querystranger`),
       fetchverifyphoto: require(`${cgiPath}/verifyresult/fetchperson`),
     };
     if (!router[cgi]) throw Error('no such cgi');
