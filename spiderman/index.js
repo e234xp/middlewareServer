@@ -8,7 +8,7 @@ module.exports = {
     const abilities = {};
     const items = fs.readdirSync(FOLIDER_PATH);
 
-    const filterdItems = items.filter((item) => item !== 'index.js' && item !== 'dna.js');
+    const filterdItems = items.filter((item) => item !== 'index.js' && item !== 'dna');
     filterdItems.forEach((item) => {
       if (Object.keys(dna).includes(item)) {
         const onDna = dna[item];
