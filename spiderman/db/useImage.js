@@ -3,27 +3,33 @@ const fs = require('fs');
 module.exports = ({ workingFolder, collection: { name } }) => {
   const FOLIDER_PATH = `${workingFolder}/${name}`;
 
-  function findOne(fileName) {
-    const FILE_PATH = `${FOLIDER_PATH}/${fileName}`;
+  function findOne(path) {
+    const FILE_PATH = `${FOLIDER_PATH}/${path}`;
 
-    const image = fs.readFileSync(FILE_PATH).toString('utf8');
-    return image;
+    try {
+      const image = fs
+        .readFileSync(FILE_PATH)
+        .toString('utf8');
+      return image;
+    } catch {
+      throw Error(`查無該檔案 ${FILE_PATH}`);
+    }
   }
 
-  function insertOne(fileName, image) {
-    const FILE_PATH = `${FOLIDER_PATH}/${fileName}`;
+  function insertOne(path, image) {
+    const FILE_PATH = `${FOLIDER_PATH}/${path}`;
 
     fs.writeFileSync(FILE_PATH, image);
   }
 
-  function deleteOne(fileName) {
-    const FILE_PATH = `${FOLIDER_PATH}/${fileName}`;
+  function deleteOne(path) {
+    const FILE_PATH = `${FOLIDER_PATH}/${path}`;
 
     fs.unlinkSync(FILE_PATH);
   }
 
-  async function deleteMany(fileNames) {
-    await Promise.allSettled(fileNames.map((fileName) => deleteOne(fileName)));
+  async function deleteMany(paths) {
+    await Promise.allSettled(paths.map((path) => deleteOne(path)));
   }
 
   return {

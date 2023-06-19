@@ -35,7 +35,8 @@ myService.post('/:cgi', async (req, res) => {
       modifygroup: require(`${cgiPath}/group/modify`),
       removegroup: require(`${cgiPath}/group/remove`),
 
-      querypersonverifyresult: require(`${cgiPath}/personverifyresultquery`),
+      querypersonverifyresult: require(`${cgiPath}/verifyresult/queryperson`),
+      fetchverifyphoto: require(`${cgiPath}/verifyresult/fetchperson`),
     };
     if (!router[cgi]) throw Error('no such cgi');
     authorize({ req, publicCgi: ['generatetoken', 'maintaintoken', 'test'] });

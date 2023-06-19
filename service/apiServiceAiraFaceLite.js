@@ -101,16 +101,14 @@ myService.post( "/:cgi", async function (req, res, next) {
 
         const tmpCgi = req.params.cgi;
         const testCgis = [
-            'test','generatetoken',
+            'test', 'generatetoken',
             'maintaintoken',
-            'createaccount','findaccount','modifyaccount','removeaccount','resetadmin',
-            'findperson','createperson','modifyperson','removeperson','removeallpersons','removegroupfromperson',
-            'createvisitor','findvisitor','modifyvisitor','removevisitor','removeallvisitors',
-            'findgroup','creategroup','modifygroup','removegroup',
+            'createaccount', 'findaccount', 'modifyaccount', 'removeaccount', 'resetadmin',
+            'findperson', 'createperson', 'modifyperson', 'removeperson', 'removeallpersons','removegroupfromperson',
+            'createvisitor', 'findvisitor', 'modifyvisitor', 'removevisitor', 'removeallvisitors',
+            'findgroup', 'creategroup', 'modifygroup', 'removegroup',
             'fetchphoto',
-            //  'fetchverifyphoto',
-
-            ,'querypersonverifyresult'
+            'querypersonverifyresult', 'fetchverifyphoto',
         ]
         if(testCgis.includes(tmpCgi)){
             next();

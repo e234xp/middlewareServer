@@ -58,6 +58,28 @@ module.exports = {
         cache: { isOpen: true, maxBytes: 20 * 1024 * 1024 },
       },
       {
+        name: 'personverifyresultphoto',
+        type: 'image',
+      },
+      {
+        name: 'visitorverifyresult',
+        type: 'record',
+        cache: { isOpen: true, maxBytes: 20 * 1024 * 1024 },
+      },
+      {
+        name: 'visitorverifyresultphoto',
+        type: 'image',
+      },
+      {
+        name: 'nonverifyresult',
+        type: 'record',
+        cache: { isOpen: true, maxBytes: 20 * 1024 * 1024 },
+      },
+      {
+        name: 'nonverifyresultphoto',
+        type: 'image',
+      },
+      {
         name: 'photo',
         type: 'image',
       },
