@@ -111,7 +111,9 @@ myService.post( "/:cgi", async function (req, res, next) {
             'querypersonverifyresult', 
             'queryvisitorverifyresult', 
             'querystrangerverifyresult', 
-            'fetchverifyphoto', 
+            'fetchverifyphoto',
+            'gettabletsettings',
+            'settabletsettings',
         ]
         if(testCgis.includes(tmpCgi)){
             next();

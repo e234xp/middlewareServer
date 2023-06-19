@@ -9,7 +9,7 @@ module.exports = ({
     defaultData = [],
   },
 }) => {
-  const FILE_PATH = `${workingFolder}/${name}.json`;
+  const FILE_PATH = `${workingFolder}/${name}.db`;
   // 缓存資料
   let cachedData = null;
 
