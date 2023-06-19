@@ -8,8 +8,8 @@ myService.post('/:cgi', async (req, res) => {
   try {
     const router = {
       test: require(`${cgiPath}/test`),
-      generatetoken: require(`${cgiPath}/generatetoken`),
-      maintaintoken: require(`${cgiPath}/maintaintoken`),
+      generatetoken: require(`${cgiPath}/token/generate`),
+      maintaintoken: require(`${cgiPath}/token/maintain`),
 
       createaccount: require(`${cgiPath}/account/create`),
       findaccount: require(`${cgiPath}/account/find`),
