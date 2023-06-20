@@ -5,7 +5,10 @@ module.exports = ({
   workingFolder,
   collection: {
     name,
-    cache: { isOpen: isOpenCache = false, maxBytes: maxBytesCache = 0 },
+    cache: {
+      isOpen: isOpenCache = false,
+      maxBytes: maxBytesCache = 0,
+    },
     defaultData = [],
   },
 }) => {
@@ -49,7 +52,7 @@ module.exports = ({
       return;
     }
 
-    if (global.spiderman.calculate.size(data) > maxBytesCache) {
+    if (maxBytesCache && global.spiderman.calculate.size(data) > maxBytesCache) {
       console.log(`${name} file too big: ${global.spiderman.calculate.size(data)}, cache null`);
       cachedData = null;
       return;
