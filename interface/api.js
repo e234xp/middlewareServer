@@ -51,6 +51,8 @@ myService.post('/:cgi', async (req, res) => {
 
       getattendancesettings: require(`${cgiPath}/attendancesettings/get`),
       setattendancesettings: require(`${cgiPath}/attendancesettings/set`),
+
+      querysystemlog: require(`${cgiPath}/systemlog/query`),
     };
     if (!router[cgi]) throw Error('no such cgi');
     authorize({ req, publicCgi: ['generatetoken', 'maintaintoken', 'test'] });

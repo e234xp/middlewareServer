@@ -81,6 +81,12 @@ module.exports = {
         type: 'file',
         cache: { isOpen: true },
       },
+      {
+        name: 'systemlog',
+        defaultData: defaultdata.attendancesettings,
+        type: 'record',
+        cache: { isOpen: true, maxBytes: 20 * 1024 * 1024 },
+      },
     ],
   },
 
