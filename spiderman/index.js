@@ -7,15 +7,14 @@ module.exports = {
   init: () => {
     const abilities = {};
     const items = fs.readdirSync(FOLIDER_PATH);
-
     const filterdItems = items.filter((item) => item !== 'index.js' && item !== 'dna');
     filterdItems.forEach((item) => {
-      if (Object.keys(dna).includes(item)) {
-        const onDna = dna[item];
-        abilities[item] = require(`./${item}`)(onDna);
+      const name = item.split('.')[0];
+      if (Object.keys(dna).includes(name)) {
+        const onDna = dna[name];
+        abilities[name] = require(`./${name}`)(onDna);
       } else {
-        const name = item.split('.')[0];
-        abilities[name] = require(`./${item}`)();
+        abilities[name] = require(`./${name}`)();
       }
     });
 

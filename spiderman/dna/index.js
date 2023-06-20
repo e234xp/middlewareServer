@@ -95,5 +95,8 @@ module.exports = {
       },
     ],
   },
-
+  path: {
+    localhost: '127.0.0.1:8588',
+    fileroot: '/userdata/aira',
+  },
 };

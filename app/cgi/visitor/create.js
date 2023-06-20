@@ -85,7 +85,7 @@ module.exports = async (data) => {
   }
 
   // TODO 等待傳入參數： 參考 engineGenerateFaceFeature
-  const { faceImage, faceFeature, upperFaceFeature } = global.domain
+  const { faceImage, faceFeature, upperFaceFeature } = global.spiderman
     .facefeature.engineGenerate();
   await global.domain.visitor.insert({
     data, faceImage, faceFeature, upperFaceFeature,

@@ -1,14 +1,7 @@
 module.exports = async () => {
-  const data = await global.spiderman.request.make({
-    url: 'https://jsonplaceholder.typicode.com/todos/1',
-    method: 'GET',
-  });
-
-  const data2 = global.domain
-    .facefeature.engineGenerate();
+  const data2 = await global.spiderman.facefeature.test();
 
   return {
-    data,
     data2,
     message: 'ok',
   };
