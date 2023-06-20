@@ -37,7 +37,7 @@ module.exports = (collection = global.spiderman.db.person) => {
       last_modify_date_by_manager: now,
     };
 
-    displayImage = await resizeImage(displayImage);
+    displayImage = await global.spiderman.image.resize(displayImage);
 
     const registerImage = faceImage;
     savePhoto({
@@ -62,7 +62,7 @@ module.exports = (collection = global.spiderman.db.person) => {
       last_modify_date_by_manager: now,
     };
 
-    displayImage = await resizeImage(displayImage);
+    displayImage = await global.spiderman.image.resize(displayImage);
 
     const registerImage = faceImage;
     savePhoto({
@@ -110,11 +110,6 @@ module.exports = (collection = global.spiderman.db.person) => {
         display_image: '',
         register_image: '',
       };
-  }
-
-  // TODO 改為 global.resizeImage
-  function resizeImage(base64Image) {
-    return base64Image || '';
   }
 
   return {

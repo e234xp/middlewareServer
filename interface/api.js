@@ -64,19 +64,26 @@ myService.post('/:cgi', async (req, res) => {
     const { token } = req.headers;
     res.status(200).json(await router[cgi](body, token));
   } catch (error) {
-    handleError(error, res);
+    handleError(cgi, error, res);
   } finally {
     const endTime = performance.now();
     console.log(cgi, '花費時間:', (endTime - startTime).toFixed(2), 'ms');
   }
 });
 
-function handleError(error, res) {
-  console.log(error);
+function handleError(cgi, error, res) {
+  console.log(cgi, error);
   const errorCode = {
     'no such cgi': 400,
     unauthorized: 401,
   }[error.message] ?? 400;
+
+  const warningCodes = [401];
+  if (warningCodes.includes(errorCode)) {
+    global.spiderman.systemlog.writeWarning(`${cgi} ${error.message}`);
+  } else {
+    global.spiderman.systemlog.writeError(`${cgi} ${error.message}`);
+  }
 
   res.status(errorCode).json({ message: error.message });
 }
@@ -92,23 +99,10 @@ function authorize({ req, publicCgi = [] }) {
   })();
 
   if (!isPassed) {
-    global.globalSystemLog_warning(`cgi : ${cgi}, unauthorized.`);
     throw Error('unauthorized');
   }
 
-  logCgiCall(cgi);
-}
-
-function logCgiCall(cgi) {
-  const cgiText = cgi;
-  const haveGet = (cgiText.indexOf('get') !== -1);
-  const haveFind = (cgiText.indexOf('find') !== -1);
-  const haveQuery = (cgiText.indexOf('query') !== -1);
-  const haveInternal = (cgiText.indexOf('internal') !== -1);
-
-  if (haveGet || haveFind || haveQuery || haveInternal) {
-    global.globalSystemLog_info(`cgi : ${cgiText} has been called.`);
-  }
+  global.spiderman.systemlog.writeInfo(`${cgi} has been called.`);
 }
 
 module.exports = myService;
