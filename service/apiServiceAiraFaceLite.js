@@ -120,6 +120,8 @@ myService.post( "/:cgi", async function (req, res, next) {
             'setdashboardsettings',
             'getattendancesettings',
             'setattendancesettings',
+            'getmanagersettings',
+            'setmanagersettings',
             'querysystemlog',
         ]
         if(testCgis.includes(tmpCgi)){

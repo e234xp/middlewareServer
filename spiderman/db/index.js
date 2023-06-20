@@ -62,5 +62,14 @@ module.exports = ({ workingFolder, collections }) => {
     db[name] = dbInstanceProxy;
   });
 
-  return db;
+  const dbProxy = new Proxy(db, {
+    get(target, prop) {
+      if (!(prop in target)) {
+        throw Error(`Collection ${prop} does not exist.`);
+      }
+      return target[prop];
+    },
+  });
+
+  return dbProxy;
 };

@@ -52,6 +52,9 @@ myService.post('/:cgi', async (req, res) => {
       getattendancesettings: require(`${cgiPath}/attendancesettings/get`),
       setattendancesettings: require(`${cgiPath}/attendancesettings/set`),
 
+      getmanagersettings: require(`${cgiPath}/managersettings/get`),
+      setmanagersettings: require(`${cgiPath}/managersettings/set`),
+
       querysystemlog: require(`${cgiPath}/systemlog/query`),
     };
     if (!router[cgi]) throw Error('no such cgi');

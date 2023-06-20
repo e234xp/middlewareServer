@@ -82,6 +82,12 @@ module.exports = {
         cache: { isOpen: true },
       },
       {
+        name: 'managersettings',
+        defaultData: defaultdata.managersettings,
+        type: 'file',
+        cache: { isOpen: true },
+      },
+      {
         name: 'systemlog',
         defaultData: defaultdata.attendancesettings,
         type: 'record',
