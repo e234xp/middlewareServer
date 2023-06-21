@@ -19,7 +19,7 @@ const airaFaceLiteAttendanceSettings = require('./service/airaFaceLiteAttendance
 
 const airaFaceLiteManagerSettings = require('./service/airaFaceLiteManagerSettings');
 
-const interfaceApi = require('./interface/api');
+const cgiInterface = require('./interface/cgi');
 const apiServiceAiraFaceLite = require('./service/apiServiceAiraFaceLite');
 const apiSystemAiraFaceLite = require('./service/apiSystemAiraFaceLite');
 
@@ -400,7 +400,7 @@ if (_dev_mode) {
   httpsServer.listen(8443, () => {});
 } else {
   expressApp.use('/airafacelite', apiServiceAiraFaceLite);
-  expressApp.use('/airafacelite', interfaceApi);
+  expressApp.use('/airafacelite', cgiInterface);
   expressApp.use('/system', apiSystemAiraFaceLite);
   expressApp.use(express.static(`${sw_root_path}/wwwdist`));
   // expressHttpApp.use( '*', function(req, res) {

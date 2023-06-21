@@ -2,6 +2,7 @@ const defaultdata = require('./defaultdata')();
 
 module.exports = {
   db: {
+    // TODO 更改 workingFolder
     workingFolder: '/Users/liaoguanjie/城智/middlewareServer/database',
     collections: [
       {
