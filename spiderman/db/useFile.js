@@ -19,8 +19,6 @@ module.exports = ({
   // 讀取資料
   function readData() {
     if (cachedData !== null) {
-      console.log(`Get cache for ${name}`);
-
       return cachedData;
     }
     if (!fs.existsSync(workingFolder)) {
@@ -59,7 +57,6 @@ module.exports = ({
     }
 
     cachedData = data;
-    console.log(`Set cache for ${name}`);
   }
 
   // 建立資料

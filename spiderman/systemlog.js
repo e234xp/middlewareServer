@@ -22,7 +22,7 @@ function write({ logType, logString }) {
   console.log(`log ${logType}: ${logString}`);
 
   return global.spiderman.request.make({
-    url: `http://${global.spiderman.path.localhost}/system/writelog`,
+    url: `http://${global.spiderman.param.localhost}/system/writelog`,
     method: 'POST',
     pool: { maxSockets: 10 },
     time: true,

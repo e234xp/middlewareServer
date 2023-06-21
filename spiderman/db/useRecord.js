@@ -26,7 +26,6 @@ module.exports = ({
     const size = global.spiderman.calculate.size(item);
     const isSetMax = maxBytesCache > 0;
     if (isSetMax && size > maxBytesCache) {
-      console.log(`${id} is too big: ${size}, it won't set cache.`);
       return;
     }
 
@@ -41,15 +40,9 @@ module.exports = ({
       while (cacheDataSize > maxBytesCache) {
         const oldestKey = getOldestCacheKey();
         if (!oldestKey) break;
-        console.log('before cacheDataSize:', cacheDataSize);
-        console.log('maxBytesCache:', maxBytesCache);
-        console.log('cacheSizes: ', cacheSizes);
-        console.log(`oldestKey: ${oldestKey}, deleted`);
 
         deleteCache(oldestKey);
         cacheDataSize = sumMapValues(cacheSizes);
-
-        console.log('after cacheDataSize:', cacheDataSize);
       }
     }
   }
@@ -102,7 +95,6 @@ module.exports = ({
 
     const filterdFiles = dir.filter((file) => {
       const [fileName, type] = file.split('.');
-      // TODO 如果命名更新，更改變數順序，看是否需要更改檔案名稱
       if (type !== 'db') return false;
 
       const [, fileStartTime, fileEndTime] = fileName.split('_');

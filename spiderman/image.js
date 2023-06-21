@@ -2,7 +2,7 @@ module.exports = () => {
   // TODO 修改
 //   function resize(base64Image) {
 //     return global.spiderman.request.make({
-//       url: `http://${global.spiderman.path.localhost}/system/resizeimage`,
+//       url: `http://${global.spiderman.param.localhost}/system/resizeimage`,
 //       method: 'POST',
 //       pool: { maxSockets: 10 },
 //       time: true,

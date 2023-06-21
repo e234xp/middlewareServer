@@ -2,7 +2,7 @@ module.exports = () => {
   // TODO 改為該 API
   // function engineGenerate(base64Image) {
   //   return global.spiderman.request.make({
-  //     url: `http://${global.spiderman.path.localhost}/system/generatefacefeature`,
+  //     url: `http://${global.spiderman.param.localhost}/system/generatefacefeature`,
   //     method: 'POST',
   //     pool: { maxSockets: 10 },
   //     time: true,
