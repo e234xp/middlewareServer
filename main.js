@@ -48,11 +48,16 @@ const expressApp = express()
   .use('/system', apiSystemAiraFaceLite)
   .use(express.static(`${global.spiderman.param.fileroot}${global.spiderman.param.swPath}/wwwdist`));
 
-const httpServer = global.spiderman.express.createAndListenServer(http, 80, expressApp);
-const httpsServer = global.spiderman.express.createAndListenServer(https, 443, expressApp);
-
-// TODO 進行整理
-const VerifyResultReportService = require('./service/verifyResultReportService');
-
-global.verifyResultReportService_nonSsl = new VerifyResultReportService(httpServer, '/airafacelite/verifyresults');
-global.verifyResultReportService = new VerifyResultReportService(httpsServer, '/airafacelite/verifyresults');
+global.spiderman.server = (() => {
+  const httpServer = global.spiderman.express.createAndListenServer(http, 80, expressApp);
+  const httpsServer = global.spiderman.express.createAndListenServer(https, 443, expressApp);
+  // const wss = global.spiderman.socket.create({ server: httpServer, path: '/test' });
+  // const wssWithSsl = global.spiderman.socket.create({ server: httpsServer, path: '/test' });
+  return {
+    http: httpServer,
+    https: httpsServer,
+    // wss,
+  // wssWithSsl
+  };
+}
+)();

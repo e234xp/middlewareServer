@@ -1,8 +1,6 @@
 module.exports = async () => {
-  const data2 = await global.spiderman.facefeature.test();
-
+  global.spiderman.socket.broadcastMessage({ wss: global.spiderman.server.wss, message: 'broadcastMessage!!' });
   return {
-    data2,
     message: 'ok',
   };
 };
