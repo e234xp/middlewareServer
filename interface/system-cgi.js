@@ -10,6 +10,7 @@ myService.post('/:cgi', async (req, res) => {
       test: require(`${cgiPath}/test`),
 
       systeminfo: require(`${cgiPath}/systeminfo`),
+      factorydefault: require(`${cgiPath}/factorydefault`),
     };
 
     if (!router[cgi]) throw Error('no such cgi');

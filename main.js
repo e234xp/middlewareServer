@@ -4,7 +4,6 @@ const express = require('express');
 const http = require('http');
 const https = require('https');
 
-const apiSystemAiraFaceLite = require('./service/apiSystemAiraFaceLite');
 const spiderman = require('./spiderman/index');
 const domain = require('./domain/index');
 
@@ -45,7 +44,6 @@ const expressApp = express()
   .use(global.spiderman.express.useFileUpload())
   .use('/airafacelite', require('./interface/cgi'))
   .use('/system', require('./interface/system-cgi'))
-  // .use('/system', apiSystemAiraFaceLite)
   .use(express.static(`${global.spiderman.param.fileroot}${global.spiderman.param.swPath}/wwwdist`));
 
 global.spiderman.server = (() => {
