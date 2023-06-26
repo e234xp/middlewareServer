@@ -97,7 +97,9 @@ module.exports = {
     ],
   },
   param: {
-    localhost: '127.0.0.1:8588',
+    // TODO
+    // localhost: '127.0.0.1:8588',
+    localhost: '192.168.10.49:8588',
     fileroot: '/userdata/aira',
     dataPath: '/data',
     swPath: '/sw',

@@ -1,5 +1,5 @@
 module.exports = async (data) => {
-  await global.spiderman.request.make({
+  const response = await global.spiderman.request.make({
     url: `http://${global.spiderman.param.localhost}/system/info`,
     method: 'POST',
     pool: { maxSockets: 10 },
@@ -11,7 +11,5 @@ module.exports = async (data) => {
     json: data,
   });
 
-  return {
-    message: 'ok',
-  };
+  return response;
 };
