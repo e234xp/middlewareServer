@@ -4,7 +4,6 @@ const express = require('express');
 const http = require('http');
 const https = require('https');
 
-const cgiInterface = require('./interface/cgi');
 const apiSystemAiraFaceLite = require('./service/apiSystemAiraFaceLite');
 const spiderman = require('./spiderman/index');
 const domain = require('./domain/index');
@@ -44,8 +43,9 @@ const expressApp = express()
   .use(global.spiderman.express.useLimitCgiNumber({ routesNeedToLimit: ['airafacelite', 'system'] }))
   .use(global.spiderman.express.useCors())
   .use(global.spiderman.express.useFileUpload())
-  .use('/airafacelite', cgiInterface)
-  .use('/system', apiSystemAiraFaceLite)
+  .use('/airafacelite', require('./interface/cgi'))
+  .use('/system', require('./interface/system-cgi'))
+  // .use('/system', apiSystemAiraFaceLite)
   .use(express.static(`${global.spiderman.param.fileroot}${global.spiderman.param.swPath}/wwwdist`));
 
 global.spiderman.server = (() => {

@@ -8,10 +8,12 @@ myService.post('/:cgi', async (req, res) => {
   try {
     const router = {
       test: require(`${cgiPath}/test`),
+
+      systeminfo: require(`${cgiPath}/systeminfo`),
     };
 
     if (!router[cgi]) throw Error('no such cgi');
-    authorize({ req, publicCgi: ['generatetoken', 'maintaintoken', 'test'] });
+    authorize({ req, publicCgi: ['test', 'systeminfo'] });
     global.spiderman.systemlog.writeInfo(`${cgi} has been called.`);
 
     const body = global.spiderman.parse.circularJson(req.body);
@@ -37,7 +39,7 @@ function handleError(error, res, cgi) {
     global.spiderman.systemlog.writeError(`${cgi} ${error.message}`);
   }
 
-  res.status(errorCode).json({ message: error.message });
+  res.status(errorCode).json(error);
 }
 
 function determinErrorCode(error) {
