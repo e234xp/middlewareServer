@@ -11,6 +11,23 @@ myService.post('/:cgi', async (req, res) => {
 
       systeminfo: require(`${cgiPath}/systeminfo`),
       factorydefault: require(`${cgiPath}/factorydefault`),
+      synctime: require(`${cgiPath}/synctime`),
+      enablentp: require(`${cgiPath}/enablentp`),
+      timeinfo: require(`${cgiPath}/timeinfo`),
+      supportedlanguagelist: require(`${cgiPath}/supportedlanguagelist`),
+      supportedtimezonelist: require(`${cgiPath}/supportedtimezonelist`),
+      changewifi: require(`${cgiPath}/changewifi`),
+      enableethernetdhcp: require(`${cgiPath}/enableethernetdhcp`),
+      enableethernetstatic: require(`${cgiPath}/enableethernetstatic`),
+      currentethernetinfo: require(`${cgiPath}/currentethernetinfo`),
+      currentwifiinfo: require(`${cgiPath}/currentwifiinfo`),
+      fetchwifilist: require(`${cgiPath}/fetchwifilist`),
+      restart: require(`${cgiPath}/restart`),
+      changelanguage: require(`${cgiPath}/changelanguage`),
+      triggerrelay1: require(`${cgiPath}/triggerrelay1`),
+      triggerrelay2: require(`${cgiPath}/triggerrelay2`),
+      checkdbbackupfile: require(`${cgiPath}/checkdbbackupfile`),
+      generatedbbackup: require(`${cgiPath}/generatedbbackup`),
     };
 
     if (!router[cgi]) throw Error('no such cgi');
@@ -40,7 +57,7 @@ function handleError(error, res, cgi) {
     global.spiderman.systemlog.writeError(`${cgi} ${error.message}`);
   }
 
-  res.status(errorCode).json(error);
+  res.status(errorCode).json({ message: error.message });
 }
 
 function determinErrorCode(error) {
