@@ -1,9 +1,13 @@
 const defaultdata = require('./defaultdata')();
 
+const fileroot = '/Users/liaoguanjie/城智/middlewareServerFiles';
+const dataPath = '/data';
+const swPath = '/sw';
+const fwPath = '/fw';
 module.exports = {
   db: {
     // TODO 更改 workingFolder
-    workingFolder: '/Users/liaoguanjie/城智/middlewareServer/database',
+    workingFolder: `${fileroot}${dataPath}`,
     collections: [
       {
         name: 'account',
@@ -100,10 +104,11 @@ module.exports = {
     // TODO
     // localhost: '127.0.0.1:8588',
     localhost: '192.168.10.49:8588',
-    fileroot: '/userdata/aira',
-    dataPath: '/data',
-    swPath: '/sw',
-    fwPath: '/fw',
+    // TODO 修改
+    fileroot,
+    dataPath,
+    swPath,
+    fwPath,
     cgiCounter: 0,
     maxCgiNumber: 50,
     sslOptions: {

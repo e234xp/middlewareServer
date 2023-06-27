@@ -28,6 +28,10 @@ myService.post('/:cgi', async (req, res) => {
       triggerrelay2: require(`${cgiPath}/triggerrelay2`),
       checkdbbackupfile: require(`${cgiPath}/checkdbbackupfile`),
       generatedbbackup: require(`${cgiPath}/generatedbbackup`),
+      downloaddb: require(`${cgiPath}/downloaddb`),
+
+      // TODO 尚未完成
+      downloadsyslog: require(`${cgiPath}/downloadsyslog`),
     };
 
     if (!router[cgi]) throw Error('no such cgi');
@@ -37,7 +41,16 @@ myService.post('/:cgi', async (req, res) => {
     const body = global.spiderman.parse.circularJson(req.body);
     const { token } = req.headers;
 
-    res.status(200).json(await router[cgi](body, token));
+    const value = await router[cgi](body, token);
+
+    if (value?.action === 'download') {
+      const { path, fileName } = value;
+      res.download(path, fileName, () => {
+        res.status(404).json({ message: 'file not found' });
+      });
+    } else {
+      res.status(200).json(value);
+    }
   } catch (error) {
     handleError(error, res, cgi);
   } finally {

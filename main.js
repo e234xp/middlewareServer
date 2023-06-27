@@ -10,23 +10,6 @@ const domain = require('./domain/index');
 global.spiderman = spiderman.init();
 global.domain = domain.init();
 
-process.argv.forEach((val, index) => {
-  console.log(`${index}: ${val}`);
-  const param = val.split('=');
-  const [key, value] = param;
-
-  switch (key) {
-    case 'fileroot': {
-      global.spiderman.param[key] = value;
-      break;
-    }
-
-    default: {
-      break;
-    }
-  }
-});
-
 process.on('uncaughtException', (err) => {
   // TODO 拿掉 ECONNREFUSED
   if (err.code === 'ECONNREFUSED') {
