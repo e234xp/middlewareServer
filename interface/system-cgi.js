@@ -28,11 +28,9 @@ myService.post('/:cgi', async (req, res) => {
       triggerrelay2: require(`${cgiPath}/triggerrelay2`),
       checkdbbackupfile: require(`${cgiPath}/checkdbbackupfile`),
       generatedbbackup: require(`${cgiPath}/generatedbbackup`),
+      downloadsyslog: require(`${cgiPath}/downloadsyslog`),
       downloaddb: require(`${cgiPath}/downloaddb`),
       uploaddb: require(`${cgiPath}/uploaddb`),
-
-      // TODO 尚未完成
-      downloadsyslog: require(`${cgiPath}/downloadsyslog`),
     };
 
     if (!router[cgi]) throw Error('no such cgi');

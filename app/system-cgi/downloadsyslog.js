@@ -1,5 +1,5 @@
 module.exports = async () => {
-  const response = await global.spiderman.request.make({
+  await global.spiderman.request.make({
     url: `http://${global.spiderman.param.localhost}/system/generatesyslog`,
     method: 'POST',
     pool: { maxSockets: 10 },
@@ -11,5 +11,16 @@ module.exports = async () => {
     json: {},
   });
 
-  return response;
+  const path = '/data/user/0/com.aira.airatabletlite/files/syslog.log';
+  const fileName = (() => {
+    const now = new Date();
+
+    return `airafacelite-syslog${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}-${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}.log`;
+  })();
+
+  return {
+    action: 'download',
+    path,
+    fileName,
+  };
 };
