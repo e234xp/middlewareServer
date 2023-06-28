@@ -1,5 +1,5 @@
 module.exports = async () => {
-  const path = `${global.spiderman.param.fileroot}${global.spiderman.param.dataPath}/dbbak.dbf`;
+  const path = `${global.spiderman.param.dataPath}/dbbak.dbf`;
   const fileName = (() => {
     const now = new Date();
 

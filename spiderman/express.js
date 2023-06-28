@@ -39,7 +39,7 @@ module.exports = () => {
   }
 
   function useFileUpload({ uploadTimeout = 3000000, limitSize = 1024000000 } = {}) {
-    const tempFileDir = `${global.spiderman.param.fileroot}${global.spiderman.param.fwPath}`;
+    const tempFileDir = `${global.spiderman.param.fwPath}`;
     return fileUpload({
       uploadTimeout,
       createParentPath: true,

@@ -6,7 +6,7 @@ module.exports = async (data) => {
   if (!file) throw Error('no file');
 
   const fileMove = promisify(file.mv);
-  const targetZipFile = `${global.spiderman.param.fileroot}${global.spiderman.param.importPath}/${file.name}`;
+  const targetZipFile = `${global.spiderman.param.importPath}/${file.name}`;
 
   await fileMove(targetZipFile);
 

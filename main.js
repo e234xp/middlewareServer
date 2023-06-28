@@ -22,7 +22,7 @@ const expressApp = express()
   .use(global.spiderman.express.useFileUpload())
   .use('/airafacelite', require('./interface/cgi'))
   .use('/system', require('./interface/system-cgi'))
-  .use(express.static(`${global.spiderman.param.fileroot}${global.spiderman.param.swPath}/wwwdist`));
+  .use(express.static(`${global.spiderman.param.swPath}/wwwdist`));
 
 global.spiderman.server = (() => {
   const httpServer = global.spiderman.express.createAndListenServer(http, 80, expressApp);
