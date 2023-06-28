@@ -4,6 +4,7 @@ const fileroot = '/Users/liaoguanjie/城智/middlewareServerFiles';
 const dataPath = '/data';
 const swPath = '/sw';
 const fwPath = '/fw';
+const importPath = '/import';
 module.exports = {
   db: {
     // TODO 更改 workingFolder
@@ -109,6 +110,7 @@ module.exports = {
     dataPath,
     swPath,
     fwPath,
+    importPath,
     cgiCounter: 0,
     maxCgiNumber: 50,
     sslOptions: {

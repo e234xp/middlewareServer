@@ -12,9 +12,9 @@ global.domain = domain.init();
 
 process.on('uncaughtException', (err) => {
   // TODO 拿掉 ECONNREFUSED
-  if (err.code === 'ECONNREFUSED') {
-    return;
-  }
+  // if (err.code === 'ECONNREFUSED') {
+  //   return;
+  // }
 
   console.log('system UCE : ', err);
 });

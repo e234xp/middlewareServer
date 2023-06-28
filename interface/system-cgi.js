@@ -29,28 +29,20 @@ myService.post('/:cgi', async (req, res) => {
       checkdbbackupfile: require(`${cgiPath}/checkdbbackupfile`),
       generatedbbackup: require(`${cgiPath}/generatedbbackup`),
       downloaddb: require(`${cgiPath}/downloaddb`),
+      uploaddb: require(`${cgiPath}/uploaddb`),
 
       // TODO 尚未完成
       downloadsyslog: require(`${cgiPath}/downloadsyslog`),
     };
 
     if (!router[cgi]) throw Error('no such cgi');
-    authorize({ req, publicCgi: ['test', 'systeminfo'] });
     global.spiderman.systemlog.writeInfo(`${cgi} has been called.`);
+    authorize({ req, publicCgi: ['test', 'systeminfo'] });
 
-    const body = global.spiderman.parse.circularJson(req.body);
     const { token } = req.headers;
-
-    const value = await router[cgi](body, token);
-
-    if (value?.action === 'download') {
-      const { path, fileName } = value;
-      res.download(path, fileName, () => {
-        res.status(404).json({ message: 'file not found' });
-      });
-    } else {
-      res.status(200).json(value);
-    }
+    const body = getBody(req);
+    const jsonResponse = await router[cgi](body, token);
+    processResponse(jsonResponse, res);
   } catch (error) {
     handleError(error, res, cgi);
   } finally {
@@ -58,6 +50,33 @@ myService.post('/:cgi', async (req, res) => {
     console.log(cgi, '花費時間:', (endTime - startTime).toFixed(2), 'ms');
   }
 });
+
+function getBody(req) {
+  if (req.is('multipart/form-data')) {
+    return {
+      ...global.spiderman.parse.circularJson(req.body),
+      ...req.files,
+    };
+  }
+
+  if (req.is('json')) {
+    return global.spiderman.parse.circularJson(req.body);
+  }
+
+  throw Error('no such request type');
+}
+
+function processResponse(jsonResponse, res) {
+  if (jsonResponse?.action === 'download') {
+    const { path, fileName } = jsonResponse;
+    res.download(path, fileName, (err) => {
+      if (!err) return;
+      res.status(404).json({ message: 'file not found' });
+    });
+  } else {
+    res.status(200).json(jsonResponse);
+  }
+}
 
 function handleError(error, res, cgi) {
   const errorCode = determinErrorCode(error);
