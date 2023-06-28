@@ -32,6 +32,7 @@ myService.post('/:cgi', async (req, res) => {
       downloadcrashlog: require(`${cgiPath}/downloadcrashlog`),
       downloaddb: require(`${cgiPath}/downloaddb`),
       uploaddb: require(`${cgiPath}/uploaddb`),
+      upgradefw: require(`${cgiPath}/upgradefw`),
     };
 
     if (!router[cgi]) throw Error('no such cgi');
