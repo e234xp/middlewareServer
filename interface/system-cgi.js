@@ -29,13 +29,14 @@ myService.post('/:cgi', async (req, res) => {
       checkdbbackupfile: require(`${cgiPath}/checkdbbackupfile`),
       generatedbbackup: require(`${cgiPath}/generatedbbackup`),
       downloadsyslog: require(`${cgiPath}/downloadsyslog`),
+      downloadcrashlog: require(`${cgiPath}/downloadcrashlog`),
       downloaddb: require(`${cgiPath}/downloaddb`),
       uploaddb: require(`${cgiPath}/uploaddb`),
     };
 
     if (!router[cgi]) throw Error('no such cgi');
     global.spiderman.systemlog.writeInfo(`${cgi} has been called.`);
-    authorize({ req, publicCgi: ['test', 'systeminfo'] });
+    authorize({ req, publicCgi: ['test', 'systeminfo', 'downloadsyslog'] });
 
     const { token } = req.headers;
     const body = getBody(req);
