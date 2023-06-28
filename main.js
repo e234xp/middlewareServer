@@ -20,8 +20,8 @@ const expressApp = express()
   .use(global.spiderman.express.useLimitCgiNumber({ routesNeedToLimit: ['airafacelite', 'system'] }))
   .use(global.spiderman.express.useCors())
   .use(global.spiderman.express.useFileUpload())
-  .use('/airafacelite', require('./interface/cgi'))
-  .use('/system', require('./interface/system-cgi'))
+  .use('/airafacelite', require('./interface')('/airafacelite'))
+  .use('/system', require('./interface')('/system'))
   .use(express.static(`${global.spiderman.param.swPath}/wwwdist`));
 
 global.spiderman.server = (() => {
