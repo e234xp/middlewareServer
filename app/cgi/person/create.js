@@ -86,9 +86,12 @@ module.exports = async (data) => {
     };
   }
 
-  // TODO 等待傳入參數： 參考 engineGenerateFaceFeature
-  const { faceImage, faceFeature, upperFaceFeature } = global.spiderman
-    .facefeature.engineGenerate();
+  const {
+    face_image: faceImage = '',
+    face_feature: faceFeature = '',
+    upper_face_feature: upperFaceFeature = '',
+  } = await global.spiderman.facefeature.engineGenerate(data.register_image);
+
   await global.domain.person.insert({
     data, faceImage, faceFeature, upperFaceFeature,
   });

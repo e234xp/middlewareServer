@@ -10,7 +10,6 @@ const fwPath = `${fileroot}/fw`;
 const importPath = `${fileroot}/import`;
 module.exports = {
   db: {
-    // TODO 更改 workingFolder
     workingFolder: dataPath,
     collections: [
       {

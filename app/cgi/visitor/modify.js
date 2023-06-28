@@ -82,13 +82,21 @@ module.exports = async (rData) => {
 
   if (!data.register_image) {
     await global.domain.visitor.modify({ uuid, data });
-  } else {
-    const { faceImage, faceFeature, upperFaceFeature } = global.spiderman
-      .facefeature.engineGenerate();
-    await global.domain.visitor.modify({
-      uuid, data, faceImage, faceFeature, upperFaceFeature,
-    });
+
+    return {
+      message: 'ok',
+    };
   }
+
+  const {
+    face_image: faceImage = '',
+    face_feature: faceFeature = '',
+    upper_face_feature: upperFaceFeature = '',
+  } = await global.spiderman.facefeature.engineGenerate(data.register_image);
+
+  await global.domain.visitor.modify({
+    uuid, data, faceImage, faceFeature, upperFaceFeature,
+  });
 
   return {
     message: 'ok',
