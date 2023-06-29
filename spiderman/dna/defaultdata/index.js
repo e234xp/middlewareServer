@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 // 指定要列出檔案的資料夾路徑
-const FOLIDER_PATH = __dirname;
+const FOLIDER_PATH = `${process.cwd()}/spiderman/dna/defaultdata`;
 module.exports = () => {
   const items = fs.readdirSync(FOLIDER_PATH);
 

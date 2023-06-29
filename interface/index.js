@@ -1,6 +1,6 @@
 module.exports = (route) => {
   const myService = require('express')();
-  const { publicCgi, router } = require(`./${route}`)();
+  const { publicCgi, router } = require(`.${route}`)();
 
   myService.post('/:cgi', async (req, res) => {
     const startTime = performance.now();

@@ -1,56 +1,55 @@
 module.exports = () => {
-  const cgiPath = '../app/cgi';
   const publicCgi = ['generatetoken', 'maintaintoken', 'test'];
   const router = {
-    test: require(`${cgiPath}/test`),
-    generatetoken: require(`${cgiPath}/token/generate`),
-    maintaintoken: require(`${cgiPath}/token/maintain`),
+    test: require('../app/cgi/test'),
+    generatetoken: require('../app/cgi/token/generate'),
+    maintaintoken: require('../app/cgi/token/maintain'),
 
-    createaccount: require(`${cgiPath}/account/create`),
-    findaccount: require(`${cgiPath}/account/find`),
-    modifyaccount: require(`${cgiPath}/account/modify`),
-    removeaccount: require(`${cgiPath}/account/remove`),
-    resetadmin: require(`${cgiPath}/account/resetadmin`),
+    createaccount: require('../app/cgi/account/create'),
+    findaccount: require('../app/cgi/account/find'),
+    modifyaccount: require('../app/cgi/account/modify'),
+    removeaccount: require('../app/cgi/account/remove'),
+    resetadmin: require('../app/cgi/account/resetadmin'),
 
-    createperson: require(`${cgiPath}/person/create`),
-    findperson: require(`${cgiPath}/person/find`),
-    modifyperson: require(`${cgiPath}/person/modify`),
-    removeperson: require(`${cgiPath}/person/remove`),
-    removeallpersons: require(`${cgiPath}/person/removeall`),
-    fetchphoto: require(`${cgiPath}/person/fetchphoto`),
+    createperson: require('../app/cgi/person/create'),
+    findperson: require('../app/cgi/person/find'),
+    modifyperson: require('../app/cgi/person/modify'),
+    removeperson: require('../app/cgi/person/remove'),
+    removeallpersons: require('../app/cgi/person/removeall'),
+    fetchphoto: require('../app/cgi/person/fetchphoto'),
 
-    createvisitor: require(`${cgiPath}/visitor/create`),
-    findvisitor: require(`${cgiPath}/visitor/find`),
-    modifyvisitor: require(`${cgiPath}/visitor/modify`),
-    removevisitor: require(`${cgiPath}/visitor/remove`),
-    removeallvisitors: require(`${cgiPath}/visitor/removeall`),
+    createvisitor: require('../app/cgi/visitor/create'),
+    findvisitor: require('../app/cgi/visitor/find'),
+    modifyvisitor: require('../app/cgi/visitor/modify'),
+    removevisitor: require('../app/cgi/visitor/remove'),
+    removeallvisitors: require('../app/cgi/visitor/removeall'),
 
-    creategroup: require(`${cgiPath}/group/create`),
-    findgroup: require(`${cgiPath}/group/find`),
-    modifygroup: require(`${cgiPath}/group/modify`),
-    removegroup: require(`${cgiPath}/group/remove`),
+    creategroup: require('../app/cgi/group/create'),
+    findgroup: require('../app/cgi/group/find'),
+    modifygroup: require('../app/cgi/group/modify'),
+    removegroup: require('../app/cgi/group/remove'),
 
-    querypersonverifyresult: require(`${cgiPath}/verifyresult/queryperson`),
-    queryvisitorverifyresult: require(`${cgiPath}/verifyresult/queryvisitor`),
-    querystrangerverifyresult: require(`${cgiPath}/verifyresult/querystranger`),
-    fetchverifyphoto: require(`${cgiPath}/verifyresult/fetchperson`),
+    querypersonverifyresult: require('../app/cgi/verifyresult/queryperson'),
+    queryvisitorverifyresult: require('../app/cgi/verifyresult/queryvisitor'),
+    querystrangerverifyresult: require('../app/cgi/verifyresult/querystranger'),
+    fetchverifyphoto: require('../app/cgi/verifyresult/fetchperson'),
 
-    gettabletsettings: require(`${cgiPath}/tabletsettings/get`),
-    settabletsettings: require(`${cgiPath}/tabletsettings/set`),
+    gettabletsettings: require('../app/cgi/tabletsettings/get'),
+    settabletsettings: require('../app/cgi/tabletsettings/set'),
 
-    geteventsettings: require(`${cgiPath}/eventsettings/get`),
-    seteventsettings: require(`${cgiPath}/eventsettings/set`),
+    geteventsettings: require('../app/cgi/eventsettings/get'),
+    seteventsettings: require('../app/cgi/eventsettings/set'),
 
-    getdashboardsettings: require(`${cgiPath}/dashboardsettings/get`),
-    setdashboardsettings: require(`${cgiPath}/dashboardsettings/set`),
+    getdashboardsettings: require('../app/cgi/dashboardsettings/get'),
+    setdashboardsettings: require('../app/cgi/dashboardsettings/set'),
 
-    getattendancesettings: require(`${cgiPath}/attendancesettings/get`),
-    setattendancesettings: require(`${cgiPath}/attendancesettings/set`),
+    getattendancesettings: require('../app/cgi/attendancesettings/get'),
+    setattendancesettings: require('../app/cgi/attendancesettings/set'),
 
-    getmanagersettings: require(`${cgiPath}/managersettings/get`),
-    setmanagersettings: require(`${cgiPath}/managersettings/set`),
+    getmanagersettings: require('../app/cgi/managersettings/get'),
+    setmanagersettings: require('../app/cgi/managersettings/set'),
 
-    querysystemlog: require(`${cgiPath}/systemlog/query`),
+    querysystemlog: require('../app/cgi/systemlog/query'),
   };
 
   return {

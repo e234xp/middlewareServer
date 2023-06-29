@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 // 指定要列出檔案的資料夾路徑
-const FOLIDER_PATH = __dirname;
+const FOLIDER_PATH = `${process.cwd()}/domain`;
 module.exports = {
   init: () => {
     const instance = {};

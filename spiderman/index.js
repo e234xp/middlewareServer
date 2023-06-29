@@ -2,7 +2,7 @@ const fs = require('fs');
 const dna = require('./dna');
 
 // 指定要列出檔案的資料夾路徑
-const FOLIDER_PATH = __dirname;
+const FOLIDER_PATH = `${process.cwd()}/spiderman`;
 module.exports = {
   init: () => {
     const abilities = {};
