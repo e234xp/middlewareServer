@@ -27,7 +27,8 @@
   "scripts": {
     "test": "node --experimental-vm-modules ./node_modules/.bin/jest",
     "dev": "nodemon src/main",
-    "build": "webpack"
+    "build": "webpack",
+    "bundle": "nodemon dist/main-bundle"
   },
   "repository": {
     "type": "git",
