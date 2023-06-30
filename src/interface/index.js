@@ -38,7 +38,7 @@ function getBody(req) {
     return global.spiderman.parse.circularJson(req.body);
   }
 
-  throw Error('no such request type');
+  throw Error('System: no such request type');
 }
 
 function processResponse(jsonResponse, res) {
