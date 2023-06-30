@@ -3,7 +3,7 @@ module.exports = () => {
   const adminAccount = accounts.find((a) => a.username === 'Admin');
 
   if (!adminAccount) {
-    throw Error('account not founds');
+    throw Error('Item not found.');
   }
 
   adminAccount.last_modify_date = Date.now();

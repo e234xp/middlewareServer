@@ -2,7 +2,7 @@ const { promisify } = require('util');
 
 module.exports = async (data) => {
   const { file } = data;
-  if (!file) throw Error('no file');
+  if (!file) throw Error('Invalid parameter.');
 
   const fileMove = promisify(file.mv);
   const targetFile = `${global.params.fwPath}/sw_upgrade_image.airasoft`;

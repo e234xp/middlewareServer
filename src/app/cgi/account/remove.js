@@ -22,7 +22,7 @@ module.exports = (data, token) => {
   // 檢查是否為使用Admin權限
   const isAdmin = accounts.some((a) => a.username === tokenUser.u && a.permission === 'Admin');
   if (!isAdmin) {
-    throw Error('no permission');
+    throw Error('No permission.');
   }
 
   const newAccountList = accounts.filter((item) => {
@@ -31,7 +31,7 @@ module.exports = (data, token) => {
   });
 
   if (newAccountList.length === accounts.length) {
-    throw Error('account not found');
+    throw Error('Item not found.');
   }
 
   global.spiderman.db.account.set(newAccountList);

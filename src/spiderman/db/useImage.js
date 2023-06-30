@@ -12,7 +12,7 @@ module.exports = ({ workingFolder, collection: { name } }) => {
         .toString('utf8');
       return image;
     } catch {
-      throw Error(`can not found image ${FILE_PATH}`);
+      throw Error('Item not found.');
     }
   }
 

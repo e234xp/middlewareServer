@@ -63,7 +63,7 @@ module.exports = async (data) => {
   // 檢查是否超過
   const MAX_AMOUNT = 500;
   const visitors = global.spiderman.db.visitor.find();
-  if (visitors.length >= MAX_AMOUNT) throw Error(`the numbers of persons in database has exceeded ${MAX_AMOUNT} (max).`);
+  if (visitors.length >= MAX_AMOUNT) throw Error(`Items in database has exceeded ${MAX_AMOUNT} (max).`);
 
   // 檢查 id 是否重複
   const existed = global.spiderman.db.visitor.findOne({

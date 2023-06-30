@@ -53,7 +53,7 @@ module.exports = ({ workingFolder, collections }) => {
     const dbInstanceProxy = new Proxy(dbInstance, {
       get(target, prop) {
         if (!(prop in target)) {
-          throw Error(`Function ${prop} does not exist in ${name}.`);
+          throw Error(`System: Function ${prop} does not exist in ${name}.`);
         }
         return target[prop];
       },
@@ -65,7 +65,7 @@ module.exports = ({ workingFolder, collections }) => {
   const dbProxy = new Proxy(db, {
     get(target, prop) {
       if (!(prop in target)) {
-        throw Error(`Collection ${prop} does not exist.`);
+        throw Error(`System: Collection ${prop} does not exist.`);
       }
       return target[prop];
     },

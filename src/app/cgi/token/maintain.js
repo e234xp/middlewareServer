@@ -13,12 +13,12 @@ module.exports = (data) => {
   });
 
   const validAccountData = global.spiderman.token.decryptToAccountInTime(data.token);
-  if (!validAccountData) throw Error('token has expired');
+  if (!validAccountData) throw Error('The token has expired.');
 
   const { u: username, p: password } = validAccountData;
   const account = global.spiderman.db.account.findOne({ username, password });
 
-  if (!account) throw Error('unauthorized');
+  if (!account) throw Error('Unauthorized');
 
   return {
     message: 'ok',

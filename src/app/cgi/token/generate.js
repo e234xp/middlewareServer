@@ -20,7 +20,7 @@ module.exports = (data) => {
   const { username, password } = data;
   const account = global.spiderman.db.account.findOne({ username, password });
 
-  if (!account) throw Error('unauthorized');
+  if (!account) throw Error('Unauthorized');
 
   return {
     message: 'ok',

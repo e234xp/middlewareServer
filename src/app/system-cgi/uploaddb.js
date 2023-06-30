@@ -3,7 +3,7 @@ const fs = require('fs');
 
 module.exports = async (data) => {
   const { file } = data;
-  if (!file) throw Error('no file');
+  if (!file) throw Error('Invalid parameter.');
 
   const fileMove = promisify(file.mv);
   const targetZipFile = `${global.params.importPath}/${file.name}`;

@@ -34,15 +34,15 @@ module.exports = (data, token) => {
   && data.username.length > 0
   && data.password.length > 0
   && data.permission.length > 0;
-  if (!isPassed) throw Error('username or password cannot be empty.');
+  if (!isPassed) throw Error('Username or password cannot be empty.');
 
   const accounts = global.spiderman.db.account.find();
 
   const adminAccount = accounts.find((item) => (item.username === tokenUser.u) && (item.permission === 'Admin'));
-  if (!adminAccount) throw Error('no permission');
+  if (!adminAccount) throw Error('No permission.');
 
   const existededAccount = accounts.find((item) => (item.username === data.username));
-  if (existededAccount) throw Error('account has already existed');
+  if (existededAccount) throw Error('The item has already existed.');
 
   const {
     username, password, permission, remarks,

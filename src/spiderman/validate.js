@@ -1,6 +1,6 @@
 module.exports = () => ({
   data: ({ data, fieldChecks }) => {
-    const errorMessage = 'invalid parameter.';
+    const errorMessage = 'Invalid parameter.';
     if (!data) throw Error(errorMessage);
 
     const isValidated = fieldChecks.every(({ fieldName, fieldType, required }) => {

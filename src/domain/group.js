@@ -101,7 +101,7 @@ module.exports = () => {
   }) {
     const doesExist = !!global.spiderman.db.groups.findOne({ name });
 
-    if (doesExist) throw Error('the group have already existed.');
+    if (doesExist) throw Error('The item has already existed.');
 
     global.spiderman.db.groups.insertOne({
       uuid: uuidv4(),
@@ -120,7 +120,7 @@ module.exports = () => {
   }) {
     const group = global.spiderman.db.groups.findOne({ uuid });
 
-    if (!group) throw Error('the group does not existed.');
+    if (!group) throw Error('Item not found.');
 
     global.spiderman.db.groups.updateOne({ uuid }, { remarks });
 
@@ -131,7 +131,7 @@ module.exports = () => {
   function removeAndModifyPersonGroup({ uuid }) {
     const groupList = global.spiderman.db.groups.find({ uuid: { $in: uuid } });
 
-    if (groupList.length === 0) throw Error('the groups do not existed.');
+    if (groupList.length === 0) throw Error('Item not found.');
 
     global.spiderman.db.groups.deleteMany({ uuid: { $in: uuid } });
 

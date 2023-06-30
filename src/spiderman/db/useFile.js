@@ -96,7 +96,7 @@ module.exports = ({
 
     const { indexes } = global.spiderman.query({ data, queryObject: query });
     if (indexes.length === 0) {
-      throw Error('No data found');
+      throw Error('Item not found.');
     }
     const index = indexes[0];
     const updatedItem = { ...data[index], ...update };
@@ -110,7 +110,7 @@ module.exports = ({
     const data = readData();
     const { indexes } = global.spiderman.query({ data, queryObject: query });
     if (indexes.length === 0) {
-      throw Error('No data found');
+      throw Error('Item not found.');
     }
     const index = indexes[0];
 
@@ -126,7 +126,7 @@ module.exports = ({
 
     const { data: deletedItems } = global.spiderman.query({ data, queryObject: query });
     if (deletedItems.length === 0) {
-      throw Error('No data found');
+      throw Error('Item not found.');
     }
     const filteredData = data.filter((item) => !deletedItems.includes(item));
     writeData(filteredData);

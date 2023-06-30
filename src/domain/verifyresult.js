@@ -29,7 +29,7 @@ module.exports = () => {
       return typeToCollection[type];
     })();
 
-    if (!collection) throw Error('Unknown photo type');
+    if (!collection) throw Error('System: unknown photo type');
 
     return global.spiderman.db[collection].findOne(`${f}.db_photos/${uuid}.photo`);
   }

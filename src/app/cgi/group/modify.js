@@ -27,7 +27,7 @@ module.exports = (data) => {
     fieldChecks,
   });
 
-  if (data.uuid.length === 0) throw Error('name cannot be empty.');
+  if (data.uuid.length === 0) throw Error('Name cannot be empty.');
 
   global.domain.group.modifyAndModifyPersonGroup(data);
 

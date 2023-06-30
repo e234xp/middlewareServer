@@ -69,7 +69,7 @@ function handleError(error, res, cgi) {
 
 function determinErrorCode(error) {
   return {
-    unauthorized: 401,
+    Unauthorized: 401,
   }[error.message] ?? 400;
 }
 
@@ -83,6 +83,6 @@ function authorize({ req, publicCgi = [] }) {
   })();
 
   if (!isPassed) {
-    throw Error('unauthorized');
+    throw Error('Unauthorized');
   }
 }

@@ -15,7 +15,7 @@ function requireDataOk(data) {
 exports.call = async function (req, res) {
   const reqData = dataParser.circularJsonParser(req.body);
   if (!requireDataOk(reqData)) {
-    res.status(400).json({ message: 'invalid parameter.' });
+    res.status(400).json({ message: 'Invalid parameter.' });
   } else {
     try {
       const shift = (reqData.slice_shift != null ? reqData.slice_shift : 0);
