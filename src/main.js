@@ -4,21 +4,34 @@ const express = require('express');
 const http = require('http');
 const https = require('https');
 
-global.params = (() => {
-  // TODO 修改
-  const fileroot = '/Users/liaoguanjie/城智/middlewareServerFiles';
-  // const fileroot = '/userdata/aira';
+const argObject = (() => {
+  const result = {};
 
+  process.argv.forEach((a, index) => {
+    const isValid = index > 1;
+    if (!isValid) return;
+
+    const [key, value] = a.split('=');
+
+    result[key] = value;
+  });
+
+  return result;
+})();
+
+global.params = generatePatams(argObject);
+function generatePatams({
+  fileroot = '/userdata/aira',
+  localhost = '127.0.0.1:8588',
+}) {
   const dataPath = `${fileroot}/data`;
   const swPath = `${fileroot}/sw`;
   const fwPath = `${fileroot}/fw`;
   const importPath = `${fileroot}/import`;
 
   return {
-    // TODO
-    // localhost: '127.0.0.1:8588',
-    localhost: '192.168.10.49:8588',
     fileroot,
+    localhost,
     dataPath,
     swPath,
     fwPath,
@@ -26,7 +39,7 @@ global.params = (() => {
     cgiCounter: 0,
     maxCgiNumber: 50,
   };
-})();
+}
 
 const spiderman = require('./spiderman/index');
 const domain = require('./domain/index');

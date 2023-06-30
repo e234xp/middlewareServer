@@ -26,9 +26,9 @@
   },
   "scripts": {
     "test": "node --experimental-vm-modules ./node_modules/.bin/jest",
-    "dev": "nodemon src/main",
+    "dev": "nodemon src/main fileroot=/Users/liaoguanjie/城智/middlewareServerFiles localhost=192.168.10.49:8588",
     "build": "webpack",
-    "bundle": "nodemon dist/main-bundle"
+    "bundle": "nodemon src/main-bundle fileroot=/Users/liaoguanjie/城智/middlewareServerFiles localhost=192.168.10.49:8588"
   },
   "repository": {
     "type": "git",
