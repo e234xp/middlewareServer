@@ -29,6 +29,11 @@ module.exports = () => {
     modifygroup: require('../app/cgi/group/modify'),
     removegroup: require('../app/cgi/group/remove'),
 
+    createcamera: require('../app/cgi/camera/create'),
+    findcamera: require('../app/cgi/camera/find'),
+    modifycamera: require('../app/cgi/camera/modify'),
+    removecamera: require('../app/cgi/camera/remove'),
+
     querypersonverifyresult: require('../app/cgi/verifyresult/queryperson'),
     queryvisitorverifyresult: require('../app/cgi/verifyresult/queryvisitor'),
     querystrangerverifyresult: require('../app/cgi/verifyresult/querystranger'),

@@ -1,7 +1,7 @@
 module.exports = {
   init: () => {
     const instance = {};
-    const files = ['group', 'person', 'verifyresult'];
+    const files = ['group', 'person', 'verifyresult', 'camera'];
 
     files.forEach((file) => {
       const name = file.split('.')[0];
