@@ -5,16 +5,22 @@ module.exports = {
   mode: 'production',
   entry: ['babel-polyfill', path.resolve(__dirname, 'src', 'main.js')],
   output: {
-    path: path.resolve('dist'),
+    path: path.resolve(__dirname, 'dist'), // 指定輸出路徑為绝对路径
     filename: 'main-bundle.js',
   },
   resolve: {
-    // Add ".ts" and ".tsx" as resolvable extensions.
-    extensions: ['.js', '.tsx', '.ts', '.json', '.html'],
+    extensions: ['.js', '.tsx', '.ts', '.json', '.html'], // 可解析的副檔名
     modules: [
+      path.resolve(__dirname, '.'),
       'node_modules',
-      path.resolve('node_modules'),
     ],
+  },
+  externals: {
+    bufferutil: 'bufferutil',
+    'utf-8-validate': 'utf-8-validate',
+  },
+  stats: {
+    warningsFilter: (w) => w !== 'CriticalDependenciesWarning',
   },
   module: {
     rules: [

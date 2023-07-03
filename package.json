@@ -4,31 +4,31 @@
   "description": "",
   "main": "main.js",
   "dependencies": {
-    "babel-loader": "^8.2.2",
+    "babel-loader": "^8.3.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.7.0",
-    "body-parser": "^1.19.0",
-    "express": "^4.17.1",
-    "express-fileupload": "^1.2.1",
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2",
+    "express-fileupload": "^1.4.0",
     "fs": "^0.0.1-security",
-    "html-loader": "^4.1.0",
+    "html-loader": "^4.2.0",
     "http": "^0.0.1-security",
     "jest": "^29.5.0",
     "jsonfile": "^6.1.0",
     "license-checker-webpack-plugin": "^0.2.1",
     "node-loader": "^2.0.0",
-    "request": "^2.88.2",
-    "uuidv4": "^6.2.8",
-    "webpack": "^5.73.0",
+    "request": "^2.79.0",
+    "uuidv4": "^6.2.13",
+    "webpack": "^5.88.1",
     "webpack-cli": "^4.10.0",
     "webpack-node-externals": "^3.0.0",
-    "ws": "^7.4.6"
+    "ws": "^7.5.9"
   },
   "scripts": {
     "test": "node --experimental-vm-modules ./node_modules/.bin/jest",
-    "dev": "nodemon src/main fileroot=/Users/liaoguanjie/城智/middlewareServerFiles localhost=192.168.10.49:8588",
+    "dev": "nodemon src/main fileroot=/Users/liaoguanjie/aira/middlewareServerFiles localhost=192.168.10.49:8588",
     "build": "webpack",
-    "bundle": "nodemon src/main-bundle fileroot=/Users/liaoguanjie/城智/middlewareServerFiles localhost=192.168.10.49:8588"
+    "bundle": "nodemon dist/main-bundle fileroot=/Users/liaoguanjie/aira/middlewareServerFiles localhost=192.168.10.49:8588"
   },
   "repository": {
     "type": "git",
@@ -42,7 +42,7 @@
   "homepage": "https://github.com/e234xp/middlewareServer#readme",
   "devDependencies": {
     "@babel/preset-env": "^7.22.5",
-    "eslint": "^8.42.0",
+    "eslint": "^8.44.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.27.5",
     "eslint-webpack-plugin": "^4.0.1"
