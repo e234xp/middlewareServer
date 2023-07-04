@@ -21,7 +21,7 @@ const fieldChecks = [
   },
   {
     fieldName: 'port',
-    fieldType: 'string',
+    fieldType: 'number',
     required: true,
   },
   {
@@ -71,11 +71,10 @@ module.exports = async (data) => {
   const cameras = global.spiderman.db.cameras.find();
   if (cameras.length >= MAX_AMOUNT) throw Error(`Items in database has exceeded ${MAX_AMOUNT} (max).`);
 
-  // TODO 所有裝置都不能重複
-  const isRepeatName = !!global.spiderman.db.cameras.findOne({ name: data.name });
-  if (isRepeatName) throw Error('Name existed.');
+  const repeatDevice = global.domain.device.findByName(data.name);
+  if (repeatDevice) throw Error(`Name existed. type: ${repeatDevice.type}`);
 
-  await global.domain.camera.insert({ data });
+  await global.domain.crud.insert({ collection: 'cameras', data });
 
   return {
     message: 'ok',

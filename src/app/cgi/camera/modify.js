@@ -34,7 +34,7 @@ const fieldChecksData = [
   },
   {
     fieldName: 'port',
-    fieldType: 'string',
+    fieldType: 'number',
     required: true,
   },
   {
@@ -80,8 +80,11 @@ module.exports = async (rData) => {
     fieldChecks: fieldChecksData,
   });
 
-  await global.domain.camera.modify({
-    uuid, data,
+  const repeatDevice = global.domain.device.findByName(data.name);
+  if (repeatDevice && repeatDevice.uuid !== uuid) throw Error(`Name existed. type: ${repeatDevice.type}`);
+
+  await global.domain.crud.modify({
+    collection: 'cameras', uuid, data,
   });
 
   return {

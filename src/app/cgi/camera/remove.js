@@ -12,7 +12,7 @@ module.exports = (data) => {
     fieldChecks,
   });
 
-  global.domain.camera.remove(data);
+  global.domain.crud.remove({ collection: 'cameras', uuid: data.uuid });
 
   return {
     message: 'ok',

@@ -26,9 +26,9 @@ module.exports = (data) => {
   const sliceLength = data.slice_length ? data.slice_length : 100;
   const { uuid } = data;
 
-  const list = global.domain.camera
+  const list = global.domain.crud
     .find({
-      query: { ...(uuid === '' ? {} : { uuid }) }, shift, sliceLength,
+      collection: 'cameras', query: { ...(uuid === '' ? {} : { uuid }) }, shift, sliceLength,
     });
 
   return {
