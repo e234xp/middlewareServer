@@ -34,6 +34,11 @@ module.exports = () => {
     modifycamera: require('../app/cgi/camera/modify'),
     removecamera: require('../app/cgi/camera/remove'),
 
+    createwiegandconverter: require('../app/cgi/wiegandconverter/create'),
+    findwiegandconverter: require('../app/cgi/wiegandconverter/find'),
+    modifywiegandconverter: require('../app/cgi/wiegandconverter/modify'),
+    removewiegandconverter: require('../app/cgi/wiegandconverter/remove'),
+
     querypersonverifyresult: require('../app/cgi/verifyresult/queryperson'),
     queryvisitorverifyresult: require('../app/cgi/verifyresult/queryvisitor'),
     querystrangerverifyresult: require('../app/cgi/verifyresult/querystranger'),
