@@ -43,6 +43,11 @@ const fieldChecksData = [
     required: true,
   },
   {
+    fieldName: 'pass',
+    fieldType: 'string',
+    required: true,
+  },
+  {
     fieldName: 'connection_info',
     fieldType: 'string',
     required: true,
