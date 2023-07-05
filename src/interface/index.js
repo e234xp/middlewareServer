@@ -1,9 +1,11 @@
+const perf = require('perf_hooks');
+
 module.exports = (route) => {
   const myService = require('express')();
   const { publicCgi, router } = require(`.${route}`)();
 
   myService.post('/:cgi', async (req, res) => {
-    const startTime = performance.now();
+    const startTime = perf.performance.now();
     const { cgi } = req.params;
 
     try {
@@ -18,7 +20,7 @@ module.exports = (route) => {
     } catch (error) {
       handleError(error, res, cgi);
     } finally {
-      const endTime = performance.now();
+      const endTime = perf.performance.now();
       console.log(cgi, '花費時間:', (endTime - startTime).toFixed(2), 'ms');
     }
   });
