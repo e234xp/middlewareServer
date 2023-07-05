@@ -21,7 +21,7 @@ const argObject = (() => {
 
 global.params = generatePatams(argObject);
 function generatePatams({
-  fileroot = 'home/gavin/userdata/aira',
+  fileroot = '/home/gavin/userdata/aira',
   localhost = '127.0.0.1:8588',
 }) {
   const dataPath = `${fileroot}/data`;
