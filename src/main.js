@@ -61,6 +61,8 @@ const expressApp = express()
   .use('/system', require('./interface')('/system'))
   .use(express.static(`${global.params.swPath}/wwwdist`));
 
+console.log('test');
+
 global.spiderman.server = (() => {
   const httpServer = global.spiderman.express.createAndListenServer(http, 80, expressApp);
   const httpsServer = global.spiderman.express.createAndListenServer(https, 443, expressApp);
