@@ -21,7 +21,7 @@ module.exports = (route) => {
       handleError(error, res, cgi);
     } finally {
       const endTime = perf.performance.now();
-      console.log(cgi, '花費時間:', (endTime - startTime).toFixed(2), 'ms');
+      console.log(`${req.baseUrl}${req.path} spend ${(endTime - startTime).toFixed(2)} ms`);
     }
   });
 

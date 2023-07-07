@@ -75,6 +75,7 @@ module.exports = () => {
       }
 
       global.params.cgiCounter += 1;
+      console.log(`${req.path} 'on' cgi counter: ${global.params.cgiCounter}`);
 
       req.on('close', () => {
         if (global.params.cgiCounter <= 0) {
@@ -83,6 +84,7 @@ module.exports = () => {
         }
 
         global.params.cgiCounter -= 1;
+        console.log(`${req.baseUrl}${req.path} 'off' cgi counter: ${global.params.cgiCounter}`);
       });
 
       next();
