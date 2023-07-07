@@ -28,7 +28,8 @@
     "test": "node --experimental-vm-modules ./node_modules/.bin/jest",
     "dev": "nodemon src/main fileroot=/Users/liaoguanjie/aira/middlewareServerFiles localhost=192.168.10.49:8588",
     "build": "webpack",
-    "bundle": "nodemon dist/main-bundle fileroot=/Users/liaoguanjie/aira/middlewareServerFiles localhost=192.168.10.49:8588"
+    "bundle": "nodemon dist/main-bundle fileroot=/Users/liaoguanjie/aira/middlewareServerFiles localhost=192.168.10.49:8588",
+    "deploy": "sh scripts/deploy.sh /Users/liaoguanjie/aira/middlewareServer/dist/main-bundle.js gavin@192.168.10.124:~/main.js"
   },
   "repository": {
     "type": "git",
