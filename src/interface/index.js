@@ -13,7 +13,7 @@ module.exports = (route) => {
     const startTime = perf.performance.now();
     const { cgi } = req.params;
     try {
-      addCgiCounter(route);
+      addCgiCounter(cgi);
       if (!router[cgi]) throw Error('no such cgi');
       global.spiderman.systemlog.writeInfo(`${cgi} has been called.`);
       authorize({ req, publicCgi });
@@ -25,19 +25,19 @@ module.exports = (route) => {
     } catch (error) {
       handleError(error, res, cgi);
     } finally {
-      minusCgiCounter(route);
+      minusCgiCounter(cgi);
 
       const endTime = perf.performance.now();
-      console.log(`${route} spend ${(endTime - startTime).toFixed(2)} ms`);
+      console.log(`${cgi} spend ${(endTime - startTime).toFixed(2)} ms`);
     }
   });
 
   return myService;
 };
 
-function addCgiCounter(route) {
+function addCgiCounter(cgi) {
   cgiCounter.number += 1;
-  console.log(`${route} 'on' cgi counter: ${cgiCounter.number}`);
+  console.log(`${cgi} 'on' cgi counter: ${cgiCounter.number}`);
   checkIsCgiExceeded();
 }
 
@@ -48,9 +48,9 @@ function checkIsCgiExceeded() {
   }
 }
 
-function minusCgiCounter(route) {
+function minusCgiCounter(cgi) {
   cgiCounter.number -= 1;
-  console.log(`${route} 'off' cgi counter: ${cgiCounter.number}`);
+  console.log(`${cgi} 'off' cgi counter: ${cgiCounter.number}`);
 }
 
 function getBody(req) {
