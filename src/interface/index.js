@@ -1,5 +1,10 @@
 const perf = require('perf_hooks');
 
+const cgiCounter = {
+  number: 0,
+  max: 50,
+};
+
 module.exports = (route) => {
   const myService = require('express')();
   const { publicCgi, router } = require(`.${route}`)();
@@ -7,8 +12,8 @@ module.exports = (route) => {
   myService.post('/:cgi', async (req, res) => {
     const startTime = perf.performance.now();
     const { cgi } = req.params;
-
     try {
+      addCgiCounter(route);
       if (!router[cgi]) throw Error('no such cgi');
       global.spiderman.systemlog.writeInfo(`${cgi} has been called.`);
       authorize({ req, publicCgi });
@@ -20,13 +25,33 @@ module.exports = (route) => {
     } catch (error) {
       handleError(error, res, cgi);
     } finally {
+      minusCgiCounter(route);
+
       const endTime = perf.performance.now();
-      console.log(`${req.baseUrl}${req.path} spend ${(endTime - startTime).toFixed(2)} ms`);
+      console.log(`${route} spend ${(endTime - startTime).toFixed(2)} ms`);
     }
   });
 
   return myService;
 };
+
+function addCgiCounter(route) {
+  cgiCounter.number += 1;
+  console.log(`${route} 'on' cgi counter: ${cgiCounter.number}`);
+  checkIsCgiExceeded();
+}
+
+function checkIsCgiExceeded() {
+  const { number, max } = cgiCounter;
+  if (number + 1 > max) {
+    throw Error('Too Many Requests, server allows upto max 50 request concurrently.');
+  }
+}
+
+function minusCgiCounter(route) {
+  cgiCounter.number -= 1;
+  console.log(`${route} 'off' cgi counter: ${cgiCounter.number}`);
+}
 
 function getBody(req) {
   if (req.is('multipart/form-data')) {
@@ -71,6 +96,7 @@ function handleError(error, res, cgi) {
 
 function determinErrorCode(error) {
   return {
+    'Too Many Requests, server allows upto max 50 request concurrently.': 429,
     Unauthorized: 401,
   }[error.message] ?? 400;
 }

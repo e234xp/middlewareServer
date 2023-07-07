@@ -19,8 +19,8 @@ const argObject = (() => {
   return result;
 })();
 
-global.params = generatePatams(argObject);
-function generatePatams({
+global.params = generateParams(argObject);
+function generateParams({
   fileroot = '/home/gavin/userdata/aira',
   localhost = '127.0.0.1:8588',
 }) {
@@ -36,8 +36,6 @@ function generatePatams({
     swPath,
     fwPath,
     importPath,
-    cgiCounter: 0,
-    maxCgiNumber: 50,
   };
 }
 
@@ -54,7 +52,6 @@ process.on('uncaughtException', (err) => {
 const expressApp = express()
   .use(express.json({ limit: '50mb' }))
   .use(express.text({ limit: '50mb' }))
-  .use(global.spiderman.express.useLimitCgiNumber({ routesNeedToLimit: ['airafacelite', 'system'] }))
   .use(global.spiderman.express.useCors())
   .use(global.spiderman.express.useFileUpload())
   .use('/airafacelite', require('./interface')('/airafacelite'))

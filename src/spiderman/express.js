@@ -60,37 +60,6 @@ uNJRRuzG94By+yipQf7us1JHNA==
 };
 
 module.exports = () => {
-  function useLimitCgiNumber({ routesNeedToLimit = [] }) {
-    return (req, res, next) => {
-      const route = req.url.split('/')[1];
-      if (!routesNeedToLimit.includes(route)) {
-        next();
-        return;
-      }
-
-      const { cgiCounter, maxCgiNumber } = global.params;
-      if (cgiCounter + 1 > maxCgiNumber) {
-        res.status(429).json({ message: 'Too Many Requests, server allows upto max 50 request concurrently.' });
-        return;
-      }
-
-      global.params.cgiCounter += 1;
-      console.log(`${req.path} 'on' cgi counter: ${global.params.cgiCounter}`);
-
-      req.on('close', () => {
-        if (global.params.cgiCounter <= 0) {
-          global.params.cgiCounter = 0;
-          return;
-        }
-
-        global.params.cgiCounter -= 1;
-        console.log(`${req.baseUrl}${req.path} 'off' cgi counter: ${global.params.cgiCounter}`);
-      });
-
-      next();
-    };
-  }
-
   function useCors() {
     return (req, res, next) => {
       res.header('Access-Control-Allow-Origin', '*');
@@ -125,7 +94,6 @@ module.exports = () => {
   }
 
   return {
-    useLimitCgiNumber,
     useCors,
     useFileUpload,
     createAndListenServer,
