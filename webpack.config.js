@@ -1,4 +1,5 @@
 const path = require('path');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
   target: 'node',
@@ -44,4 +45,8 @@ module.exports = {
       },
     ],
   },
+  plugins: [
+    // 將 .env 檔案的內容載入到環境變數中
+    new Dotenv(),
+  ],
 };

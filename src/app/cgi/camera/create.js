@@ -1,7 +1,7 @@
 const fieldChecks = [
   {
     fieldName: 'name',
-    fieldType: 'string',
+    fieldType: 'nonempty',
     required: true,
   },
   {
@@ -11,42 +11,12 @@ const fieldChecks = [
   },
   {
     fieldName: 'stream_type',
-    fieldType: 'string',
-    required: true,
-  },
-  {
-    fieldName: 'ip_address',
-    fieldType: 'string',
-    required: true,
-  },
-  {
-    fieldName: 'port',
-    fieldType: 'number',
-    required: true,
-  },
-  {
-    fieldName: 'user',
-    fieldType: 'string',
-    required: true,
-  },
-  {
-    fieldName: 'pass',
-    fieldType: 'string',
+    fieldType: 'nonempty',
     required: true,
   },
   {
     fieldName: 'connection_info',
-    fieldType: 'string',
-    required: true,
-  },
-  {
-    fieldName: 'capture_interval',
-    fieldType: 'number',
-    required: true,
-  },
-  {
-    fieldName: 'target_score',
-    fieldType: 'number',
+    fieldType: 'nonempty',
     required: true,
   },
   {
@@ -59,13 +29,63 @@ const fieldChecks = [
     fieldType: 'number',
     required: true,
   },
+  {
+    fieldName: 'target_score',
+    fieldType: 'number',
+    required: true,
+  },
+  {
+    fieldName: 'capture_interval',
+    fieldType: 'number',
+    required: true,
+  },
+];
+const rtspFieldChecks = [
+  {
+    fieldName: 'ip_address',
+    fieldType: 'nonempty',
+    required: true,
+  },
+  {
+    fieldName: 'port',
+    fieldType: 'number',
+    required: true,
+  },
+  {
+    fieldName: 'user',
+    fieldType: 'nonempty',
+    required: true,
+  },
+  {
+    fieldName: 'pass',
+    fieldType: 'nonempty',
+    required: true,
+  },
 ];
 
 module.exports = async (data) => {
-  data = global.spiderman.validate.data({
-    data,
-    fieldChecks,
-  });
+  const { stream_type: streamType } = data;
+  if (streamType === 'rtsp') {
+    data = global.spiderman.validate.data({
+      data,
+      fieldChecks: [...fieldChecks, ...rtspFieldChecks],
+    });
+  } else if (streamType === 'sdp') {
+    data = {
+      ...global.spiderman.validate.data({
+        data,
+        fieldChecks,
+      }),
+      ...{
+        ip_address: '',
+        port: 0,
+        user: '',
+        pass: '',
+      },
+    };
+  } else {
+    throw Error('stream_type error.');
+  }
 
   const MAX_ROI = 5;
   const { roi } = data;

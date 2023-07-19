@@ -14,7 +14,7 @@ const fieldChecks = [
 const fieldChecksData = [
   {
     fieldName: 'name',
-    fieldType: 'string',
+    fieldType: 'nonempty',
     required: true,
   },
   {
@@ -24,42 +24,12 @@ const fieldChecksData = [
   },
   {
     fieldName: 'stream_type',
-    fieldType: 'string',
-    required: true,
-  },
-  {
-    fieldName: 'ip_address',
-    fieldType: 'string',
-    required: true,
-  },
-  {
-    fieldName: 'port',
-    fieldType: 'number',
-    required: true,
-  },
-  {
-    fieldName: 'user',
-    fieldType: 'string',
-    required: true,
-  },
-  {
-    fieldName: 'pass',
-    fieldType: 'string',
+    fieldType: 'nonempty',
     required: true,
   },
   {
     fieldName: 'connection_info',
-    fieldType: 'string',
-    required: true,
-  },
-  {
-    fieldName: 'capture_interval',
-    fieldType: 'number',
-    required: true,
-  },
-  {
-    fieldName: 'target_score',
-    fieldType: 'number',
+    fieldType: 'nonempty',
     required: true,
   },
   {
@@ -72,6 +42,39 @@ const fieldChecksData = [
     fieldType: 'number',
     required: true,
   },
+  {
+    fieldName: 'target_score',
+    fieldType: 'number',
+    required: true,
+  },
+  {
+    fieldName: 'capture_interval',
+    fieldType: 'number',
+    required: true,
+  },
+];
+
+const rtspFieldChecks = [
+  {
+    fieldName: 'ip_address',
+    fieldType: 'nonempty',
+    required: true,
+  },
+  {
+    fieldName: 'port',
+    fieldType: 'number',
+    required: true,
+  },
+  {
+    fieldName: 'user',
+    fieldType: 'nonempty',
+    required: true,
+  },
+  {
+    fieldName: 'pass',
+    fieldType: 'nonempty',
+    required: true,
+  },
 ];
 
 module.exports = async (rData) => {
@@ -80,10 +83,33 @@ module.exports = async (rData) => {
     fieldChecks,
   });
 
-  const data = global.spiderman.validate.data({
-    data: rData.data,
-    fieldChecks: fieldChecksData,
-  });
+  const { stream_type: streamType } = rData.data;
+  let data;
+  if (streamType === 'rtsp') {
+    data = global.spiderman.validate.data({
+      data: rData.data,
+      fieldChecks: [...fieldChecksData, ...rtspFieldChecks],
+    });
+  } else if (streamType === 'sdp') {
+    data = {
+      ...global.spiderman.validate.data({
+        data: rData.data,
+        fieldChecks: fieldChecksData,
+      }),
+      ...{
+        ip_address: '',
+        port: 0,
+        user: '',
+        pass: '',
+      },
+    };
+  } else {
+    throw Error('stream_type error.');
+  }
+
+  const MAX_ROI = 5;
+  const { roi } = data;
+  if (roi.length > MAX_ROI) throw Error(`Roi number has exceeded ${MAX_ROI} (max).`);
 
   const repeatDevice = global.domain.device.findByName(data.name);
   if (repeatDevice && repeatDevice.uuid !== uuid) throw Error(`Name existed. type: ${repeatDevice.type}`);
