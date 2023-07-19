@@ -107,16 +107,7 @@ module.exports = async (rData) => {
     throw Error('stream_type error.');
   }
 
-  const MAX_ROI = 5;
-  const { roi } = data;
-  if (roi.length > MAX_ROI) throw Error(`Roi number has exceeded ${MAX_ROI} (max).`);
-
-  const repeatDevice = global.domain.device.findByName(data.name);
-  if (repeatDevice && repeatDevice.uuid !== uuid) throw Error(`Name existed. type: ${repeatDevice.type}`);
-
-  await global.domain.crud.modify({
-    collection: 'cameras', uuid, data,
-  });
+  await global.domain.camera.modify({ uuid, data });
 
   return {
     message: 'ok',

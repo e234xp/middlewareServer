@@ -1,7 +1,7 @@
 const fieldChecks = [
   {
     fieldName: 'uuid',
-    fieldType: 'string',
+    fieldType: 'nonempty',
     required: true,
   },
   {
@@ -14,7 +14,7 @@ const fieldChecks = [
 const fieldChecksData = [
   {
     fieldName: 'name',
-    fieldType: 'string',
+    fieldType: 'nonempty',
     required: true,
   },
   {
@@ -24,7 +24,7 @@ const fieldChecksData = [
   },
   {
     fieldName: 'ip_address',
-    fieldType: 'string',
+    fieldType: 'nonempty',
     required: true,
   },
   {
@@ -60,12 +60,7 @@ module.exports = async (rData) => {
     fieldChecks: fieldChecksData,
   });
 
-  const repeatDevice = global.domain.device.findByName(data.name);
-  if (repeatDevice && repeatDevice.uuid !== uuid) throw Error(`Name existed. type: ${repeatDevice.type}`);
-
-  await global.domain.crud.modify({
-    collection: 'wiegandconverters', uuid, data,
-  });
+  await global.domain.wiegandconverter.modify({ uuid, data });
 
   return {
     message: 'ok',

@@ -87,19 +87,7 @@ module.exports = async (data) => {
     throw Error('stream_type error.');
   }
 
-  const MAX_ROI = 5;
-  const { roi } = data;
-  if (roi.length > MAX_ROI) throw Error(`Roi number has exceeded ${MAX_ROI} (max).`);
-
-  // todo 確認 MAX 數量
-  const MAX_AMOUNT = 500;
-  const cameras = global.spiderman.db.cameras.find();
-  if (cameras.length >= MAX_AMOUNT) throw Error(`Items in database has exceeded ${MAX_AMOUNT} (max).`);
-
-  const repeatDevice = global.domain.device.findByName(data.name);
-  if (repeatDevice) throw Error(`Name existed. type: ${repeatDevice.type}`);
-
-  await global.domain.crud.insertOne({ collection: 'cameras', data });
+  await global.domain.camera.create(data);
 
   return {
     message: 'ok',
