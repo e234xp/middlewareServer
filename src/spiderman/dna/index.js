@@ -27,8 +27,9 @@ module.exports = {
         cache: { isOpen: true, maxBytes: 10 * 1024 * 1024 },
       },
       {
-        name: 'videogroup',
+        name: 'videogroups',
         type: 'file',
+        defaultData: defaultdata.videogroups,
         cache: { isOpen: true, maxBytes: 10 * 1024 * 1024 },
       },
       {

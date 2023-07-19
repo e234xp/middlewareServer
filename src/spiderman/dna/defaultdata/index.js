@@ -8,6 +8,7 @@ module.exports = () => {
     'groups.js',
     'managersettings.js',
     'settings.js',
+    'videogroups.js',
   ];
 
   const defaultData = (() => {
