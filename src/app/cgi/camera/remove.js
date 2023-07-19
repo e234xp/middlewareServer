@@ -6,13 +6,13 @@ const fieldChecks = [
   },
 ];
 
-module.exports = (data) => {
+module.exports = async (data) => {
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
   });
 
-  global.domain.crud.remove({ collection: 'cameras', uuid: data.uuid });
+  await global.domain.crud.remove({ collection: 'cameras', uuid: data.uuid });
 
   return {
     message: 'ok',

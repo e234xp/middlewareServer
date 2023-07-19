@@ -1,8 +1,8 @@
 const fieldChecks = [
   {
     fieldName: 'uuid',
-    fieldType: 'array',
-    required: true,
+    fieldType: 'string',
+    required: false,
   },
 ];
 
@@ -12,9 +12,10 @@ module.exports = async (data) => {
     fieldChecks,
   });
 
-  await global.domain.crud.remove({ collection: 'wiegandconverters', uuid: data.uuid });
+  const groupList = await global.domain.videogroup.find(data);
 
   return {
     message: 'ok',
+    group_list: groupList,
   };
 };

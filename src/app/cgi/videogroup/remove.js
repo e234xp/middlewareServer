@@ -6,13 +6,13 @@ const fieldChecks = [
   },
 ];
 
-module.exports = async (data) => {
+module.exports = (data) => {
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
   });
 
-  await global.domain.crud.remove({ collection: 'wiegandconverters', uuid: data.uuid });
+  global.domain.videogroup.remove(data);
 
   return {
     message: 'ok',
