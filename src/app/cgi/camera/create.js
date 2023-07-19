@@ -99,7 +99,7 @@ module.exports = async (data) => {
   const repeatDevice = global.domain.device.findByName(data.name);
   if (repeatDevice) throw Error(`Name existed. type: ${repeatDevice.type}`);
 
-  await global.domain.crud.insert({ collection: 'cameras', data });
+  await global.domain.crud.insertOne({ collection: 'cameras', data });
 
   return {
     message: 'ok',

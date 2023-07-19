@@ -11,7 +11,7 @@ module.exports = () => {
     return result;
   }
 
-  async function insert({ collection, data }) {
+  async function insertOne({ collection, data }) {
     const now = Date.now();
 
     const dataToWrite = {
@@ -22,6 +22,19 @@ module.exports = () => {
     };
 
     global.spiderman.db[collection].insertOne(dataToWrite);
+  }
+
+  async function insertMany({ collection, data }) {
+    const now = Date.now();
+
+    data = data.map((item) => ({
+      uuid: uuidv4(),
+      ...item,
+      created_time: now,
+      updated_time: now,
+    }));
+
+    global.spiderman.db[collection].insertMany(data);
   }
 
   async function modify({
@@ -42,7 +55,8 @@ module.exports = () => {
 
   return {
     find,
-    insert,
+    insertOne,
+    insertMany,
     modify,
     remove,
   };

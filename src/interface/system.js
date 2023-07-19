@@ -2,6 +2,7 @@ module.exports = () => {
   const publicCgi = ['test', 'systeminfo', 'downloadsyslog'];
   const router = {
     test: require('../app/system-cgi/test'),
+    initdb: require('../app/system-cgi/initdb'),
 
     systeminfo: require('../app/system-cgi/systeminfo'),
     factorydefault: require('../app/system-cgi/factorydefault'),

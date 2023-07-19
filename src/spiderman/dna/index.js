@@ -27,6 +27,11 @@ module.exports = {
         cache: { isOpen: true, maxBytes: 10 * 1024 * 1024 },
       },
       {
+        name: 'videogroup',
+        type: 'file',
+        cache: { isOpen: true, maxBytes: 10 * 1024 * 1024 },
+      },
+      {
         name: 'cameras',
         type: 'file',
         cache: { isOpen: true, maxBytes: 10 * 1024 * 1024 },
