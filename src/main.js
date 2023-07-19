@@ -1,4 +1,6 @@
 process.env.UV_THREADPOOL_SIZE = 128;
+// 引入 .env
+require('dotenv').config();
 
 const express = require('express');
 const http = require('http');
