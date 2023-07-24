@@ -2,13 +2,17 @@ const { uuid: uuidv4 } = require('uuidv4');
 
 module.exports = () => {
   function find({
-    collection, query, shift, sliceLength,
+    collection, query, sliceShift, sliceLength,
   }) {
-    const result = global.spiderman.db[collection]
-      .find(query)
-      .slice(shift, shift + sliceLength);
+    const allData = global.spiderman.db[collection]
+      .find(query);
 
-    return result;
+    const totalLength = allData.length;
+
+    const result = allData
+      .slice(sliceShift, sliceShift + sliceLength);
+
+    return { totalLength, result };
   }
 
   async function insertOne({ collection, data }) {

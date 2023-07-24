@@ -22,18 +22,21 @@ module.exports = (data) => {
     fieldChecks,
   });
 
-  const { uuid, slice_shift: shift, slice_length: sliceLength } = data;
+  const { uuid, slice_shift: sliceShift, slice_length: sliceLength } = data;
 
-  const list = global.domain.crud
+  const { totalLength, result } = global.domain.crud
     .find({
-      collection: 'wiegandconverters', query: { ...(uuid === '' ? {} : { uuid }) }, shift, sliceLength,
+      collection: 'wiegandconverters',
+      query: { ...(uuid === '' ? {} : { uuid }) },
+      sliceShift,
+      sliceLength,
     });
 
   return {
     message: 'ok',
-    total_length: list.length,
-    slice_shift: shift,
+    total_length: totalLength,
+    slice_shift: sliceShift,
     slice_length: sliceLength,
-    camera_list: list,
+    camera_list: result,
   };
 };
