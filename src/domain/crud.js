@@ -26,6 +26,8 @@ module.exports = () => {
     };
 
     global.spiderman.db[collection].insertOne(dataToWrite);
+
+    return dataToWrite;
   }
 
   async function insertMany({ collection, data }) {

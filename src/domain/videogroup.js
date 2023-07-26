@@ -1,80 +1,108 @@
 module.exports = () => {
   const { db } = global.spiderman;
-  async function find({ uuid }) {
-    const videoGroups = uuid
-      ? [await db.videogroups.findOne({ uuid })]
-      : await db.videogroups.find();
+  async function find({
+    uuid,
+    slice_shift: sliceShift, slice_length: sliceLength,
+  }) {
+    const { totalLength, result } = await global.domain.crud
+      .find({
+        collection: 'videogroups',
+        query: { ...(uuid === '' ? {} : { uuid }) },
+        sliceShift,
+        sliceLength,
+      });
 
-    return videoGroups;
+    const resultWithVideoDevices = result.map(({ uuid: theUuid, ...others }) => {
+      const cameraUuidList = db.cameras
+        .find({ divice_groups: { $some: [theUuid] } })
+        .map((item) => item.uuid);
+      // todo tablets
+
+      return {
+        uuid: theUuid,
+        camera_uuid_list: cameraUuidList,
+        ...others,
+      };
+    });
+
+    return { totalLength, result: resultWithVideoDevices };
   }
 
-  async function create({ name, ...others }) {
+  async function create({
+    name,
+    camera_uuid_list: cameraUuidList, tablet_uuid_list: tabletUuidList,
+  }) {
     const doesExist = !!db.videogroups.findOne({ name });
 
     if (doesExist) throw Error('The item has already existed.');
 
-    await global.domain.crud.insertOne({
+    const { uuid } = await global.domain.crud.insertOne({
       collection: 'videogroups',
-      data: { name, ...others },
+      data: { name },
     });
 
-    addGroupToVideos({
-      name,
-      ...others,
+    addGroupToVideoDevices({
+      uuid,
+      cameraUuidList,
+      tabletUuidList,
     });
   }
 
   async function modify({
     uuid,
+    name,
     camera_uuid_list: cameraUuidList, tablet_uuid_list: tabletUuidList,
   }) {
-    const { name } = await db.videogroups.findOne({ uuid });
+    const fixedUuids = ['0', '1'];
+    if (fixedUuids.includes(uuid)) throw Error('The item can not be change.');
+
+    const doesExist = !!db.videogroups.findOne({ name, uuid: { $ne: uuid } });
+    if (doesExist) throw Error('The name has already existed.');
 
     await global.domain.crud.modify({
       collection: 'videogroups',
       uuid,
-      data: { camera_uuid_list: cameraUuidList, tablet_uuid_list: tabletUuidList },
+      data: { name },
     });
 
-    removeGroupsFromVideos([name]);
-    addGroupToVideos({
-      name,
-      camera_uuid_list: cameraUuidList,
-      tablet_uuid_list: tabletUuidList,
+    removeGroupsFromVideoDevices([uuid]);
+    addGroupToVideoDevices({
+      uuid,
+      cameraUuidList,
+      tabletUuidList,
     });
   }
 
   async function remove({ uuid }) {
-    const videoGroups = await db.videogroups.find({ uuid: { $in: uuid } });
+    const fixedUuids = ['0', '1'];
+    uuid = uuid.filter((item) => !fixedUuids.includes(item));
 
     db.videogroups.deleteMany({ uuid: { $in: uuid } });
-
-    const names = videoGroups.map(({ name }) => name);
-
-    removeGroupsFromVideos([names]);
+    removeGroupsFromVideoDevices(uuid);
   }
 
-  function addGroupToVideos({
-    name,
-    camera_uuid_list: cameraUuidList, tablet_uuid_list: tabletUuidList,
+  function addGroupToVideoDevices({
+    uuid: groupUuid,
+    cameraUuidList, tabletUuidList,
   }) {
-    cameraUuidList.forEach((uuid) => {
-      const camera = db.cameras.findOne({ uuid });
+    cameraUuidList.forEach((cameraUuid) => {
+      const camera = db.cameras.findOne({ uuid: cameraUuid });
       if (!camera) return;
-      db.cameras.updateOne({ uuid }, {
-        divice_groups: [...camera.divice_groups, name],
+      db.cameras.updateOne({ uuid: cameraUuid }, {
+        divice_groups: [...camera.divice_groups, groupUuid],
       });
-      console.log([...camera.divice_groups, name]);
     });
 
     // todo tabletUuidList
   }
 
-  function removeGroupsFromVideos(names) {
+  function removeGroupsFromVideoDevices(deleteUuids) {
     const cameras = db.cameras.find();
 
     const newCameras = cameras.map((camera) => {
-      const newGroups = camera.divice_groups.filter((groupName) => !groupName.includes(names));
+      const newGroups = camera.divice_groups.filter(
+        (uuid) => !uuid.includes(deleteUuids),
+      );
 
       return {
         ...camera,
@@ -83,6 +111,8 @@ module.exports = () => {
     });
 
     db.cameras.set(newCameras);
+
+    // todo tabletUuidList
   }
 
   return {

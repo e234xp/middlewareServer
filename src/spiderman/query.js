@@ -54,5 +54,16 @@ function _handleSpecialOperators(key, value, item) {
     return false;
   }
 
+  if (key === '$ne') {
+    return item !== value;
+  }
+
+  if (key === '$some') {
+    if (Array.isArray(item) && Array.isArray(value)) {
+      return value.some((val) => item.includes(val));
+    }
+    return false;
+  }
+
   return false;
 }

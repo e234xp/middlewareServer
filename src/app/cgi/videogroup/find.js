@@ -2,7 +2,17 @@ const fieldChecks = [
   {
     fieldName: 'uuid',
     fieldType: 'string',
-    required: false,
+    required: true,
+  },
+  {
+    fieldName: 'slice_shift',
+    fieldType: 'number',
+    required: true,
+  },
+  {
+    fieldName: 'slice_length',
+    fieldType: 'number',
+    required: true,
   },
 ];
 
@@ -12,10 +22,11 @@ module.exports = async (data) => {
     fieldChecks,
   });
 
-  const groupList = await global.domain.videogroup.find(data);
+  const { totalLength, result } = await global.domain.videogroup.find(data);
 
   return {
     message: 'ok',
-    group_list: groupList,
+    totalLength,
+    result,
   };
 };

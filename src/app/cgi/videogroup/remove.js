@@ -6,13 +6,13 @@ const fieldChecks = [
   },
 ];
 
-module.exports = (data) => {
+module.exports = async (data) => {
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
   });
 
-  global.domain.videogroup.remove(data);
+  await global.domain.videogroup.remove(data);
 
   return {
     message: 'ok',

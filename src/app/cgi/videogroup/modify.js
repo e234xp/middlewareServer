@@ -5,6 +5,11 @@ const fieldChecks = [
     required: true,
   },
   {
+    fieldName: 'name',
+    fieldType: 'string',
+    required: true,
+  },
+  {
     fieldName: 'camera_uuid_list',
     fieldType: 'array',
     required: true,
@@ -16,13 +21,13 @@ const fieldChecks = [
   },
 ];
 
-module.exports = (data) => {
+module.exports = async (data) => {
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
   });
 
-  global.domain.videogroup.modify(data);
+  await global.domain.videogroup.modify(data);
 
   return {
     message: 'ok',
