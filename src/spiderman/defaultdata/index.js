@@ -9,6 +9,7 @@ module.exports = () => {
     'managersettings.js',
     'settings.js',
     'videodevicegroups.js',
+    'outputdevicegroups.js',
   ];
 
   const defaultData = (() => {

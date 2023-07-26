@@ -6,21 +6,21 @@ module.exports = () => {
   }) {
     const { totalLength, result } = await global.domain.crud
       .find({
-        collection: 'videodevicegroups',
+        collection: 'outputdevicegroups',
         query: { ...(uuid === '' ? {} : { uuid }) },
         sliceShift,
         sliceLength,
       });
 
     const resultWithDevices = result.map(({ uuid: theUuid, ...others }) => {
-      const cameraUuidList = db.cameras
+      const wiegandConverterUuidList = db.wiegandconverters
         .find({ divice_groups: { $some: [theUuid] } })
         .map((item) => item.uuid);
-      // todo tablets
+      // todo iobox
 
       return {
         uuid: theUuid,
-        camera_uuid_list: cameraUuidList,
+        wiegand_converter_uuid_list: wiegandConverterUuidList,
         ...others,
       };
     });
@@ -30,37 +30,37 @@ module.exports = () => {
 
   async function create({
     name,
-    camera_uuid_list: cameraUuidList, tablet_uuid_list: tabletUuidList,
+    wiegand_converter_uuid_list: wiegandConverterUuidList, io_box_uuid_list: ioBoxUuidList,
   }) {
-    const doesExist = !!db.videodevicegroups.findOne({ name });
+    const doesExist = !!db.outputdevicegroups.findOne({ name });
 
     if (doesExist) throw Error('The item has already existed.');
 
     const { uuid } = await global.domain.crud.insertOne({
-      collection: 'videodevicegroups',
+      collection: 'outputdevicegroups',
       data: { name },
     });
 
     addGroupToDevices({
       uuid,
-      cameraUuidList,
-      tabletUuidList,
+      wiegandConverterUuidList,
+      ioBoxUuidList,
     });
   }
 
   async function modify({
     uuid,
     name,
-    camera_uuid_list: cameraUuidList, tablet_uuid_list: tabletUuidList,
+    wiegand_converter_uuid_list: wiegandConverterUuidList, io_box_uuid_list: ioBoxUuidList,
   }) {
     const fixedUuids = ['0', '1'];
     if (fixedUuids.includes(uuid)) throw Error('The item can not be change.');
 
-    const doesExist = !!db.videodevicegroups.findOne({ name, uuid: { $ne: uuid } });
+    const doesExist = !!db.outputdevicegroups.findOne({ name, uuid: { $ne: uuid } });
     if (doesExist) throw Error('The name has already existed.');
 
     await global.domain.crud.modify({
-      collection: 'videodevicegroups',
+      collection: 'outputdevicegroups',
       uuid,
       data: { name },
     });
@@ -68,8 +68,8 @@ module.exports = () => {
     removeGroupsFromDevices([uuid]);
     addGroupToDevices({
       uuid,
-      cameraUuidList,
-      tabletUuidList,
+      wiegandConverterUuidList,
+      ioBoxUuidList,
     });
   }
 
@@ -77,40 +77,40 @@ module.exports = () => {
     const fixedUuids = ['0', '1'];
     uuid = uuid.filter((item) => !fixedUuids.includes(item));
 
-    db.videodevicegroups.deleteMany({ uuid: { $in: uuid } });
+    db.outputdevicegroups.deleteMany({ uuid: { $in: uuid } });
     removeGroupsFromDevices(uuid);
   }
 
   function addGroupToDevices({
     uuid: groupUuid,
-    cameraUuidList, tabletUuidList,
+    wiegandConverterUuidList, ioBoxUuidList,
   }) {
-    cameraUuidList.forEach((deviceUuid) => {
-      const camera = db.cameras.findOne({ uuid: deviceUuid });
-      if (!camera) return;
-      db.cameras.updateOne({ uuid: deviceUuid }, {
-        divice_groups: [...camera.divice_groups, groupUuid],
+    wiegandConverterUuidList.forEach((deviceUuid) => {
+      const wiegandConverter = db.wiegandconverters.findOne({ uuid: deviceUuid });
+      if (!wiegandConverter) return;
+      db.wiegandconverters.updateOne({ uuid: deviceUuid }, {
+        divice_groups: [...wiegandConverter.divice_groups, groupUuid],
       });
     });
 
-    // todo tabletUuidList
+    // todo ioBoxUuidList
   }
 
   function removeGroupsFromDevices(deleteUuids) {
-    const cameras = db.cameras.find();
+    const wiegandconverters = db.wiegandconverters.find();
 
-    const newCameras = cameras.map((camera) => {
-      const newGroups = camera.divice_groups.filter(
+    const newWiegandconverters = wiegandconverters.map((wiegandconverter) => {
+      const newGroups = wiegandconverter.divice_groups.filter(
         (uuid) => !uuid.includes(deleteUuids),
       );
 
       return {
-        ...camera,
+        ...wiegandconverter,
         divice_groups: newGroups,
       };
     });
 
-    db.cameras.set(newCameras);
+    db.wiegandconverters.set(newWiegandconverters);
 
     // todo tabletUuidList
   }

@@ -44,6 +44,11 @@ module.exports = () => {
     modifywiegandconverter: require('../app/cgi/wiegandconverter/modify'),
     removewiegandconverter: require('../app/cgi/wiegandconverter/remove'),
 
+    createoutputdevicegroup: require('../app/cgi/outputdevicegroup/create'),
+    findoutputdevicegroup: require('../app/cgi/outputdevicegroup/find'),
+    modifyoutputdevicegroup: require('../app/cgi/outputdevicegroup/modify'),
+    removeoutputdevicegroup: require('../app/cgi/outputdevicegroup/remove'),
+
     querypersonverifyresult: require('../app/cgi/verifyresult/queryperson'),
     queryvisitorverifyresult: require('../app/cgi/verifyresult/queryvisitor'),
     querystrangerverifyresult: require('../app/cgi/verifyresult/querystranger'),

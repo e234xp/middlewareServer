@@ -8,6 +8,8 @@ module.exports = () => {
     const repeatDevice = global.domain.device.findByName(data.name);
     if (repeatDevice) throw Error(`Name existed. type: ${repeatDevice.type}`);
 
+    data.divice_groups = generateGroups(data.divice_groups);
+
     await global.domain.crud.insertOne({ collection: 'wiegandconverters', data });
   }
 
@@ -15,9 +17,22 @@ module.exports = () => {
     const repeatDevice = global.domain.device.findByName(data.name);
     if (repeatDevice && repeatDevice.uuid !== uuid) throw Error(`Name existed. type: ${repeatDevice.type}`);
 
+    data.divice_groups = generateGroups(data.divice_groups);
+
     await global.domain.crud.modify({
       collection: 'wiegandconverters', uuid, data,
     });
+  }
+
+  function generateGroups(uuids) {
+    const defaultUUid = '0';
+    if (!uuids.includes(defaultUUid)) uuids.push(defaultUUid);
+
+    const result = global.spiderman.db.outputdevicegroups
+      .find({ uuid: { $in: uuids } })
+      .map(({ uuid }) => uuid);
+
+    return result;
   }
 
   return {
