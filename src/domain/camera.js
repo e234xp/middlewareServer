@@ -37,7 +37,7 @@ module.exports = () => {
     const defaultUUid = '0';
     if (!uuids.includes(defaultUUid)) uuids.push(defaultUUid);
 
-    const result = global.spiderman.db.videogroups
+    const result = global.spiderman.db.videodevicegroups
       .find({ uuid: { $in: uuids } })
       .map(({ uuid }) => uuid);
 

@@ -12,7 +12,7 @@ module.exports = async (data) => {
     fieldChecks,
   });
 
-  await global.domain.videogroup.remove(data);
+  await global.domain.videodevicegroup.remove(data);
 
   return {
     message: 'ok',

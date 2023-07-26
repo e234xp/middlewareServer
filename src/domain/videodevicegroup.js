@@ -6,7 +6,7 @@ module.exports = () => {
   }) {
     const { totalLength, result } = await global.domain.crud
       .find({
-        collection: 'videogroups',
+        collection: 'videodevicegroups',
         query: { ...(uuid === '' ? {} : { uuid }) },
         sliceShift,
         sliceLength,
@@ -32,12 +32,12 @@ module.exports = () => {
     name,
     camera_uuid_list: cameraUuidList, tablet_uuid_list: tabletUuidList,
   }) {
-    const doesExist = !!db.videogroups.findOne({ name });
+    const doesExist = !!db.videodevicegroups.findOne({ name });
 
     if (doesExist) throw Error('The item has already existed.');
 
     const { uuid } = await global.domain.crud.insertOne({
-      collection: 'videogroups',
+      collection: 'videodevicegroups',
       data: { name },
     });
 
@@ -56,11 +56,11 @@ module.exports = () => {
     const fixedUuids = ['0', '1'];
     if (fixedUuids.includes(uuid)) throw Error('The item can not be change.');
 
-    const doesExist = !!db.videogroups.findOne({ name, uuid: { $ne: uuid } });
+    const doesExist = !!db.videodevicegroups.findOne({ name, uuid: { $ne: uuid } });
     if (doesExist) throw Error('The name has already existed.');
 
     await global.domain.crud.modify({
-      collection: 'videogroups',
+      collection: 'videodevicegroups',
       uuid,
       data: { name },
     });
@@ -77,7 +77,7 @@ module.exports = () => {
     const fixedUuids = ['0', '1'];
     uuid = uuid.filter((item) => !fixedUuids.includes(item));
 
-    db.videogroups.deleteMany({ uuid: { $in: uuid } });
+    db.videodevicegroups.deleteMany({ uuid: { $in: uuid } });
     removeGroupsFromVideoDevices(uuid);
   }
 

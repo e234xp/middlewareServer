@@ -1,22 +1,17 @@
 const fieldChecks = [
   {
     fieldName: 'uuid',
-    fieldType: 'nonempty',
-    required: true,
-  },
-  {
-    fieldName: 'name',
     fieldType: 'string',
     required: true,
   },
   {
-    fieldName: 'camera_uuid_list',
-    fieldType: 'array',
+    fieldName: 'slice_shift',
+    fieldType: 'number',
     required: true,
   },
   {
-    fieldName: 'tablet_uuid_list',
-    fieldType: 'array',
+    fieldName: 'slice_length',
+    fieldType: 'number',
     required: true,
   },
 ];
@@ -27,9 +22,11 @@ module.exports = async (data) => {
     fieldChecks,
   });
 
-  await global.domain.videogroup.modify(data);
+  const { totalLength, result } = await global.domain.videodevicegroup.find(data);
 
   return {
     message: 'ok',
+    totalLength,
+    result,
   };
 };

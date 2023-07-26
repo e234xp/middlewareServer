@@ -5,7 +5,7 @@ module.exports = () => {
     console.log(Object.keys(defaultdata));
     // todo 所有的 init 實作
 
-    db.videogroups.set(defaultdata.videogroups);
+    db.videodevicegroups.set(defaultdata.videodevicegroups);
   }
 
   return {

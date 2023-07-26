@@ -22,7 +22,7 @@ module.exports = async (data) => {
     fieldChecks,
   });
 
-  await global.domain.videogroup.create(data);
+  await global.domain.videodevicegroup.create(data);
 
   return {
     message: 'ok',
