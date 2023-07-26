@@ -5,7 +5,7 @@ const useRecord = require('./useRecord');
 module.exports = ({ workingFolder, collections }) => {
   const db = {};
   collections.forEach(({
-    name, type = 'file', defaultData = [], cache = {},
+    name, type = 'file', cache = {},
   }) => {
     const dbInstance = (() => {
       let instance;
@@ -16,7 +16,6 @@ module.exports = ({ workingFolder, collections }) => {
             collection: {
               name,
               cache,
-              defaultData,
             },
           });
           break;

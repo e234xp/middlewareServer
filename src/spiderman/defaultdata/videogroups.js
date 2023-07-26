@@ -1,6 +1,8 @@
+const { uuid: uuidv4 } = require('uuidv4');
+
 module.exports = [
   {
-    uuid: '0',
+    uuid: uuidv4(),
     name: 'All Cameras',
     camera_uuid_list: [],
     tablet_uuid_list: [],
@@ -8,7 +10,7 @@ module.exports = [
     updated_time: Date.now(),
   },
   {
-    uuid: '1',
+    uuid: uuidv4(),
     name: 'All Tablets',
     camera_uuid_list: [],
     tablet_uuid_list: [],

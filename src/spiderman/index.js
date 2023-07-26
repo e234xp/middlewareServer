@@ -11,6 +11,7 @@ module.exports = {
       'query.js', 'request.js',
       'socket.js', 'systemlog.js',
       'token.js', 'validate.js',
+      'defaultdata.js',
     ];
     items.forEach((item) => {
       const name = item.split('.')[0];

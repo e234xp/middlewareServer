@@ -1,7 +1,7 @@
 module.exports = async () => {
-  const { db } = global.spiderman;
+  const { initdb } = global.domain;
   // todo 實作全部的 reset
-  db.videogroups.reset();
+  initdb.init();
 
   return 'success';
 };

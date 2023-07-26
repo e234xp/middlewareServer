@@ -9,7 +9,6 @@ module.exports = ({
       isOpen: isOpenCache = false,
       maxBytes: maxBytesCache = 0,
     },
-    defaultData = [],
   },
 }) => {
   const FILE_PATH = `${workingFolder}/${name}.db`;
@@ -138,10 +137,6 @@ module.exports = ({
     return items;
   }
 
-  function reset() {
-    return set(defaultData);
-  }
-
   function consoleCache() {
     console.log(cachedData);
   }
@@ -155,7 +150,6 @@ module.exports = ({
     deleteOne,
     deleteMany,
     set,
-    reset,
     consoleCache,
   };
 };
