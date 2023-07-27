@@ -5,7 +5,7 @@ module.exports = () => {
       uuid: null,
     };
 
-    // TODO device 加好加滿
+    // TODO tablet
     const camera = global.spiderman.db.cameras.findOne({ name });
     if (camera) {
       result.type = 'camera';
@@ -17,6 +17,13 @@ module.exports = () => {
     if (wiegandconverter) {
       result.type = 'wiegandconverter';
       result.uuid = wiegandconverter.uuid;
+      return result;
+    }
+
+    const iobox = global.spiderman.db.ioboxes.findOne({ name });
+    if (iobox) {
+      result.type = 'iobox';
+      result.uuid = iobox.uuid;
       return result;
     }
 

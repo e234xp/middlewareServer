@@ -23,17 +23,22 @@ module.exports = {
         cache: { isOpen: true, maxBytes: 10 * 1024 * 1024 },
       },
       {
-        name: 'videodevicegroups',
-        type: 'file',
-        cache: { isOpen: true, maxBytes: 10 * 1024 * 1024 },
-      },
-      {
         name: 'cameras',
         type: 'file',
         cache: { isOpen: true, maxBytes: 10 * 1024 * 1024 },
       },
       {
+        name: 'videodevicegroups',
+        type: 'file',
+        cache: { isOpen: true, maxBytes: 10 * 1024 * 1024 },
+      },
+      {
         name: 'wiegandconverters',
+        type: 'file',
+        cache: { isOpen: true, maxBytes: 10 * 1024 * 1024 },
+      },
+      {
+        name: 'ioboxes',
         type: 'file',
         cache: { isOpen: true, maxBytes: 10 * 1024 * 1024 },
       },

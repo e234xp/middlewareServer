@@ -4,32 +4,27 @@ module.exports = () => ({
     if (!data) throw Error(errorMessage);
 
     const isValidated = fieldChecks.every(({ fieldName, fieldType, required }) => {
-      const isFieldExist = data[fieldName] !== undefined && data[fieldName] !== null;
-      if (required && !isFieldExist) {
-        throw Error(errorMessage);
+      const fieldValue = data[fieldName];
+      const isFieldExist = fieldValue !== undefined && fieldValue !== null;
+
+      if (!isFieldExist) {
+        return !required;
       }
 
-      if (isFieldExist) {
-        if (fieldType === 'array') {
-          return Array.isArray(data[fieldName]);
-        }
-
-        if (fieldType === 'object') {
-          return !Array.isArray(data[fieldName]) && typeof data[fieldName] === 'object';
-        }
-
-        // 檢查非空欄位
-        if (fieldType === 'nonempty') {
-          return typeof data[fieldName] === 'string' && data[fieldName].trim().length > 0;
-        }
-
-        // eslint-disable-next-line valid-typeof
-        if (typeof data[fieldName] !== fieldType) {
-          throw Error(errorMessage);
-        }
+      if (fieldType === 'array') {
+        return Array.isArray(fieldValue);
       }
 
-      return true;
+      if (fieldType === 'object') {
+        return !Array.isArray(fieldValue) && typeof fieldValue === 'object';
+      }
+
+      if (fieldType === 'nonempty') {
+        return typeof fieldValue === 'string' && fieldValue.trim().length > 0;
+      }
+
+      // eslint-disable-next-line valid-typeof
+      return typeof fieldValue === fieldType;
     });
 
     if (!isValidated) throw Error(errorMessage);

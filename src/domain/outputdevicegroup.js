@@ -16,11 +16,15 @@ module.exports = () => {
       const wiegandConverterUuidList = db.wiegandconverters
         .find({ divice_groups: { $some: [theUuid] } })
         .map((item) => item.uuid);
-      // todo iobox
+
+      const ioboxUuidList = db.ioboxes
+        .find({ divice_groups: { $some: [theUuid] } })
+        .map((item) => item.uuid);
 
       return {
         uuid: theUuid,
         wiegand_converter_uuid_list: wiegandConverterUuidList,
+        iobox_uuid_list: ioboxUuidList,
         ...others,
       };
     });
@@ -30,7 +34,7 @@ module.exports = () => {
 
   async function create({
     name,
-    wiegand_converter_uuid_list: wiegandConverterUuidList, io_box_uuid_list: ioBoxUuidList,
+    wiegand_converter_uuid_list: wiegandConverterUuidList, iobox_uuid_list: ioBoxUuidList,
   }) {
     const doesExist = !!db.outputdevicegroups.findOne({ name });
 
@@ -51,7 +55,7 @@ module.exports = () => {
   async function modify({
     uuid,
     name,
-    wiegand_converter_uuid_list: wiegandConverterUuidList, io_box_uuid_list: ioBoxUuidList,
+    wiegand_converter_uuid_list: wiegandConverterUuidList, iobox_uuid_list: ioBoxUuidList,
   }) {
     const fixedUuids = ['0', '1'];
     if (fixedUuids.includes(uuid)) throw Error('The item can not be change.');
@@ -93,7 +97,13 @@ module.exports = () => {
       });
     });
 
-    // todo ioBoxUuidList
+    ioBoxUuidList.forEach((deviceUuid) => {
+      const iobox = db.ioboxes.findOne({ uuid: deviceUuid });
+      if (!iobox) return;
+      db.ioboxes.updateOne({ uuid: deviceUuid }, {
+        divice_groups: [...iobox.divice_groups, groupUuid],
+      });
+    });
   }
 
   function removeGroupsFromDevices(deleteUuids) {
@@ -112,7 +122,20 @@ module.exports = () => {
 
     db.wiegandconverters.set(newWiegandconverters);
 
-    // todo tabletUuidList
+    const ioboxes = db.ioboxes.find();
+
+    const newioboxes = ioboxes.map((iobox) => {
+      const newGroups = iobox.divice_groups.filter(
+        (uuid) => !uuid.includes(deleteUuids),
+      );
+
+      return {
+        ...iobox,
+        divice_groups: newGroups,
+      };
+    });
+
+    db.ioboxes.set(newioboxes);
   }
 
   return {

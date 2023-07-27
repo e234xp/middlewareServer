@@ -44,6 +44,11 @@ module.exports = () => {
     modifywiegandconverter: require('../app/cgi/wiegandconverter/modify'),
     removewiegandconverter: require('../app/cgi/wiegandconverter/remove'),
 
+    createiobox: require('../app/cgi/iobox/create'),
+    findiobox: require('../app/cgi/iobox/find'),
+    modifyiobox: require('../app/cgi/iobox/modify'),
+    removeiobox: require('../app/cgi/iobox/remove'),
+
     createoutputdevicegroup: require('../app/cgi/outputdevicegroup/create'),
     findoutputdevicegroup: require('../app/cgi/outputdevicegroup/find'),
     modifyoutputdevicegroup: require('../app/cgi/outputdevicegroup/modify'),

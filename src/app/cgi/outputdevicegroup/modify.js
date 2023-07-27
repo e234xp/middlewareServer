@@ -15,7 +15,7 @@ const fieldChecks = [
     required: true,
   },
   {
-    fieldName: 'io_box_uuid_list',
+    fieldName: 'iobox_uuid_list',
     fieldType: 'array',
     required: true,
   },

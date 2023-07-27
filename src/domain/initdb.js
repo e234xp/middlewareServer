@@ -3,10 +3,13 @@ module.exports = () => {
     const { db, defaultdata } = global.spiderman;
 
     console.log(Object.keys(defaultdata));
-    // todo 所有的 init 實作
 
-    // db.videodevicegroups.set(defaultdata.videodevicegroups);
+    db.videodevicegroups.set(defaultdata.videodevicegroups);
     db.outputdevicegroups.set(defaultdata.outputdevicegroups);
+
+    db.cameras.set([]);
+    db.wiegandconverters.set([]);
+    db.ioboxes.set([]);
   }
 
   return {

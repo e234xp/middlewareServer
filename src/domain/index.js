@@ -4,7 +4,7 @@ module.exports = {
     const files = [
       'group', 'person', 'verifyresult', 'device', 'crud',
       'camera', 'videodevicegroup',
-      'wiegandconverter', 'outputdevicegroup',
+      'wiegandconverter', 'iobox', 'outputdevicegroup',
       'initdb',
     ];
 

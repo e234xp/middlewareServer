@@ -37,6 +37,6 @@ module.exports = (data) => {
     total_length: totalLength,
     slice_shift: sliceShift,
     slice_length: sliceLength,
-    camera_list: result,
+    list: result,
   };
 };
