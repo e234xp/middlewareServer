@@ -1,33 +1,34 @@
 module.exports = () => ({
   data: ({ data, fieldChecks }) => {
-    const errorMessage = 'Invalid parameter.';
-    if (!data) throw Error(errorMessage);
+    if (!data) throw Error('Invalid parameter: no data');
 
-    const isValidated = fieldChecks.every(({ fieldName, fieldType, required }) => {
+    const invalidField = fieldChecks.find(({ fieldName, fieldType, required }) => {
       const fieldValue = data[fieldName];
       const isFieldExist = fieldValue !== undefined && fieldValue !== null;
 
       if (!isFieldExist) {
-        return !required;
+        return required;
       }
 
       if (fieldType === 'array') {
-        return Array.isArray(fieldValue);
+        return !Array.isArray(fieldValue);
       }
 
       if (fieldType === 'object') {
-        return !Array.isArray(fieldValue) && typeof fieldValue === 'object';
+        return Array.isArray(fieldValue) || typeof fieldValue !== 'object';
       }
 
       if (fieldType === 'nonempty') {
-        return typeof fieldValue === 'string' && fieldValue.trim().length > 0;
+        return !(typeof fieldValue === 'string' && fieldValue.trim().length > 0);
       }
 
       // eslint-disable-next-line valid-typeof
-      return typeof fieldValue === fieldType;
+      return typeof fieldValue !== fieldType;
     });
 
-    if (!isValidated) throw Error(errorMessage);
+    if (invalidField) {
+      throw Error(`Invalid parameter: ${invalidField.fieldName} (${invalidField.fieldType})`);
+    }
 
     // 只回傳 fieldChecks 裡面有的欄位
     const filteredData = fieldChecks.reduce((acc, { fieldName }) => {
