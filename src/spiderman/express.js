@@ -35,7 +35,7 @@ module.exports = () => {
   }
 
   function createServer(serverType, port, app) {
-    if (port !== 443) return serverType.createServer(app);
+    if (port !== 1443) return serverType.createServer(app);
 
     return serverType.createServer(sslOptions, app);
   }
