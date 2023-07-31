@@ -41,6 +41,7 @@ function generateParams({
   };
 }
 
+// const WebSocket = require('ws');
 const spiderman = require('./spiderman/index');
 const domain = require('./domain/index');
 
@@ -56,8 +57,8 @@ const expressApp = express()
   .use(express.text({ limit: '50mb' }))
   .use(global.spiderman.express.useCors())
   .use(global.spiderman.express.useFileUpload())
-  .use('/airafacelite', require('./interface')('/airafacelite'))
-  .use('/system', require('./interface')('/system'))
+  .use('/airafacelite', require('./interface/api')('/airafacelite'))
+  .use('/system', require('./interface/api')('/system'))
   .use(express.static(`${global.params.swPath}/wwwdist`));
 
 global.spiderman.server = (() => {
