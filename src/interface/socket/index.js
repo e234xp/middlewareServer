@@ -1,4 +1,3 @@
 module.exports = () => {
-  require('./recognizedresult')();
-  require('./nonrecognizedresult')();
+  require('../../app/socket')();
 };
