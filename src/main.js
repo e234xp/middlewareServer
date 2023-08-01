@@ -75,37 +75,5 @@ global.spiderman.server = (() => {
 }
 )();
 
-const fcsnonrecognizedresultSocketUrl = 'ws://192.168.10.161/fcsnonrecognizedresult';
-global.spiderman.socket.connect({
-  url: fcsnonrecognizedresultSocketUrl,
-  onMessage: (client, data) => {
-    require('./interface/socket')(data);
-  },
-});
-
-const fcsrecognizedresultSocketUrl = 'ws://192.168.10.161/fcsrecognizedresult';
-global.spiderman.socket.connect({
-  url: fcsrecognizedresultSocketUrl,
-  onMessage: (client, data) => {
-    require('./interface/socket')(data);
-  },
-});
-
-const host = '192.168.10.169';
-const port = 12345;
-global.spiderman.tcp.connect({
-  host,
-  port,
-  onConnect: (client) => {
-    const buffer = (() => {
-      const channel = 1;
-      const status = 1;
-      const delay = 1;
-      const command = `AT+STACH${channel}=${status},${delay}\n`;
-
-      return Buffer.from(command, 'ascii');
-    })();
-
-    // client.write(buffer);
-  },
-});
+require('./interface/socket')();
+require('./interface/tcp')();

@@ -1,22 +1,21 @@
 module.exports = {
   init: () => {
-    const instance = {};
-    const files = [
-      'group', 'person', 'verifyresult', 'device', 'crud',
-      'camera', 'videodevicegroup',
-      'wiegandconverter', 'iobox', 'outputdevicegroup',
-      'initdb',
-    ];
+    const instance = {
+      group: require('./group')(),
+      person: require('./person')(),
+      visitor: require('./person')(global.spiderman.db.visitor),
+      verifyresult: require('./verifyresult')(),
+      device: require('./device')(),
+      crud: require('./crud')(),
+      camera: require('./camera')(),
+      videodevicegroup: require('./videodevicegroup')(),
+      wiegandconverter: require('./wiegandconverter')(),
+      iobox: require('./iobox')(),
+      outputdevicegroup: require('./outputdevicegroup')(),
+      initdb: require('./initdb')(),
 
-    files.forEach((file) => {
-      const name = file.split('.')[0];
-      instance[name] = require(`./${file}`)();
-    });
-
-    // 額外設定
-    (() => {
-      instance.visitor = require('./person')(global.spiderman.db.visitor);
-    })();
+      workerIobox: require('./worker-iobox')(),
+    };
 
     return instance;
   },
