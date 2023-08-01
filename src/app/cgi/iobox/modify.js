@@ -44,12 +44,12 @@ const fieldChecksData = [
   },
   {
     fieldName: 'username',
-    fieldType: 'nonempty',
+    fieldType: 'string',
     required: true,
   },
   {
     fieldName: 'password',
-    fieldType: 'nonempty',
+    fieldType: 'string',
     required: true,
   },
   {

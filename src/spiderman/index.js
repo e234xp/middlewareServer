@@ -9,7 +9,8 @@ module.exports = {
       'express.js', 'facefeature.js',
       'image.js', 'parse.js',
       'query.js', 'request.js',
-      'socket.js', 'systemlog.js',
+      'socket.js', 'tcp',
+      'systemlog.js',
       'token.js', 'validate.js',
       'defaultdata.js',
     ];

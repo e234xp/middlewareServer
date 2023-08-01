@@ -35,8 +35,43 @@ module.exports = () => {
     });
   }
 
+  function connect({
+    url, onOpen = () => {}, onMessage = () => {}, onClose = () => {}, onError = () => {},
+
+  }) {
+    // 建立 WebSocket 連線
+    const client = new WebSocket(url);
+
+    // 監聽連線成功事件
+    client.on('open', () => {
+      console.log(`WebSocket connected ${url}`);
+      onOpen(client);
+    });
+
+    // 監聽來自 WebSocket 伺服器的訊息
+    client.on('message', (data) => {
+      console.log('WebSocket response');
+      onMessage(client, data);
+    });
+
+    // 監聽連線關閉事件
+    client.on('close', () => {
+      console.log('WebSocket closed');
+      onClose(client);
+    });
+
+    // 監聽連線錯誤事件
+    client.on('error', (err) => {
+      console.error('WebSocket error', err);
+      onError(client);
+    });
+
+    return client;
+  }
+
   return {
     create,
     broadcastMessage,
+    connect,
   };
 };
