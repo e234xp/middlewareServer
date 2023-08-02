@@ -18,6 +18,7 @@ module.exports = {
       token: require('./token')(),
       validate: require('./validate')(),
       line: require('./line')(),
+      mailer: require('./mailer')(),
 
       defaultdata: require('./defaultdata')(),
       db: require('./db')(dna.db),
