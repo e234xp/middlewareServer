@@ -3,26 +3,23 @@ const dna = require('./dna');
 // 指定要列出檔案的資料夾路徑
 module.exports = {
   init: () => {
-    const abilities = {};
-    const items = [
-      'calculate.js', 'db',
-      'express.js', 'facefeature.js',
-      'image.js', 'parse.js',
-      'query.js', 'request.js',
-      'socket.js', 'tcp',
-      'systemlog.js',
-      'token.js', 'validate.js',
-      'defaultdata.js',
-    ];
-    items.forEach((item) => {
-      const name = item.split('.')[0];
-      if (Object.keys(dna).includes(name)) {
-        const onDna = dna[name];
-        abilities[name] = require(`./${name}`)(onDna);
-      } else {
-        abilities[name] = require(`./${name}`)();
-      }
-    });
+    const abilities = {
+      calculate: require('./calculate')(),
+      express: require('./express')(),
+      facefeature: require('./facefeature')(),
+      image: require('./image')(),
+      parse: require('./parse')(),
+      query: require('./query')(),
+      request: require('./request')(),
+      socket: require('./socket')(),
+      tcp: require('./tcp')(),
+      udp: require('./udp')(),
+      systemlog: require('./systemlog')(),
+      token: require('./token')(),
+      validate: require('./validate')(),
+      defaultdata: require('./defaultdata')(),
+      db: require('./db')(dna.db),
+    };
 
     return abilities;
   },

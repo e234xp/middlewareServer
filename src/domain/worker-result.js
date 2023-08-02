@@ -1,4 +1,5 @@
 module.exports = () => {
+  // todo 會改為利用 UDP 收 result
   function init() {
     const nonrecognizedUrl = 'ws://192.168.10.161/fcsnonrecognizedresult';
     global.spiderman.socket.connect({

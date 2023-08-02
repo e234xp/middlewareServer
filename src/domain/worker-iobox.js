@@ -17,6 +17,9 @@ module.exports = () => {
               client,
             },
           );
+
+          // todo test trigger
+          // trigger(iobox.uuid);
         },
       });
     });

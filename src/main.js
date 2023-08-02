@@ -41,6 +41,7 @@ function generateParams({
   };
 }
 
+const dgram = require('dgram');
 const spiderman = require('./spiderman/index');
 const domain = require('./domain/index');
 
@@ -75,5 +76,4 @@ global.spiderman.server = (() => {
 }
 )();
 
-require('./interface/socket')();
-require('./interface/tcp')();
+require('./interface/init')();

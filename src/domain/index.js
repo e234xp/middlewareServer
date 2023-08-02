@@ -15,6 +15,7 @@ module.exports = {
       initdb: require('./initdb')(),
 
       workerIobox: require('./worker-iobox')(),
+      workerWiegand: require('./worker-wiegand')(),
       workerResult: require('./worker-result')(),
     };
 
