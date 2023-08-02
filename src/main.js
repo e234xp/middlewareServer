@@ -41,7 +41,6 @@ function generateParams({
   };
 }
 
-const dgram = require('dgram');
 const spiderman = require('./spiderman/index');
 const domain = require('./domain/index');
 

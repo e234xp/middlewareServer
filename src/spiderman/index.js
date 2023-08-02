@@ -17,6 +17,8 @@ module.exports = {
       systemlog: require('./systemlog')(),
       token: require('./token')(),
       validate: require('./validate')(),
+      line: require('./line')(),
+
       defaultdata: require('./defaultdata')(),
       db: require('./db')(dna.db),
     };

@@ -18,7 +18,7 @@ module.exports = () => {
             },
           );
 
-          // todo test trigger
+          // test trigger
           // trigger(iobox.uuid);
         },
       });

@@ -17,18 +17,18 @@ module.exports = () => {
       });
     }, 5000);
 
-    // todo test
-    setInterval(() => {
-      allWiegandConverters.forEach((wiegand) => {
-        getTrigger({ isTriggerAlive: false, uuid: wiegand.uuid })();
-      });
-    }, 10000);
+    // test trigger
+    // setInterval(() => {
+    //   allWiegandConverters.forEach((wiegand) => {
+    //     getTrigger({ isTriggerAlive: false, uuid: wiegand.uuid })();
+    //   });
+    // }, 10000);
   }
 
   function getTrigger({ isTriggerAlive, uuid }) {
     const wiegand = allWiegandConverters.find((w) => w.uuid === uuid);
     if (!wiegand) {
-      console.error(`找不到UUID為 ${uuid} 的Wiegand轉換器`);
+      console.error(`could not find ${uuid} Wiegand converter`);
       return null;
     }
 
