@@ -1,34 +1,92 @@
 module.exports = () => {
-  let allWiegandConverters = null;
   const client = global.spiderman.udp.create();
+  let allWiegandConverters = null;
 
   function init() {
-    allWiegandConverters = global.spiderman.db.wiegandconverters.find();
+    allWiegandConverters = global.spiderman.db.wiegandconverters
+      .find()
+      .map((wiegand) => ({
+        ...wiegand,
+        sequence: 0,
+      }));
 
-    // todo test trigger
-    // const { uuid } = allWiegandConverters[0];
-    // trigger(uuid);
+    // 定期5秒去 trigger，並讓 sequence 遞增最多至 256
+    setInterval(() => {
+      allWiegandConverters.forEach((wiegand) => {
+        getTrigger({ isTriggerAlive: true, uuid: wiegand.uuid })();
+      });
+    }, 5000);
+
+    // todo test
+    setInterval(() => {
+      allWiegandConverters.forEach((wiegand) => {
+        getTrigger({ isTriggerAlive: false, uuid: wiegand.uuid })();
+      });
+    }, 10000);
   }
 
-  function trigger(uuid) {
-    const {
-      ip_address: host, port, bits, index, syscode,
-    } = allWiegandConverters.find((wiegand) => wiegand.uuid === uuid);
+  function getTrigger({ isTriggerAlive, uuid }) {
+    const wiegand = allWiegandConverters.find((w) => w.uuid === uuid);
+    if (!wiegand) {
+      console.error(`找不到UUID為 ${uuid} 的Wiegand轉換器`);
+      return null;
+    }
 
-    const command = generateCommand({ bits, index, syscode });
-    send({ command, port, host });
+    if (isTriggerAlive) {
+      return () => {
+        const {
+          ip_address: host, port, sequence,
+        } = wiegand;
+
+        const command = generateAliveCommand({ sequence });
+
+        send({ command, port, host });
+
+        wiegand.sequence = getNextSequence(sequence);
+      };
+    }
+
+    return () => {
+      const {
+        ip_address: host, port, bits, index, syscode, sequence,
+      } = wiegand;
+
+      const command = generateCommand({
+        sequence, bits, index, syscode,
+      });
+
+      send({ command, port, host });
+
+      wiegand.sequence = getNextSequence(sequence);
+    };
   }
 
-  function generateCommand({ bits, index, syscode }) {
+  function generateAliveCommand({ sequence }) {
+    const _sequence = sequence.toString().padStart(3, '0');
+
+    return `${_sequence}Imalive`;
+  }
+
+  function generateCommand({
+    sequence, bits, index, syscode,
+  }) {
     const cardno = 4720864;
 
-    const _seq = '00';
+    const _sequence = sequence.toString().padStart(3, '0');
     const _bits = bits.toString().padStart(2, '0');
-    const _idx = index.toString().padStart(2, '0');
-    const _sys = syscode.toString().padStart(3, '0');
+    const _index = index.toString().padStart(2, '0');
+    const _syscode = syscode.toString().padStart(3, '0');
     const _cardno = cardno.toString().padStart(13, '0');
 
-    return `${_seq}Wiegand${_bits}${_idx}${_sys}${_cardno}`;
+    return `${_sequence}Wiegand${_bits}${_index}${_syscode}${_cardno}`;
+  }
+
+  function getNextSequence(sequence) {
+    if (sequence >= 255) {
+      return 0;
+    }
+
+    return sequence + 1;
   }
 
   function send({ command, port, host }) {
@@ -38,13 +96,12 @@ module.exports = () => {
       if (err) {
         console.error('資料發送失敗：', err);
       } else {
-        console.log(`資料已成功發送至 ${host}:${port}`);
+        console.log(`資料已成功發送至 ${host}:${port}， command: ${command} \n`);
       }
     });
   }
 
   return {
     init,
-    trigger,
   };
 };
