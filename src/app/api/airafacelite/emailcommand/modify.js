@@ -77,13 +77,7 @@ module.exports = (data) => {
     fieldChecks,
   });
 
-  const { uuid, ...others } = data;
-  global.domain.crud.modify({
-    collection: 'emailcommands',
-    uuid,
-    data: others,
-    uniqueKeys: ['name'],
-  });
+  global.domain.emailcommand.modify(data);
 
   return {
     message: 'ok',

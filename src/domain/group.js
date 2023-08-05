@@ -137,6 +137,22 @@ module.exports = () => {
 
     const groupNames = groupList.map((group) => group.name);
     removeGroupsFromPerson(groupNames);
+
+    global.domain.crud.handleRelatedUuids({
+      collection: 'emailcommands',
+      field: 'to',
+      uuids: uuid,
+    });
+    global.domain.crud.handleRelatedUuids({
+      collection: 'emailcommands',
+      field: 'cc',
+      uuids: uuid,
+    });
+    global.domain.crud.handleRelatedUuids({
+      collection: 'emailcommands',
+      field: 'bcc',
+      uuids: uuid,
+    });
   }
 
   function addGroupToPerson({ name, personUuidList, visitorUuidList }) {

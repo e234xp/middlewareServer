@@ -73,11 +73,7 @@ module.exports = (data) => {
   });
 
   // todo 確認 person uuid exists
-  global.domain.crud.insertOne({
-    collection: 'emailcommands',
-    data,
-    uniqueKeys: ['name'],
-  });
+  global.domain.emailcommand.create(data);
 
   return {
     message: 'ok',
