@@ -48,7 +48,7 @@ const rtspFieldChecks = [
   },
   {
     fieldName: 'port',
-    fieldType: 'number',
+    fieldType: 'port',
     required: true,
   },
   {

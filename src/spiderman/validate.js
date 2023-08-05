@@ -26,6 +26,14 @@ module.exports = () => ({
         return !(typeof fieldValue === 'string' && fieldValue.trim().length > 0);
       }
 
+      if (fieldType === 'port') {
+        return typeof fieldValue !== 'number' || fieldValue < 0 || fieldValue > 65535;
+      }
+
+      if (fieldType === 'http-method') {
+        return !['GET', 'POST', 'PUT', 'DELETE'].includes(fieldValue);
+      }
+
       // eslint-disable-next-line valid-typeof
       return typeof fieldValue !== fieldType;
     });

@@ -11,7 +11,7 @@ const fieldChecks = [
   },
   {
     fieldName: 'method',
-    fieldType: 'nonempty',
+    fieldType: 'http-method',
     required: true,
   },
   {

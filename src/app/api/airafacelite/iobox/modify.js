@@ -39,7 +39,7 @@ const fieldChecksData = [
   },
   {
     fieldName: 'port',
-    fieldType: 'number',
+    fieldType: 'port',
     required: true,
   },
   {
