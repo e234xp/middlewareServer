@@ -54,6 +54,31 @@ module.exports = () => {
     modifyoutputdevicegroup: require('../../app/api/airafacelite/outputdevicegroup/modify'),
     removeoutputdevicegroup: require('../../app/api/airafacelite/outputdevicegroup/remove'),
 
+    createrule: require('../../app/api/airafacelite/rule/create'),
+    findrule: require('../../app/api/airafacelite/rule/find'),
+    modifyrule: require('../../app/api/airafacelite/rule/modify'),
+    removerule: require('../../app/api/airafacelite/rule/remove'),
+
+    createschedule: require('../../app/api/airafacelite/schedule/create'),
+    findschedule: require('../../app/api/airafacelite/schedule/find'),
+    modifyschedule: require('../../app/api/airafacelite/schedule/modify'),
+    removeschedule: require('../../app/api/airafacelite/schedule/remove'),
+
+    createlinecommand: require('../../app/api/airafacelite/linecommand/create'),
+    findlinecommand: require('../../app/api/airafacelite/linecommand/find'),
+    modifylinecommand: require('../../app/api/airafacelite/linecommand/modify'),
+    removelinecommand: require('../../app/api/airafacelite/linecommand/remove'),
+
+    createemailcommand: require('../../app/api/airafacelite/emailcommand/create'),
+    findemailcommand: require('../../app/api/airafacelite/emailcommand/find'),
+    modifyemailcommand: require('../../app/api/airafacelite/emailcommand/modify'),
+    removeemailcommand: require('../../app/api/airafacelite/emailcommand/remove'),
+
+    createhttpcommand: require('../../app/api/airafacelite/httpcommand/create'),
+    findhttpcommand: require('../../app/api/airafacelite/httpcommand/find'),
+    modifyhttpcommand: require('../../app/api/airafacelite/httpcommand/modify'),
+    removehttpcommand: require('../../app/api/airafacelite/httpcommand/remove'),
+
     querypersonverifyresult: require('../../app/api/airafacelite/verifyresult/queryperson'),
     queryvisitorverifyresult: require('../../app/api/airafacelite/verifyresult/queryvisitor'),
     querystrangerverifyresult: require('../../app/api/airafacelite/verifyresult/querystranger'),

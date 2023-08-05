@@ -17,6 +17,7 @@
     "jest": "^29.5.0",
     "jsonfile": "^6.1.0",
     "license-checker-webpack-plugin": "^0.2.1",
+    "lodash": "^4.17.21",
     "node-loader": "^2.0.0",
     "nodemailer": "^6.9.4",
     "request": "^2.79.0",
@@ -31,7 +32,7 @@
     "dev": "nodemon src/main fileroot=/Users/liaoguanjie/aira/middlewareServerFiles localhost=192.168.10.49:8588",
     "build": "webpack",
     "bundle": "nodemon dist/main-bundle fileroot=/Users/liaoguanjie/aira/middlewareServerFiles localhost=192.168.10.49:8588",
-    "deploy": "sh scripts/deploy.sh /Users/liaoguanjie/aira/middlewareServer/dist/main-bundle.js gavin@192.168.10.124:~/main.js"
+    "deploy": "sh scripts/deploy.sh /Users/liaoguanjie/aira/middlewareServer/dist/main-bundle.js aira@192.168.10.124:~/project-test/services/main-service/main.js"
   },
   "repository": {
     "type": "git",

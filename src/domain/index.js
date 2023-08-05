@@ -12,6 +12,13 @@ module.exports = {
       wiegandconverter: require('./wiegandconverter')(),
       iobox: require('./iobox')(),
       outputdevicegroup: require('./outputdevicegroup')(),
+
+      rule: require('./rule')(),
+      schedule: require('./schedule')(),
+      linecommand: require('./linecommand')(),
+      emailcommand: require('./emailcommand')(),
+      httpcommand: require('./httpcommand')(),
+
       initdb: require('./initdb')(),
 
       workerIobox: require('./worker-iobox')(),

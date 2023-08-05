@@ -4,6 +4,7 @@ const dna = require('./dna');
 module.exports = {
   init: () => {
     const abilities = {
+      _: require('lodash'),
       calculate: require('./calculate')(),
       express: require('./express')(),
       facefeature: require('./facefeature')(),

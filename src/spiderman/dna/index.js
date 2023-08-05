@@ -48,6 +48,31 @@ module.exports = {
         cache: { isOpen: true, maxBytes: 10 * 1024 * 1024 },
       },
       {
+        name: 'rules',
+        type: 'file',
+        cache: { isOpen: true },
+      },
+      {
+        name: 'schedules',
+        type: 'file',
+        cache: { isOpen: true },
+      },
+      {
+        name: 'linecommands',
+        type: 'file',
+        cache: { isOpen: true },
+      },
+      {
+        name: 'emailcommands',
+        type: 'file',
+        cache: { isOpen: true },
+      },
+      {
+        name: 'httpcommands',
+        type: 'file',
+        cache: { isOpen: true },
+      },
+      {
         name: 'personverifyresult',
         type: 'record',
         cache: { isOpen: true, maxBytes: 20 * 1024 * 1024 },

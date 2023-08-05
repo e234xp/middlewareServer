@@ -14,6 +14,10 @@ module.exports = () => ({
         return !Array.isArray(fieldValue);
       }
 
+      if (fieldType === 'nonempty-array') {
+        return !Array.isArray(fieldValue) || fieldValue.length === 0;
+      }
+
       if (fieldType === 'object') {
         return Array.isArray(fieldValue) || typeof fieldValue !== 'object';
       }

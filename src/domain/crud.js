@@ -15,7 +15,21 @@ module.exports = () => {
     return { totalLength, result };
   }
 
-  async function insertOne({ collection, data }) {
+  function insertOne({ collection, data, uniqueKeys = null }) {
+    if (uniqueKeys) {
+      const uniqueObject = uniqueKeys
+        .map((key) => [key, data[key]])
+        .reduce((obj, [key, value]) => {
+          obj[key] = value;
+          return obj;
+        }, {});
+
+      const doesExist = global.spiderman.db[collection]
+        .findOne(uniqueObject);
+
+      if (doesExist) throw Error('duplicate data found');
+    }
+
     const now = Date.now();
 
     const dataToWrite = {
@@ -30,7 +44,7 @@ module.exports = () => {
     return dataToWrite;
   }
 
-  async function insertMany({ collection, data }) {
+  function insertMany({ collection, data }) {
     const now = Date.now();
 
     data = data.map((item) => ({
@@ -43,9 +57,23 @@ module.exports = () => {
     global.spiderman.db[collection].insertMany(data);
   }
 
-  async function modify({
-    collection, uuid, data,
+  function modify({
+    collection, uuid, data, uniqueKeys = null,
   }) {
+    if (uniqueKeys) {
+      const uniqueObject = uniqueKeys
+        .map((key) => [key, data[key]])
+        .reduce((obj, [key, value]) => {
+          obj[key] = value;
+          return obj;
+        }, {});
+
+      const doesExist = global.spiderman.db[collection]
+        .findOne({ ...uniqueObject, uuid: { $ne: uuid } });
+
+      if (doesExist) throw Error('duplicate data found');
+    }
+
     const now = Date.now();
     const dataToWrite = {
       ...data,
@@ -59,11 +87,36 @@ module.exports = () => {
     global.spiderman.db[collection].deleteMany({ uuid: { $in: uuid } });
   }
 
+  function filterExistUuids({ collection, uuids }) {
+    return global.spiderman.db[collection]
+      .find({ uuid: { $in: uuids } })
+      .map((item) => item.uuid);
+  }
+
+  function handleRelatedUuids({ collection, field, uuids }) {
+    const items = global.spiderman.db[collection].find();
+
+    const newItems = items.map((item) => {
+      const result = global.spiderman._.get(item, field);
+      if (Array.isArray(result)) {
+        const newResult = result.filter((uuid) => !uuids.includes(uuid));
+        global.spiderman._.set(item, field, newResult);
+      } else if (typeof result === 'string') {
+        global.spiderman._.set(item, field, null);
+      }
+      return item;
+    });
+
+    global.spiderman.db[collection].set(newItems);
+  }
+
   return {
     find,
     insertOne,
     insertMany,
     modify,
     remove,
+    filterExistUuids,
+    handleRelatedUuids,
   };
 };
