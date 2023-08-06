@@ -65,7 +65,13 @@ module.exports = () => {
       data: { name },
     });
 
-    removeGroupsFromDevices([uuid]);
+    global.domain.crud.handleRelatedUuids({
+      collection: 'cameras',
+      field: 'divice_groups',
+      uuids: uuid,
+    });
+    // todo tablet
+
     addGroupToDevices({
       uuid,
       cameraUuidList,
@@ -77,8 +83,24 @@ module.exports = () => {
     const fixedUuids = ['0', '1'];
     uuid = uuid.filter((item) => !fixedUuids.includes(item));
 
+    global.domain.crud.handleRelatedUuids({
+      collection: 'rules',
+      field: 'condition.video_device_groups',
+      uuids: uuid,
+    });
+    global.domain.crud.handleRelatedUuids({
+      collection: 'cameras',
+      field: 'divice_groups',
+      uuids: uuid,
+    });
+    // todo tablet
+    // global.domain.crud.handleRelatedUuids({
+    //   collection: 'ioboxes',
+    //   field: 'divice_groups',
+    //   uuids: uuid,
+    // });
+
     db.videodevicegroups.deleteMany({ uuid: { $in: uuid } });
-    removeGroupsFromDevices(uuid);
   }
 
   function addGroupToDevices({
@@ -92,25 +114,6 @@ module.exports = () => {
         divice_groups: [...camera.divice_groups, groupUuid],
       });
     });
-
-    // todo tabletUuidList
-  }
-
-  function removeGroupsFromDevices(deleteUuids) {
-    const cameras = db.cameras.find();
-
-    const newCameras = cameras.map((camera) => {
-      const newGroups = camera.divice_groups.filter(
-        (uuid) => !uuid.includes(deleteUuids),
-      );
-
-      return {
-        ...camera,
-        divice_groups: newGroups,
-      };
-    });
-
-    db.cameras.set(newCameras);
 
     // todo tabletUuidList
   }

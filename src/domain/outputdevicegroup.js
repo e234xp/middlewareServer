@@ -69,7 +69,17 @@ module.exports = () => {
       data: { name },
     });
 
-    removeGroupsFromDevices([uuid]);
+    global.domain.crud.handleRelatedUuids({
+      collection: 'wiegandconverters',
+      field: 'divice_groups',
+      uuids: uuid,
+    });
+    global.domain.crud.handleRelatedUuids({
+      collection: 'ioboxes',
+      field: 'divice_groups',
+      uuids: uuid,
+    });
+
     addGroupToDevices({
       uuid,
       wiegandConverterUuidList,
@@ -81,8 +91,23 @@ module.exports = () => {
     const fixedUuids = ['0', '1'];
     uuid = uuid.filter((item) => !fixedUuids.includes(item));
 
+    global.domain.crud.handleRelatedUuids({
+      collection: 'rules',
+      field: 'actions.output_device_groups',
+      uuids: uuid,
+    });
+    global.domain.crud.handleRelatedUuids({
+      collection: 'wiegandconverters',
+      field: 'divice_groups',
+      uuids: uuid,
+    });
+    global.domain.crud.handleRelatedUuids({
+      collection: 'ioboxes',
+      field: 'divice_groups',
+      uuids: uuid,
+    });
+
     db.outputdevicegroups.deleteMany({ uuid: { $in: uuid } });
-    removeGroupsFromDevices(uuid);
   }
 
   function addGroupToDevices({
@@ -104,38 +129,6 @@ module.exports = () => {
         divice_groups: [...iobox.divice_groups, groupUuid],
       });
     });
-  }
-
-  function removeGroupsFromDevices(deleteUuids) {
-    const wiegandconverters = db.wiegandconverters.find();
-
-    const newWiegandconverters = wiegandconverters.map((wiegandconverter) => {
-      const newGroups = wiegandconverter.divice_groups.filter(
-        (uuid) => !uuid.includes(deleteUuids),
-      );
-
-      return {
-        ...wiegandconverter,
-        divice_groups: newGroups,
-      };
-    });
-
-    db.wiegandconverters.set(newWiegandconverters);
-
-    const ioboxes = db.ioboxes.find();
-
-    const newioboxes = ioboxes.map((iobox) => {
-      const newGroups = iobox.divice_groups.filter(
-        (uuid) => !uuid.includes(deleteUuids),
-      );
-
-      return {
-        ...iobox,
-        divice_groups: newGroups,
-      };
-    });
-
-    db.ioboxes.set(newioboxes);
   }
 
   return {

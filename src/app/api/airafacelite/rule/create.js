@@ -28,6 +28,11 @@ const conditionFieldChecks = [
     required: true,
   },
   {
+    fieldName: 'groups',
+    fieldType: 'nonempty-array',
+    required: true,
+  },
+  {
     fieldName: 'schedule',
     fieldType: 'string',
     required: true,

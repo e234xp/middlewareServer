@@ -153,6 +153,11 @@ module.exports = () => {
       field: 'bcc',
       uuids: uuid,
     });
+    global.domain.crud.handleRelatedUuids({
+      collection: 'rules',
+      field: 'condition.groups',
+      uuids: uuid,
+    });
   }
 
   function addGroupToPerson({ name, personUuidList, visitorUuidList }) {
