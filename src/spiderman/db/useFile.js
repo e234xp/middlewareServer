@@ -1,14 +1,13 @@
 const fs = require('fs');
 const jsonfile = require('jsonfile');
+const _ = require('lodash');
 
 module.exports = ({
   workingFolder,
-  collection: {
-    name,
-    cache: {
-      isOpen: isOpenCache = false,
-      maxBytes: maxBytesCache = 0,
-    },
+  name,
+  cache: {
+    isOpen: isOpenCache = false,
+    maxBytes: maxBytesCache = 0,
   },
 }) => {
   const FILE_PATH = `${workingFolder}/${name}.db`;
@@ -18,10 +17,7 @@ module.exports = ({
   // 讀取資料
   function readData() {
     if (cachedData !== null) {
-      return cachedData;
-    }
-    if (!fs.existsSync(workingFolder)) {
-      fs.mkdirSync(workingFolder);
+      return _.cloneDeep(cachedData);
     }
     if (!fs.existsSync(FILE_PATH)) {
       setCache([]);
@@ -35,9 +31,6 @@ module.exports = ({
 
   // 寫入資料
   function writeData(data) {
-    if (!fs.existsSync(workingFolder)) {
-      fs.mkdirSync(workingFolder);
-    }
     jsonfile.writeFileSync(FILE_PATH, data, { spaces: 2 });
     // 更新缓存的数据
     setCache(data);

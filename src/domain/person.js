@@ -86,8 +86,8 @@ module.exports = (collection = global.spiderman.db.person) => {
   }
 
   function savePhoto({ uuid, displayImage, registerImage }) {
-    global.spiderman.db.photo.insertOne(`${uuid}.display`, displayImage);
-    global.spiderman.db.photo.insertOne(`${uuid}.register`, registerImage);
+    global.spiderman.db.dbPhoto.insertOne(`${uuid}.display`, displayImage);
+    global.spiderman.db.dbPhoto.insertOne(`${uuid}.register`, registerImage);
   }
 
   function removePhoto(uuid) {
@@ -95,7 +95,7 @@ module.exports = (collection = global.spiderman.db.person) => {
       .map((item) => ([`${item}.display`, `${item}.register`]))
       .flat();
 
-    global.spiderman.db.photo.deleteMany(fileNames);
+    global.spiderman.db.dbPhoto.deleteMany(fileNames);
   }
 
   function fetchPhoto(uuid) {
@@ -103,8 +103,8 @@ module.exports = (collection = global.spiderman.db.person) => {
 
     return isFetch
       ? {
-        display_image: global.spiderman.db.photo.findOne(`${uuid}.display`),
-        register_image: global.spiderman.db.photo.findOne(`${uuid}.register`),
+        display_image: global.spiderman.db.dbPhoto.findOne(`${uuid}.display`),
+        register_image: global.spiderman.db.dbPhoto.findOne(`${uuid}.register`),
       }
       : {
         display_image: '',

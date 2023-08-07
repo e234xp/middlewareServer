@@ -1,5 +1,5 @@
 module.exports = () => {
-  const publicCgi = ['test', 'systeminfo', 'downloadsyslog'];
+  const publicCgi = ['initdb', 'systeminfo', 'downloadsyslog'];
   const router = {
     test: require('../../app/api/system/test'),
     initdb: require('../../app/api/system/initdb'),

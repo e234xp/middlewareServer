@@ -1,7 +1,10 @@
 const fs = require('fs');
 
-module.exports = ({ workingFolder, collection: { name } }) => {
+module.exports = ({ workingFolder, name }) => {
   const FOLIDER_PATH = `${workingFolder}/${name}`;
+  if (!fs.existsSync(FOLIDER_PATH)) {
+    fs.mkdirSync(FOLIDER_PATH);
+  }
 
   function findOne(path) {
     const FILE_PATH = `${FOLIDER_PATH}/${path}`;

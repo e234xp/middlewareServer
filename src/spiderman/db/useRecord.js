@@ -1,12 +1,14 @@
 const fs = require('fs');
 
 module.exports = ({
-  workingFolder, collection: {
-    name,
-    cache: { isOpen: isOpenCache = false, maxBytes: maxBytesCache = 0 },
-  },
+  workingFolder,
+  name,
+  cache: { isOpen: isOpenCache = false, maxBytes: maxBytesCache = 0 },
 }) => {
   const FOLIDER_PATH = `${workingFolder}/${name}`;
+  if (!fs.existsSync(FOLIDER_PATH)) {
+    fs.mkdirSync(FOLIDER_PATH);
+  }
   //    cache 格式: file:time
   const cacheData = new Map();
   const cacheSizes = new Map();
