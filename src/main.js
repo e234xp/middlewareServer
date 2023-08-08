@@ -23,8 +23,7 @@ const argObject = (() => {
 
 global.params = generateParams(argObject);
 function generateParams({
-  // todo 改回 project
-  fileroot = '/home/aira/project-test/server_root',
+  fileroot = '/home/aira/project/server_root',
   localhost = '127.0.0.1:8588',
 }) {
   const dataPath = `${fileroot}/data`;

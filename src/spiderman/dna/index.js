@@ -169,7 +169,7 @@ module.exports = {
         name: 'systemlog',
         type: 'record',
         cache: { isOpen: true, maxBytes: 20 * 1024 * 1024 },
-        workingFolder: DB_FOLDER,
+        workingFolder: DATA_FOLDER,
       },
     ],
   },

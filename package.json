@@ -32,7 +32,7 @@
     "dev": "nodemon src/main fileroot=/Users/liaoguanjie/aira/test-file-root localhost=192.168.10.49:8588",
     "build": "webpack",
     "bundle": "nodemon dist/main-bundle fileroot=/Users/liaoguanjie/aira/middlewareServerFiles localhost=192.168.10.49:8588",
-    "deploy": "sh scripts/deploy.sh /Users/liaoguanjie/aira/middlewareServer/dist/main-bundle.js aira@192.168.10.124:~/project-test/services/main-service/main.js"
+    "deploy": "sh scripts/deploy.sh /Users/liaoguanjie/aira/middlewareServer/dist/main-bundle.js aira@192.168.10.124:~/project/services/main-service/main.js"
   },
   "repository": {
     "type": "git",
