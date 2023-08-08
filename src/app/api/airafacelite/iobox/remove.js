@@ -12,7 +12,7 @@ module.exports = async (data) => {
     fieldChecks,
   });
 
-  await global.domain.crud.remove({ collection: 'ioboxes', uuid: data.uuid });
+  global.domain.iobox.remove(data);
 
   return {
     message: 'ok',

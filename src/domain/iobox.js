@@ -35,8 +35,22 @@ module.exports = () => {
     return result;
   }
 
+  function remove(data) {
+    global.domain.crud.handleRelatedUuids({
+      collection: 'rules',
+      field: 'actions.ioboxes',
+      uuids: data.uuid,
+    });
+
+    global.domain.crud.remove({
+      collection: 'ioboxes',
+      uuid: data.uuid,
+    });
+  }
+
   return {
     create,
     modify,
+    remove,
   };
 };

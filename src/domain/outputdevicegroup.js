@@ -92,11 +92,6 @@ module.exports = () => {
     uuid = uuid.filter((item) => !fixedUuids.includes(item));
 
     global.domain.crud.handleRelatedUuids({
-      collection: 'rules',
-      field: 'actions.output_device_groups',
-      uuids: uuid,
-    });
-    global.domain.crud.handleRelatedUuids({
       collection: 'wiegandconverters',
       field: 'divice_groups',
       uuids: uuid,

@@ -37,7 +37,13 @@ function filterExistUuids(data) {
   data.condition.groups = global.domain.crud.filterExistUuids({ collection: 'groups', uuids: data.condition.groups });
   if (data.condition.groups.length === 0) throw Error('groups not exist');
 
-  data.actions.output_device_groups = global.domain.crud.filterExistUuids({ collection: 'outputdevicegroups', uuids: data.actions.output_device_groups });
+  const ioboxUuidList = global.domain.crud.filterExistUuids({ collection: 'ioboxes', uuids: data.actions.ioboxes.map(({ uuid }) => uuid) });
+  data.actions.ioboxes = data.actions.ioboxes
+    .filter(({ uuid }) => ioboxUuidList.includes(uuid));
+
+  const wiegandUuidList = global.domain.crud.filterExistUuids({ collection: 'wiegandconverters', uuids: data.actions.wiegand_converters.map(({ uuid }) => uuid) });
+  data.actions.wiegand_converters = data.actions.wiegand_converters
+    .filter(({ uuid }) => wiegandUuidList.includes(uuid));
 
   data.actions.line_commands = global.domain.crud.filterExistUuids({ collection: 'linecommands', uuids: data.actions.line_commands });
 

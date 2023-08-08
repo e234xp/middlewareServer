@@ -99,7 +99,16 @@ module.exports = () => {
     const newItems = items.map((item) => {
       const result = global.spiderman._.get(item, field);
       if (Array.isArray(result)) {
-        const newResult = result.filter((uuid) => !uuids.includes(uuid));
+        const newResult = result
+          .filter((r) => {
+            if (typeof r === 'string') {
+              return !uuids.includes(r);
+            }
+            if (typeof r === 'object' && r !== null && 'uuid' in r) {
+              return !uuids.includes(r.uuid);
+            }
+            return false;
+          });
         global.spiderman._.set(item, field, newResult);
       } else if (typeof result === 'string') {
         global.spiderman._.set(item, field, null);

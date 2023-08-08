@@ -46,7 +46,12 @@ const conditionFieldChecks = [
 
 const actionFieldChecks = [
   {
-    fieldName: 'output_device_groups',
+    fieldName: 'ioboxes',
+    fieldType: 'array',
+    required: true,
+  },
+  {
+    fieldName: 'wiegand_converters',
     fieldType: 'array',
     required: true,
   },

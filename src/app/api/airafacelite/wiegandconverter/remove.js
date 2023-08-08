@@ -12,7 +12,7 @@ module.exports = async (data) => {
     fieldChecks,
   });
 
-  await global.domain.crud.remove({ collection: 'wiegandconverters', uuid: data.uuid });
+  global.domain.wiegandconverter.remove(data);
 
   return {
     message: 'ok',

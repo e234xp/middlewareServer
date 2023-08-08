@@ -35,8 +35,22 @@ module.exports = () => {
     return result;
   }
 
+  function remove(data) {
+    global.domain.crud.handleRelatedUuids({
+      collection: 'rules',
+      field: 'actions.wiegand_converters',
+      uuids: data.uuid,
+    });
+
+    global.domain.crud.remove({
+      collection: 'wiegandconverters',
+      uuid: data.uuid,
+    });
+  }
+
   return {
     create,
     modify,
+    remove,
   };
 };
