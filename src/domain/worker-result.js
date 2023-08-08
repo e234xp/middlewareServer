@@ -11,7 +11,7 @@ module.exports = () => {
 
     server.on('message', (message) => {
       const parsedMessage = JSON.parse(message);
-      // console.log('get verify result', parsedMessage.source_id);
+      console.log('get verify result', parsedMessage.source_id);
       // todo
     });
 

@@ -34,6 +34,11 @@ const fieldChecks = [
     fieldType: 'number',
     required: true,
   },
+  {
+    fieldName: 'special_card_number',
+    fieldType: 'string',
+    required: true,
+  },
 ];
 
 module.exports = async (data) => {
