@@ -5,6 +5,7 @@ module.exports = {
   init: () => {
     const abilities = {
       _: require('lodash'),
+      dayjs: require('./dayjs')(),
       calculate: require('./calculate')(),
       express: require('./express')(),
       facefeature: require('./facefeature')(),
