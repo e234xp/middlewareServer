@@ -41,13 +41,15 @@ const fieldChecks = [
   },
 ];
 
-module.exports = async (data) => {
+module.exports = (data) => {
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
   });
 
-  await global.domain.wiegandconverter.create(data);
+  global.domain.wiegandconverter.create(data);
+  global.domain.workerWiegand.init();
+
   return {
     message: 'ok',
   };

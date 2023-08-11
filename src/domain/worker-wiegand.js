@@ -1,7 +1,17 @@
 module.exports = () => {
-  let allWiegandConverters = null;
+  let allWiegandConverters = [];
 
   function init() {
+    allWiegandConverters.forEach(({ client }) => {
+      client.end();
+    });
+
+    setTimeout(() => {
+      connectWiegandConverters();
+    }, 1000);
+  }
+
+  function connectWiegandConverters() {
     const wiegandConverters = global.spiderman.db.wiegandconverters
       .find();
 

@@ -1,7 +1,17 @@
 module.exports = () => {
-  let allIoboxes = null;
+  let allIoboxes = [];
 
   function init() {
+    allIoboxes.forEach(({ client }) => {
+      client.end();
+    });
+
+    setTimeout(() => {
+      connectIoboxes();
+    }, 1000);
+  }
+
+  function connectIoboxes() {
     const ioboxes = global.spiderman.db.ioboxes.find();
     const result = [];
 

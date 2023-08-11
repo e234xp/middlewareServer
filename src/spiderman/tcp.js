@@ -21,7 +21,7 @@ module.exports = () => {
 
     // 監聽連線關閉事件
     client.on('close', () => {
-      console.log('TCP closed');
+      console.log('TCP closed', port, host);
       onClose(client);
     });
 

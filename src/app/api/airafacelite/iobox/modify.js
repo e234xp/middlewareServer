@@ -59,7 +59,7 @@ const fieldChecksData = [
   },
 ];
 
-module.exports = async (rData) => {
+module.exports = (rData) => {
   const { uuid } = global.spiderman.validate.data({
     data: rData,
     fieldChecks,
@@ -70,7 +70,8 @@ module.exports = async (rData) => {
     fieldChecks: fieldChecksData,
   });
 
-  await global.domain.iobox.modify({ uuid, data });
+  global.domain.iobox.modify({ uuid, data });
+  global.domain.workerIobox.init();
 
   return {
     message: 'ok',

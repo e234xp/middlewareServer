@@ -46,13 +46,15 @@ const fieldChecks = [
   },
 ];
 
-module.exports = async (data) => {
+module.exports = (data) => {
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
   });
 
-  await global.domain.iobox.create(data);
+  global.domain.iobox.create(data);
+  global.domain.workerIobox.init();
+
   return {
     message: 'ok',
   };

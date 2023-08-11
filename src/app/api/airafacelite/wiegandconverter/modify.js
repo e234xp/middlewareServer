@@ -54,7 +54,7 @@ const fieldChecksData = [
   },
 ];
 
-module.exports = async (rData) => {
+module.exports = (rData) => {
   const { uuid } = global.spiderman.validate.data({
     data: rData,
     fieldChecks,
@@ -65,7 +65,8 @@ module.exports = async (rData) => {
     fieldChecks: fieldChecksData,
   });
 
-  await global.domain.wiegandconverter.modify({ uuid, data });
+  global.domain.wiegandconverter.modify({ uuid, data });
+  global.domain.workerWiegand.init();
 
   return {
     message: 'ok',
