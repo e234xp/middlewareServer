@@ -24,6 +24,10 @@ module.exports = {
       workerIobox: require('./worker-iobox')(),
       workerWiegand: require('./worker-wiegand')(),
       workerResult: require('./worker-result')(),
+
+      triggerLineCommand: require('./trigger-line-command')(),
+      triggerEmailCommand: require('./trigger-email-command')(),
+      triggerHttpCommand: require('./trigger-http-command')(),
     };
 
     return instance;

@@ -1,84 +1,93 @@
 module.exports = () => {
-  const client = global.spiderman.udp.create();
   let allWiegandConverters = null;
 
   function init() {
-    allWiegandConverters = global.spiderman.db.wiegandconverters
-      .find()
-      .map((wiegand) => ({
-        ...wiegand,
-        sequence: 0,
-      }));
+    const wiegandConverters = global.spiderman.db.wiegandconverters
+      .find();
 
-    // 定期5秒去 trigger，並讓 sequence 遞增最多至 256
-    setInterval(() => {
-      allWiegandConverters.forEach((wiegand) => {
-        getTrigger({ isTriggerAlive: true, uuid: wiegand.uuid })();
+    const result = [];
+
+    wiegandConverters.forEach((w) => {
+      const { ip_address: host, port } = w;
+      global.spiderman.tcp.connect({
+        host,
+        port,
+        onConnect: (client) => {
+          const wiegand = {
+            ...w,
+            client,
+            sequence: 0,
+            lastSendTimestamp: null,
+          };
+          result.push(wiegand);
+
+          send({ wiegand, isSendAlive: true });
+          setInterval(() => {
+            send({ wiegand, isSendAlive: true });
+          }, 8 * 1000);
+        },
       });
-    }, 5000);
+    });
 
-    // test trigger
-    // setInterval(() => {
-    //   allWiegandConverters.forEach((wiegand) => {
-    //     getTrigger({ isTriggerAlive: false, uuid: wiegand.uuid })();
-    //   });
-    // }, 10000);
+    allWiegandConverters = result;
   }
 
-  function getTrigger({ isTriggerAlive, uuid }) {
+  function trigger({ uuid, isSpecialCardNumber, cardNumber }) {
     const wiegand = allWiegandConverters.find((w) => w.uuid === uuid);
     if (!wiegand) {
       console.error(`could not find ${uuid} Wiegand converter`);
-      return null;
+      return;
     }
 
-    if (isTriggerAlive) {
-      return () => {
-        const {
-          ip_address: host, port, sequence,
-        } = wiegand;
+    const sendCardNumber = isSpecialCardNumber ? wiegand.special_card_number : cardNumber;
+    if (!sendCardNumber) return;
 
-        const command = generateAliveCommand({ sequence });
-
-        send({ command, port, host });
-
-        wiegand.sequence = getNextSequence(sequence);
-      };
-    }
-
-    return () => {
-      const {
-        ip_address: host, port, bits, index, syscode, sequence,
-      } = wiegand;
-
-      const command = generateCommand({
-        sequence, bits, index, syscode,
-      });
-
-      send({ command, port, host });
-
-      wiegand.sequence = getNextSequence(sequence);
-    };
+    send({ wiegand, isSendAlive: false, cardNumber: sendCardNumber });
   }
 
-  function generateAliveCommand({ sequence }) {
-    const _sequence = sequence.toString().padStart(3, '0');
+  function send({ wiegand, isSendAlive = true, cardNumber }) {
+    const now = Date.now();
+    if (wiegand.lastSendTimestamp && now - wiegand.lastSendTimestamp < 1000) {
+      setTimeout(() => {
+        send({ wiegand, isSendAlive, cardNumber });
+      }, 1 * 1000);
+      return;
+    }
 
-    return `${_sequence}Imalive`;
+    const command = (() => {
+      const {
+        sequence, bits, index, syscode,
+      } = wiegand;
+
+      if (isSendAlive) return generateAliveCommand(sequence);
+      return generateCommand({
+        sequence, bits, index, syscode, cardNumber,
+      });
+    })();
+
+    const buffer = Buffer.from(command, 'ascii');
+    wiegand.client.write(buffer);
+    wiegand.lastSendTimestamp = Date.now();
+    wiegand.sequence = getNextSequence(wiegand.sequence);
+    console.log('send', command);
   }
 
   function generateCommand({
-    sequence, bits, index, syscode,
+    sequence, bits, index, syscode, cardNumber,
   }) {
-    const cardno = 4720864;
-
     const _sequence = sequence.toString().padStart(3, '0');
     const _bits = bits.toString().padStart(2, '0');
     const _index = index.toString().padStart(2, '0');
     const _syscode = syscode.toString().padStart(3, '0');
-    const _cardno = cardno.toString().padStart(13, '0');
+    const _cardno = cardNumber.toString().padStart(12, '0');
 
     return `${_sequence}Wiegand${_bits}${_index}${_syscode}${_cardno}`;
+  }
+
+  function generateAliveCommand(sequence) {
+    const _sequence = sequence.toString().padStart(3, '0');
+
+    return `${_sequence}Imalive`;
   }
 
   function getNextSequence(sequence) {
@@ -89,19 +98,8 @@ module.exports = () => {
     return sequence + 1;
   }
 
-  function send({ command, port, host }) {
-    const buffer = Buffer.from(command, 'ascii');
-
-    client.send(buffer, port, host, (err) => {
-      if (err) {
-        console.error('資料發送失敗：', err);
-      } else {
-        console.log(`資料已成功發送至 ${host}:${port}， command: ${command} \n`);
-      }
-    });
-  }
-
   return {
     init,
+    trigger,
   };
 };

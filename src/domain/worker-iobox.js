@@ -17,9 +17,6 @@ module.exports = () => {
               client,
             },
           );
-
-          // test trigger
-          // trigger(iobox.uuid);
         },
       });
     });
@@ -27,18 +24,14 @@ module.exports = () => {
     allIoboxes = result;
   }
 
-  function trigger(uuid) {
-    const { client, iopoint } = allIoboxes.find((iobox) => iobox.uuid === uuid);
+  function trigger({ uuid, iopoint }) {
+    const { client, iopoint: iopoints } = allIoboxes.find((i) => i.uuid === uuid);
 
-    const commands = iopoint
-      .filter(({ enable }) => !!enable)
-      .map(({
-        no, trigger: triggerStatus, delay,
-      }) => generateCommand({ no, status: triggerStatus, delay }));
+    const { no, trigger: triggerStatus, delay } = iopoints.find((p) => p.no === iopoint);
 
-    commands.forEach((command) => {
-      send({ client, command });
-    });
+    const command = generateCommand({ no, status: triggerStatus, delay });
+
+    send({ client, command });
   }
 
   function generateCommand({ no, status, delay = '' }) {

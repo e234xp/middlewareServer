@@ -1,20 +1,10 @@
 const nodemailer = require('nodemailer');
 
-// test
-// const config = {
-//   host: 'smtp.gmail.com',
-//   port: 587,
-//   security: 'TLS',
-//   email: 'airaface20@gmail.com',
-//   password: 'rtsegbssuusreynn',
-//   to: ['sa871018@gmail.com', 'gavin.liao@aira.com.tw'],
-//   subject: '測試郵件',
-//   body: '這是一封測試郵件。',
-// };
 module.exports = () => {
   function send({
-    host, port, security, email, password,
-    to, subject, body,
+    host, port, security, email, password, sender, subject,
+    to, cc, bcc,
+    body, images,
   }) {
     const transporter = (() => {
       const config = {
@@ -37,20 +27,31 @@ module.exports = () => {
       return nodemailer.createTransport(config);
     })();
 
-    const mailOptions = {
-      headers: {
-        'X-Spam-Flag': 'yes',
-        'X-Spam-Level': '******',
-        'X-GND-Spam-Score': '100',
-        'X-GND-Status': 'SPAM',
-      },
-      from: email,
-      to: to.join(', '),
-      subject,
-      html: body,
-      // todo attachments
-      // attachments,
-    };
+    const mailOptions = (() => {
+      const attachments = images
+        .map((image, index) => ({
+          filename: `face-${index + 1}.png`,
+          content: Buffer.from(image, 'base64'),
+        }));
+
+      return {
+        headers: {
+          'X-Spam-Flag': 'yes',
+          'X-Spam-Level': '******',
+          'X-GND-Spam-Score': '100',
+          'X-GND-Status': 'SPAM',
+        },
+        from: `${sender} <${email}>`,
+        subject,
+
+        to,
+        cc,
+        bcc,
+
+        text: body,
+        attachments,
+      };
+    })();
 
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
