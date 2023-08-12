@@ -8,6 +8,7 @@ module.exports = {
       device: require('./device')(),
       crud: require('./crud')(),
       camera: require('./camera')(),
+      tablet: require('./tablet')(),
       videodevicegroup: require('./videodevicegroup')(),
       wiegandconverter: require('./wiegandconverter')(),
       iobox: require('./iobox')(),

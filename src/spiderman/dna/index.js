@@ -44,6 +44,12 @@ module.exports = {
         workingFolder: DB_FOLDER,
       },
       {
+        name: 'tablets',
+        type: 'file',
+        cache: { isOpen: true, maxBytes: 10 * 1024 * 1024 },
+        workingFolder: DB_FOLDER,
+      },
+      {
         name: 'videodevicegroups',
         type: 'file',
         cache: { isOpen: true, maxBytes: 10 * 1024 * 1024 },

@@ -34,6 +34,11 @@ module.exports = () => {
     modifycamera: require('../../app/api/airafacelite/camera/modify'),
     removecamera: require('../../app/api/airafacelite/camera/remove'),
 
+    createtablet: require('../../app/api/airafacelite/tablet/create'),
+    findtablet: require('../../app/api/airafacelite/tablet/find'),
+    modifytablet: require('../../app/api/airafacelite/tablet/modify'),
+    removetablet: require('../../app/api/airafacelite/tablet/remove'),
+
     createvideodevicegroup: require('../../app/api/airafacelite/videodevicegroup/create'),
     findvideodevicegroup: require('../../app/api/airafacelite/videodevicegroup/find'),
     modifyvideodevicegroup: require('../../app/api/airafacelite/videodevicegroup/modify'),
