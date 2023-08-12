@@ -5,6 +5,7 @@ module.exports = () => {
     allWiegandConverters.forEach(({ client }) => {
       client.end();
     });
+    allWiegandConverters = [];
 
     setTimeout(() => {
       connectWiegandConverters();
@@ -15,31 +16,40 @@ module.exports = () => {
     const wiegandConverters = global.spiderman.db.wiegandconverters
       .find();
 
-    const result = [];
-
     wiegandConverters.forEach((w) => {
-      const { ip_address: host, port } = w;
-      global.spiderman.tcp.connect({
-        host,
-        port,
-        onConnect: (client) => {
-          const wiegand = {
-            ...w,
-            client,
-            sequence: 0,
-            lastSendTimestamp: null,
-          };
-          result.push(wiegand);
-
-          send({ wiegand, isSendAlive: true });
-          setInterval(() => {
-            send({ wiegand, isSendAlive: true });
-          }, 8 * 1000);
-        },
-      });
+      connect(w);
     });
+  }
 
-    allWiegandConverters = result;
+  function connect(w) {
+    let intervalId;
+    const { ip_address: host, port } = w;
+    global.spiderman.tcp.connect({
+      host,
+      port,
+      onConnect: (client) => {
+        const wiegand = {
+          ...w,
+          client,
+          sequence: 0,
+          lastSendTimestamp: null,
+        };
+        allWiegandConverters.push(wiegand);
+
+        send({ wiegand, isSendAlive: true });
+        intervalId = setInterval(() => {
+          send({ wiegand, isSendAlive: true });
+        }, 8 * 1000);
+      },
+      onClose: () => {
+        const index = allWiegandConverters.findIndex((ww) => ww.uuid === w.uuid);
+        if (index !== -1) {
+          allWiegandConverters.splice(index, 1);
+        }
+        clearInterval(intervalId);
+        connect(w);
+      },
+    });
   }
 
   function trigger({ uuid, isSpecialCardNumber, cardNumber }) {

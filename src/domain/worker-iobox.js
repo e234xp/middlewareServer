@@ -5,6 +5,7 @@ module.exports = () => {
     allIoboxes.forEach(({ client }) => {
       client.end();
     });
+    allIoboxes = [];
 
     setTimeout(() => {
       connectIoboxes();
@@ -12,26 +13,34 @@ module.exports = () => {
   }
 
   function connectIoboxes() {
-    const ioboxes = global.spiderman.db.ioboxes.find();
-    const result = [];
+    const ioboxes = global.spiderman.db.ioboxes
+      .find();
 
     ioboxes.forEach((iobox) => {
-      const { ip_address: host, port } = iobox;
-      global.spiderman.tcp.connect({
-        host,
-        port,
-        onConnect: (client) => {
-          result.push(
-            {
-              ...iobox,
-              client,
-            },
-          );
-        },
-      });
+      connect(iobox);
     });
+  }
 
-    allIoboxes = result;
+  function connect(io) {
+    const { ip_address: host, port } = io;
+    global.spiderman.tcp.connect({
+      host,
+      port,
+      onConnect: (client) => {
+        const iobox = {
+          ...io,
+          client,
+        };
+        allIoboxes.push(iobox);
+      },
+      onClose: () => {
+        const index = allIoboxes.findIndex((iobox) => iobox.uuid === io.uuid);
+        if (index !== -1) {
+          allIoboxes.splice(index, 1);
+        }
+        connect(io);
+      },
+    });
   }
 
   function trigger({ uuid, iopoint }) {
