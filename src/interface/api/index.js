@@ -106,7 +106,9 @@ function authorize({ req, publicCgi = [] }) {
 
   const isPassed = (() => {
     if (publicCgi.includes(cgi)) return true;
-    const token = req.headers.token ?? req.query?.token ?? null;
+    const token = req.headers.token ?? req.query?.token
+    ?? req.headers.sessionId ?? req.query?.sessionId
+    ?? null;
     return token && (token === '83522758' || global.spiderman.token.decryptToAccountInTime(token));
   })();
 

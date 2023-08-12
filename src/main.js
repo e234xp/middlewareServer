@@ -57,6 +57,7 @@ const expressApp = express()
   .use(global.spiderman.express.useCors())
   .use(global.spiderman.express.useFileUpload())
   .use('/airafacelite', require('./interface/api')('/airafacelite'))
+  .use('/airaface', require('./interface/api')('/tablet'))
   .use('/system', require('./interface/api')('/system'))
   .use(express.static(`${global.params.swPath}/wwwdist`));
 
