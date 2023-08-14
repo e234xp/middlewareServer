@@ -20,8 +20,6 @@ module.exports = {
       emailcommand: require('./emailcommand')(),
       httpcommand: require('./httpcommand')(),
 
-      initdb: require('./initdb')(),
-
       workerIobox: require('./worker-iobox')(),
       workerWiegand: require('./worker-wiegand')(),
       workerResult: require('./worker-result')(),
@@ -29,6 +27,9 @@ module.exports = {
       triggerLineCommand: require('./trigger-line-command')(),
       triggerEmailCommand: require('./trigger-email-command')(),
       triggerHttpCommand: require('./trigger-http-command')(),
+
+      tabletverify: require('./tabletverify')(),
+      initdb: require('./initdb')(),
     };
 
     return instance;

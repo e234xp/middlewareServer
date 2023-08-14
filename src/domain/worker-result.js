@@ -12,6 +12,8 @@ module.exports = () => {
     server.on('message', (message) => {
       const data = JSON.parse(message);
 
+      global.domain.tabletverify.setResult(data);
+
       const rules = generateRules(data);
       if (rules.length === 0) return;
 
@@ -69,7 +71,7 @@ module.exports = () => {
     // todo tablet
     // const tablet = global.spiderman.db.tablets.findOne({ uuid: sourceId });
     const tablet = null;
-    if (!camera && !tablet) return [];
+    if (!camera && !tablet) return { rules: [], data };
 
     const device = camera || tablet;
 
