@@ -8,9 +8,9 @@ module.exports = () => {
     db.outputdevicegroups.set(defaultdata.outputdevicegroups);
 
     db.cameras.set([]);
+    db.tablets.set([]);
     db.wiegandconverters.set([]);
     db.ioboxes.set([]);
-    // todo tablet
   }
 
   return {

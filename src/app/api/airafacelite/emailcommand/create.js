@@ -72,7 +72,6 @@ module.exports = (data) => {
     fieldChecks,
   });
 
-  // todo 確認 person uuid exists
   global.domain.emailcommand.create(data);
 
   return {

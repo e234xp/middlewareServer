@@ -34,7 +34,6 @@ module.exports = (data) => {
       sliceLength,
     });
 
-  // todo total_length
   return {
     message: 'ok',
     total_length: totalLength,

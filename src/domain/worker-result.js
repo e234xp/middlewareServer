@@ -11,17 +11,20 @@ module.exports = () => {
 
     server.on('message', (message) => {
       const data = JSON.parse(message);
-
       global.domain.tabletverify.setResult(data);
 
-      const rules = generateRules(data);
-      if (rules.length === 0) return;
-
-      const actions = rules.map(({ actions: tmp }) => tmp);
-      triggerActions({ actions, data });
+      triggerByResult(data);
     });
 
     server.bind(receivePort);
+  }
+
+  function triggerByResult(data) {
+    const rules = generateRules(data);
+    if (rules.length === 0) return;
+
+    const actions = rules.map(({ actions: tmp }) => tmp);
+    triggerActions({ actions, data });
   }
 
   function triggerActions({ actions, data }) {
@@ -68,9 +71,7 @@ module.exports = () => {
     if (rules.length === 0) return { rules, data };
 
     const camera = global.spiderman.db.cameras.findOne({ uuid: data.source_id });
-    // todo tablet
-    // const tablet = global.spiderman.db.tablets.findOne({ uuid: sourceId });
-    const tablet = null;
+    const tablet = global.spiderman.db.tablets.findOne({ uuid: data.source_id });
     if (!camera && !tablet) return { rules: [], data };
 
     const device = camera || tablet;
@@ -187,5 +188,6 @@ module.exports = () => {
 
   return {
     init,
+    triggerByResult,
   };
 };

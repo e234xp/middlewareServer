@@ -47,43 +47,19 @@ module.exports = () => {
     delete results[sourceId];
     const person = global.spiderman.db.person.findOne({ card_number: cardNumber })
     || global.spiderman.db.visitor.findOne({ card_number: cardNumber });
-    if (!person) throw Error('person not found');
 
-    results[sourceId] = {
-      person_info: {
-        fullname: person.name,
-        employeeno: person.id,
-        email_address: person.extra_info.email,
-        group_list: person.group_list,
-        department_list: [person.extra_info.department],
-        expiration_date: '',
-        title: person.extra_info.title,
-        mobile: person.extra_info.phone_number,
-        headshot: '',
-        relation_to: '',
-        relation_to_name: '',
-        relationship: '',
-        encrypt: false,
-      },
-      create_time: 0,
-      last_modify_time: 0,
-      last_recognized: {
-        timestamp: 0,
-        face_id_number: '',
-      },
-      person_id: person.uuid,
-      _created_at: '',
-      _updated_at: '',
-      score: 1,
-      target_score: 0,
-      snapshot: '',
-      channel: sourceId,
+    const simulationData = {
+      source_id: sourceId,
+      match: !!person,
+      is_person: !!person,
+      target_score: 0.5,
+      face_image: '',
       timestamp,
-      verify_face_id: '',
-      action_enable: 1,
-      request_client_param: 'fcs',
-      groups: person.group_list,
+      verify_uuid: '',
+      person,
     };
+    setResult(simulationData);
+    global.domain.workerResult.triggerByResult(simulationData);
 
     return sourceId;
   }

@@ -16,11 +16,15 @@ module.exports = () => {
       const cameraUuidList = db.cameras
         .find({ divice_groups: { $some: [theUuid] } })
         .map((item) => item.uuid);
-      // todo tablets
+
+      const tabletUuidList = db.tablets
+        .find({ divice_groups: { $some: [theUuid] } })
+        .map((item) => item.uuid);
 
       return {
         uuid: theUuid,
         camera_uuid_list: cameraUuidList,
+        tablet_uuid_list: tabletUuidList,
         ...others,
       };
     });
@@ -70,7 +74,11 @@ module.exports = () => {
       field: 'divice_groups',
       uuids: uuid,
     });
-    // todo tablet
+    global.domain.crud.handleRelatedUuids({
+      collection: 'tablets',
+      field: 'divice_groups',
+      uuids: uuid,
+    });
 
     addGroupToDevices({
       uuid,
@@ -93,12 +101,11 @@ module.exports = () => {
       field: 'divice_groups',
       uuids: uuid,
     });
-    // todo tablet
-    // global.domain.crud.handleRelatedUuids({
-    //   collection: 'ioboxes',
-    //   field: 'divice_groups',
-    //   uuids: uuid,
-    // });
+    global.domain.crud.handleRelatedUuids({
+      collection: 'tablets',
+      field: 'divice_groups',
+      uuids: uuid,
+    });
 
     db.videodevicegroups.deleteMany({ uuid: { $in: uuid } });
   }
@@ -115,7 +122,13 @@ module.exports = () => {
       });
     });
 
-    // todo tabletUuidList
+    tabletUuidList.forEach((deviceUuid) => {
+      const tablet = db.tablets.findOne({ uuid: deviceUuid });
+      if (!tablet) return;
+      db.tablets.updateOne({ uuid: deviceUuid }, {
+        divice_groups: [...tablet.divice_groups, groupUuid],
+      });
+    });
   }
 
   return {

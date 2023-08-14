@@ -5,11 +5,17 @@ module.exports = () => {
       uuid: null,
     };
 
-    // TODO tablet
     const camera = global.spiderman.db.cameras.findOne({ name });
     if (camera) {
       result.type = 'camera';
       result.uuid = camera.uuid;
+      return result;
+    }
+
+    const tablet = global.spiderman.db.tablets.findOne({ name });
+    if (tablet) {
+      result.type = 'tablet';
+      result.uuid = tablet.uuid;
       return result;
     }
 
