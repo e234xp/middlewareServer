@@ -42,12 +42,8 @@ module.exports = () => {
         }, 8 * 1000);
       },
       onClose: () => {
-        const index = allWiegandConverters.findIndex((ww) => ww.uuid === w.uuid);
-        if (index !== -1) {
-          allWiegandConverters.splice(index, 1);
-        }
+        // todo 自動恢復連線
         clearInterval(intervalId);
-        connect(w);
       },
     });
   }
@@ -99,7 +95,7 @@ module.exports = () => {
     const _bits = bits.toString().padStart(2, '0');
     const _index = index.toString().padStart(2, '0');
     const _syscode = syscode.toString().padStart(3, '0');
-    const _cardno = cardNumber.toString().padStart(12, '0');
+    const _cardno = cardNumber.toString().padStart(13, '0');
 
     return `${_sequence}Wiegand${_bits}${_index}${_syscode}${_cardno}`;
   }

@@ -34,11 +34,8 @@ module.exports = () => {
         allIoboxes.push(iobox);
       },
       onClose: () => {
-        const index = allIoboxes.findIndex((iobox) => iobox.uuid === io.uuid);
-        if (index !== -1) {
-          allIoboxes.splice(index, 1);
-        }
-        connect(io);
+        // todo 自動恢復連線
+
       },
     });
   }
