@@ -29,6 +29,9 @@ module.exports = {
       triggerHttpCommand: require('./trigger-http-command')(),
 
       tabletverify: require('./tabletverify')(),
+
+      cameraSnapShot: require('./camera-snap-shot')(),
+
       initdb: require('./initdb')(),
     };
 

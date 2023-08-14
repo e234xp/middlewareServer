@@ -105,6 +105,8 @@ module.exports = () => {
     setmanagersettings: require('../../app/api/airafacelite/managersettings/set'),
 
     querysystemlog: require('../../app/api/airafacelite/systemlog/query'),
+
+    getcamerasnapshot: require('../../app/api/airafacelite/camerasnapshot/get'),
   };
 
   return {
