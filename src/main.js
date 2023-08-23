@@ -45,7 +45,6 @@ const spiderman = require('./spiderman/index');
 const domain = require('./domain/index');
 
 global.spiderman = spiderman.init();
-global.domain = domain.init();
 
 process.on('uncaughtException', (err) => {
   console.log('system UCE : ', err);
@@ -76,4 +75,5 @@ global.spiderman.server = (() => {
 }
 )();
 
+global.domain = domain.init();
 require('./interface/init')();

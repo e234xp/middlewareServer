@@ -14,6 +14,11 @@ module.exports = () => {
       global.domain.tabletverify.setResult(data);
 
       triggerByResult(data);
+
+      global.spiderman.socket.broadcastMessage({
+        wss: global.spiderman.server.wss,
+        message: JSON.stringify(data),
+      });
     });
 
     server.bind(receivePort);
