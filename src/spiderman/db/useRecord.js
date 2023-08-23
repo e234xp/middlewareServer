@@ -101,8 +101,8 @@ module.exports = ({
 
       const [, fileStartTime, fileEndTime] = fileName.split('_');
       const v = (startTime <= fileStartTime && endTime >= fileEndTime)
-      || (startTime >= fileStartTime && startTime >= fileEndTime)
-      || (endTime >= fileStartTime && endTime >= fileEndTime);
+      || (startTime >= fileStartTime && startTime <= fileEndTime)
+      || (endTime >= fileStartTime && endTime <= fileEndTime);
 
       return v;
     });
@@ -135,7 +135,15 @@ module.exports = ({
         }));
       })();
 
-      setCache({ id: fileName, item });
+      const isCurrentFile = (() => {
+        const now = Date.now();
+        const [, fileStartTime, fileEndTime] = fileName.split('_');
+
+        return now >= fileStartTime && now <= fileEndTime;
+      })();
+      if (!isCurrentFile) {
+        setCache({ id: fileName, item });
+      }
 
       return item;
     });
