@@ -11,14 +11,20 @@ module.exports = () => {
 
     server.on('message', (message) => {
       const data = JSON.parse(message);
+      // 給 tablet
       global.domain.tabletverify.setResult(data);
 
-      triggerByResult(data);
-
+      if (data.match) {
+        console.log('match data send', data.person);
+      }
+      // 給 dash broad
       global.spiderman.socket.broadcastMessage({
         wss: global.spiderman.server.wss,
         message: JSON.stringify(data),
       });
+
+      // trigger result
+      triggerByResult(data);
     });
 
     server.bind(receivePort);

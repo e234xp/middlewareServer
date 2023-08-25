@@ -1,4 +1,5 @@
 const WebSocket = require('ws');
+const { uuid: uuidv4 } = require('uuidv4');
 
 module.exports = () => {
   function create({ server, path } = {}) {
@@ -9,7 +10,8 @@ module.exports = () => {
 
     wss.on('connection', (ws) => {
       console.log('connection');
-      const id = Array.from(wss.connectedClients.values()).length;
+
+      const id = uuidv4();
       wss.connectedClients.set(id, ws);
 
       ws.on('message', (message) => {
@@ -30,13 +32,14 @@ module.exports = () => {
   function broadcastMessage({ wss, message }) {
     const clients = Array.from(wss.connectedClients.values());
 
+    console.log(clients.length);
     clients.forEach((client) => {
       client.send(message);
     });
   }
 
   function connect({
-    url, onOpen = () => {}, onMessage = () => {}, onClose = () => {}, onError = () => {},
+    url, onOpen = () => { }, onMessage = () => { }, onClose = () => { }, onError = () => { },
 
   }) {
     // 建立 WebSocket 連線
