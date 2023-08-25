@@ -12,7 +12,9 @@ module.exports = () => {
     } = httpcommand;
 
     const requestConfig = (() => {
-      const body = generateBody({ method, fields, note, data });
+      const body = generateBody({
+        method, fields, note, data,
+      });
       return {
         url,
         method,
@@ -34,10 +36,13 @@ module.exports = () => {
       };
     })();
 
+    console.log('requestConfig', requestConfig);
     global.spiderman.request.make(requestConfig);
   }
 
-  function generateBody({ method, fields, note, data }) {
+  function generateBody({
+    method, fields, note, data,
+  }) {
     const body = {};
     Object.entries(fields).forEach(([key, value]) => {
       const hasPersonFileds = !!data.person;
@@ -77,11 +82,28 @@ module.exports = () => {
       }
     });
 
-    if (note) {
-      body['note'] = `${note}`;
+    if (!note) return body;
+
+    if (method === 'POST') {
+      body.note = `${note}`;
+
+      return body;
     }
 
-    return body;
+    const keyValuepairs = body.note.split('&');
+    const othersFields = keyValuepairs.reduce((obj, pair) => {
+      const tmp = obj;
+      if (pair.indexOf('=') === -1) return tmp;
+
+      const [key, value] = pair.split('=');
+      tmp[key] = value;
+      return tmp;
+    }, {});
+
+    return {
+      ...body,
+      ...othersFields,
+    };
   }
 
   return {
