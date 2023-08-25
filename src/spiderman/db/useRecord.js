@@ -101,8 +101,8 @@ module.exports = ({
 
       const [, fileStartTime, fileEndTime] = fileName.split('_');
       const v = (startTime <= fileStartTime && endTime >= fileEndTime)
-      || (startTime >= fileStartTime && startTime <= fileEndTime)
-      || (endTime >= fileStartTime && endTime <= fileEndTime);
+        || (startTime >= fileStartTime && startTime <= fileEndTime)
+        || (endTime >= fileStartTime && endTime <= fileEndTime);
 
       return v;
     });
@@ -124,7 +124,18 @@ module.exports = ({
           fileString = fileString.substring(1);
         }
 
-        const fileArray = JSON.parse(`[${fileString}]`);
+        const fileArray = (() => {
+          try {
+            const result = JSON
+              .parse(`[${fileString}]`);
+
+            return result;
+          } catch (e) {
+            global.spiderman.systemlog.writeError(`error:${e}: ${filePath}`);
+
+            return [];
+          }
+        })();
 
         return fileArray.map((i) => ({
           ...i,
