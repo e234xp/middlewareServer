@@ -8,10 +8,11 @@ module.exports = () => {
       url, method,
       username, password,
       fields,
+      note,
     } = httpcommand;
 
     const requestConfig = (() => {
-      const body = generateBody({ method, fields, data });
+      const body = generateBody({ method, fields, note, data });
       return {
         url,
         method,
@@ -36,7 +37,7 @@ module.exports = () => {
     global.spiderman.request.make(requestConfig);
   }
 
-  function generateBody({ method, fields, data }) {
+  function generateBody({ method, fields, note, data }) {
     const body = {};
     Object.entries(fields).forEach(([key, value]) => {
       const hasPersonFileds = !!data.person;
@@ -75,6 +76,10 @@ module.exports = () => {
         body[value] = data.person?.name;
       }
     });
+
+    if (note) {
+      body['note'] = `${note}`;
+    }
 
     return body;
   }
