@@ -7,6 +7,7 @@ module.exports = () => {
     db.videodevicegroups.set(defaultdata.videodevicegroups);
     db.outputdevicegroups.set(defaultdata.outputdevicegroups);
     db.dashboardsettings.set(defaultdata.dashboardsettings);
+    db.attendancesettings.set(defaultdata.attendancesettings);
 
     db.cameras.set([]);
     db.tablets.set([]);
