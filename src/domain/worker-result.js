@@ -47,7 +47,7 @@ module.exports = () => {
         triggerLineCommands({ lineCommands: action.line_commands, data });
       }
 
-      if (action.line_commands.length > 0) {
+      if (action.email_commands.length > 0) {
         triggerEmailCommands({ emailCommands: action.email_commands, data });
       }
 
@@ -137,7 +137,7 @@ module.exports = () => {
 
     if (!data.match) {
       return {
-        rules: rules.filter((rule) => rule.condition.access_type === 'unidentified'),
+        rules: rules.filter((rule) => rule.condition.access_type === 'Unidentified'),
         data,
       };
     }
@@ -153,7 +153,7 @@ module.exports = () => {
 
     return {
       rules: rules
-        .filter((rule) => rule.condition.access_type === 'identified')
+        .filter((rule) => rule.condition.access_type === 'Identified')
         .filter((rule) => groupUuids
           .some((uuid) => rule.condition.groups
             .includes(uuid))),
