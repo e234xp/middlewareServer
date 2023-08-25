@@ -26,7 +26,7 @@ module.exports = ({
     const file = jsonfile.readFileSync(FILE_PATH);
     setCache(file);
 
-    return file;
+    return _.cloneDeep(file);
   }
 
   // 寫入資料
