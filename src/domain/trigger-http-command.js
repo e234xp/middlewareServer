@@ -36,7 +36,6 @@ module.exports = () => {
       };
     })();
 
-    console.log('requestConfig', requestConfig);
     global.spiderman.request.make(requestConfig);
   }
 
@@ -85,12 +84,13 @@ module.exports = () => {
     if (!note) return body;
 
     if (method === 'POST') {
-      body.note = `${note}`;
+      body.note = note;
 
       return body;
     }
 
-    const keyValuepairs = body.note.split('&');
+    const keyValuepairs = note.split('&');
+
     const othersFields = keyValuepairs.reduce((obj, pair) => {
       const tmp = obj;
       if (pair.indexOf('=') === -1) return tmp;
