@@ -34,6 +34,11 @@ const fieldChecks = [
     fieldType: 'object',
     required: true,
   },
+  {
+    fieldName: 'note',
+    fieldType: 'string',
+    required: true,
+  },
 ];
 
 module.exports = (data) => {
