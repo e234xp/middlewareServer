@@ -7,17 +7,17 @@ const fieldChecks = [
   {
     fieldName: 'brand',
     fieldType: 'nonempty',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'model',
     fieldType: 'nonempty',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'divice_groups',
     fieldType: 'array',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'ip_address',
@@ -32,12 +32,12 @@ const fieldChecks = [
   {
     fieldName: 'username',
     fieldType: 'string',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'password',
     fieldType: 'string',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'iopoint',
@@ -46,13 +46,18 @@ const fieldChecks = [
   },
 ];
 
-module.exports = (data) => {
+module.exports = async (data) => {
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
   });
 
-  global.domain.iobox.create(data);
+  try {
+    await global.domain.iobox.create(data);
+  } catch (ex) {
+    throw Error(ex.message);
+  }
+
   global.domain.workerIobox.init();
 
   return {

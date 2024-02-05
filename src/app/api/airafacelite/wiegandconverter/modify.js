@@ -20,7 +20,7 @@ const fieldChecksData = [
   {
     fieldName: 'divice_groups',
     fieldType: 'array',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'ip_address',
@@ -50,11 +50,11 @@ const fieldChecksData = [
   {
     fieldName: 'special_card_number',
     fieldType: 'string',
-    required: true,
+    required: false,
   },
 ];
 
-module.exports = (rData) => {
+module.exports = async (rData) => {
   const { uuid } = global.spiderman.validate.data({
     data: rData,
     fieldChecks,
@@ -65,7 +65,12 @@ module.exports = (rData) => {
     fieldChecks: fieldChecksData,
   });
 
-  global.domain.wiegandconverter.modify({ uuid, data });
+  try {
+    await global.domain.wiegandconverter.modify({ uuid, data });
+  } catch (ex) {
+    throw Error(ex.message);
+  }
+
   global.domain.workerWiegand.init();
 
   return {

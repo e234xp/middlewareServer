@@ -6,25 +6,73 @@ module.exports = () => {
 
     server.on('listening', () => {
       const address = server.address();
-      console.log(`接收伺服器正在監聽 ${address.address}:${address.port}`);
+      console.log(`接收伺服器正在監聽 worker-result ${address.address}:${address.port}`);
     });
 
-    server.on('message', (message) => {
-      const data = JSON.parse(message);
-      // 給 tablet
-      global.domain.tabletverify.setResult(data);
+    server.on('message', (message, rinfo) => {
+      try {
+        console.log('==============================================================');
+        console.log(`message from enginee ${rinfo.address} ${rinfo.port}`);
 
-      if (data.match) {
-        console.log('match data send', data.person);
+        message = message.toString('utf8');
+
+        const data = JSON.parse(message);
+        // console.log('message from enginee', data.source_id, data.verify_uuid);
+        // console.log('message from enginee', data);
+
+        data.channel = '';
+        data.divice_groups = [];
+
+        let device = global.spiderman.db.cameras.findOne({ uuid: data.source_id });
+        if (device) {
+          data.channel = device.name || '';
+          data.divice_groups = device.divice_groups || [];
+        } else {
+          device = global.spiderman.db.tablets.findOne({ uuid: data.source_id });
+
+          if (device) {
+            data.channel = device.identity || '';
+            data.divice_groups = device.divice_groups || [];
+          }
+        }
+
+        // 給 tablet
+        global.domain.tabletverify.setResult(data);
+        const newData = global.domain.tabletverify.getResult(data.verify_uuid);
+
+        // console.log('=====================================');
+        // newData.snapshot = 'i1707117871252_9e95279228dd8683.jpg';
+        // console.log(newData);
+
+        // 給 dash broad
+        if (newData) {
+          // support new api for person http/ws
+          global.spiderman.socket.broadcastMessage({
+            wss: global.spiderman.server.wsVerifyresults,
+            message: JSON.stringify(newData),
+          });
+
+          if (data.is_person) {
+            // for person
+            global.spiderman.socket.broadcastMessage({
+              wss: global.spiderman.server.wsRecognized,
+              message: JSON.stringify(newData),
+            });
+          } else {
+            // for stranger
+            global.spiderman.socket.broadcastMessage({
+              wss: global.spiderman.server.wsNonrecognized,
+              message: JSON.stringify(newData),
+            });
+          }
+          // console.log('message from worker-result', data);
+        }
+
+        // trigger result
+        triggerByResult(data);
+      } catch (e) {
+        console.log('triggerByResult message', e);
       }
-      // 給 dash broad
-      global.spiderman.socket.broadcastMessage({
-        wss: global.spiderman.server.wss,
-        message: JSON.stringify(data),
-      });
-
-      // trigger result
-      triggerByResult(data);
     });
 
     server.bind(receivePort);
@@ -32,169 +80,199 @@ module.exports = () => {
 
   function triggerByResult(data) {
     const rules = generateRules(data);
+
     if (rules.length === 0) return;
 
-    const actions = rules.map(({ actions: tmp }) => tmp);
-    triggerActions({ actions, data });
+    triggerActions({ actions: rules, data });
   }
 
   function triggerActions({ actions, data }) {
     actions.forEach((action) => {
-      if (action.ioboxes.length > 0) triggerIoboxes(action.ioboxes);
+      switch (action.action_type) {
+        case 'line':
+          triggerLineCommands({ action, data });
+          break;
+        case 'http':
+          triggerHttpCommands({ action, data });
+          break;
+        case 'mail':
+          triggerEmailCommands({ action, data });
+          break;
+        default:
 
-      if (action.wiegand_converters.length > 0) {
-        triggerWiegandConverters({
-          wiegandConverters: action.wiegand_converters,
-          cardNumber: data.person?.card_number,
-        });
+          break;
       }
 
-      if (action.line_commands.length > 0) {
-        triggerLineCommands({ lineCommands: action.line_commands, data });
-      }
+      // if (action.ioboxes.length > 0) triggerIoboxes(action.ioboxes);
 
-      if (action.email_commands.length > 0) {
-        triggerEmailCommands({ emailCommands: action.email_commands, data });
-      }
+      // if (action.wiegand_converters.length > 0) {
+      //   triggerWiegandConverters({
+      //     wiegandConverters: action.wiegand_converters,
+      //     cardNumber: data.person?.card_number,
+      //   });
+      // }
 
-      if (action.http_commands.length > 0) {
-        triggerHttpCommands({ httpCommands: action.http_commands, data });
-      }
+      // if (action.line_commands.length > 0) {
+      //   triggerLineCommands({ lineCommands: action.line_commands, data });
+      // }
+
+      // if (action.email_commands.length > 0) {
+      //   triggerEmailCommands({ emailCommands: action.email_commands, data });
+      // }
+
+      // if (action.http_commands.length > 0) {
+      //   triggerHttpCommands({ httpCommands: action.http_commands, data });
+      // }
     });
   }
 
   function generateRules(data) {
     const result = (() => {
-      const rules = global.spiderman.db.rules
-        .find();
+      const eventhandle = global.spiderman.db.eventhandle.find();
 
       const filterRules = global.spiderman._.flow([
-        filterByDeviceGroups, filterBySchedule, filterByAccessTypeAndGroups,
+        filterByEnabledRule, filterByPersonGroups, filterByDeviceGroups, filterBySchedule,
       ]);
 
-      return filterRules({ rules, data });
+      return filterRules({ eventhandle, data });
     })();
 
-    return result.rules;
+    return result.eventhandle;
   }
 
-  function filterByDeviceGroups({ rules, data }) {
-    if (rules.length === 0) return { rules, data };
-
-    const camera = global.spiderman.db.cameras.findOne({ uuid: data.source_id });
-    const tablet = global.spiderman.db.tablets.findOne({ uuid: data.source_id });
-    if (!camera && !tablet) return { rules: [], data };
-
-    const device = camera || tablet;
+  function filterByEnabledRule({ eventhandle, data }) {
+    if (eventhandle.length === 0) return { eventhandle, data };
 
     return {
-      rules: rules.filter((rule) => device.divice_groups
-        .some((group) => rule.condition.video_device_groups
-          .includes(group))),
+      eventhandle: eventhandle.filter((rule) => rule.enable === true),
       data,
     };
   }
 
-  function filterBySchedule({ rules, data }) {
-    if (rules.length === 0) return { rules, data };
+  function filterByDeviceGroups({ eventhandle, data }) {
+    if (eventhandle.length === 0) return { eventhandle, data };
 
-    const { date, time, dayOfWeek } = (() => {
+    // const camera = global.spiderman.db.cameras.findOne({ uuid: data.source_id });
+    // const tablet = global.spiderman.db.tablets.findOne({ uuid: data.source_id });
+    // if (!camera && !tablet) return { eventhandle: [], data };
+
+    // const device = camera || tablet;
+
+    const retE = eventhandle.filter((rule) => {
+      // let groups = [];
+      rule.divice_groups = rule.divice_groups || [];
+
+      // if (device) {
+      // data.divice_groups = data.divice_groups || [];
+      const groups = data.divice_groups
+        .some((group) => rule.divice_groups
+          .includes(group));
+      // }
+
+      return groups;
+    });
+
+    return {
+      eventhandle: retE,
+      data,
+    };
+  }
+
+  function filterByPersonGroups({ eventhandle, data }) {
+    if (eventhandle.length === 0) return { eventhandle, data };
+
+    const passager = data.person ? data.person : data.nearest_person.person_info;
+
+    const retE = eventhandle.filter((rule) => passager.group_list
+      .some((group) => rule.group_list
+        .includes(group)));
+
+    console.log('filterByPersonGroups', retE);
+    return {
+      eventhandle: retE,
+      data,
+    };
+  }
+
+  function filterBySchedule({ eventhandle, data }) {
+    if (eventhandle.length === 0) return { eventhandle, data };
+
+    const { dayOfWeek, hour } = (() => {
       const now = global.spiderman.dayjs();
-      const decimalTime = now.hour() + now.minute() / 60;
-      const day = now.day();
+      // const decimalTime = now.hour() + now.minute() / 60;
+      let day = now.day(); // 0 (Sunday) to 6 (Saturday)
+
+      // change to schedule object weekday
+      day -= 1;
+      if (day < 0) day = 0;
 
       return {
         date: now.format('YYYY-MM-DD'),
-        time: decimalTime,
+        timestamp: now - 0,
+        // time: decimalTime,
         dayOfWeek: day,
+        hour: now.hour(),
       };
     })();
 
-    rules = rules.filter((rule) => {
-      const schedule = global.spiderman.db.schedules.findOne({ uuid: rule.condition.schedule });
-      if (!schedule) return false;
+    eventhandle = eventhandle.filter((handle) => {
+      const { specify_time: specifyTime, weekly_schedule: weeklySchedule } = handle;
 
-      if (schedule.type === 'non-recurrent') {
-        const isDateBetween = global.spiderman.dayjs(date).isBetween(schedule.start_date, schedule.end_date, 'day', '[]');
-        const isTimeIn = !!schedule.times.find((t) => t <= time && time < t + 0.5);
-
-        return isDateBetween && isTimeIn;
-      } if (schedule.type === 'recurrent') {
-        const times = schedule.times[dayOfWeek];
-        if (!schedule.times[dayOfWeek]) {
-          return false;
+      let ret = false;
+      if (specifyTime) {
+        for (let i = 0; i < specifyTime.list.length; i += 1) {
+          const specify = specifyTime.list[i];
+          if ((data.timestamp - specify.start_time) * (data.timestamp - specify.end_time) < 0) {
+            ret = true;
+            break;
+          }
         }
-        const isTimeIn = times.find((t) => t <= time && time < t + 0.5);
-
-        return isTimeIn;
       }
 
-      return false;
+      if (!ret && weeklySchedule) {
+        for (let i = 0; i < weeklySchedule.list.length; i += 1) {
+          const week = weeklySchedule.list[i];
+          if (week.day_of_week === dayOfWeek) {
+            if (week.hours_list.indexOf(hour) >= 0) {
+              ret = true;
+              break;
+            }
+          }
+        }
+      }
+
+      return ret;
     });
 
+    console.log('filterBySchedule', eventhandle);
     return {
-      rules,
+      eventhandle,
       data,
     };
   }
 
-  function filterByAccessTypeAndGroups({ rules, data }) {
-    if (rules.length === 0) return { rules, data };
+  // function triggerIoboxes(ioboxes) {
+  //   ioboxes.forEach(({ uuid, iopoint }) => {
+  //     global.domain.workerIobox.trigger({ uuid, iopoint });
+  //   });
+  // }
 
-    if (!data.match) {
-      return {
-        rules: rules.filter((rule) => rule.condition.access_type === 'Unidentified'),
-        data,
-      };
-    }
+  // function triggerWiegandConverters({ wiegandConverters, cardNumber }) {
+  //   wiegandConverters.forEach(({ uuid, is_special_card_number: isSpecialCardNumber }) => {
+  //     global.domain.workerWiegand.trigger({ uuid, isSpecialCardNumber, cardNumber });
+  //   });
+  // }
 
-    const groupUuids = (() => {
-      const groups = data.person.group_list;
-      return groups
-        .map((name) => {
-          const group = global.spiderman.db.groups.findOne({ name });
-          return group.uuid;
-        });
-    })();
-
-    return {
-      rules: rules
-        .filter((rule) => rule.condition.access_type === 'Identified')
-        .filter((rule) => groupUuids
-          .some((uuid) => rule.condition.groups
-            .includes(uuid))),
-      data,
-    };
+  function triggerLineCommands({ action, data }) {
+    global.domain.triggerLineCommand.trigger({ action, data });
   }
 
-  function triggerIoboxes(ioboxes) {
-    ioboxes.forEach(({ uuid, iopoint }) => {
-      global.domain.workerIobox.trigger({ uuid, iopoint });
-    });
+  function triggerEmailCommands({ action, data }) {
+    global.domain.triggerEmailCommand.trigger({ action, data });
   }
 
-  function triggerWiegandConverters({ wiegandConverters, cardNumber }) {
-    wiegandConverters.forEach(({ uuid, is_special_card_number: isSpecialCardNumber }) => {
-      global.domain.workerWiegand.trigger({ uuid, isSpecialCardNumber, cardNumber });
-    });
-  }
-
-  function triggerLineCommands({ lineCommands, data }) {
-    lineCommands.forEach((uuid) => {
-      global.domain.triggerLineCommand.trigger({ uuid, data });
-    });
-  }
-
-  function triggerEmailCommands({ emailCommands, data }) {
-    emailCommands.forEach((uuid) => {
-      global.domain.triggerEmailCommand.trigger({ uuid, data });
-    });
-  }
-
-  function triggerHttpCommands({ httpCommands, data }) {
-    httpCommands.forEach((uuid) => {
-      global.domain.triggerHttpCommand.trigger({ uuid, data });
-    });
+  function triggerHttpCommands({ action, data }) {
+    global.domain.triggerHttpCommand.trigger({ action, data });
   }
 
   return {

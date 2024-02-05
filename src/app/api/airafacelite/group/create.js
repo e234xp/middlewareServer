@@ -7,17 +7,17 @@ const fieldChecks = [
   {
     fieldName: 'remarks',
     fieldType: 'string',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'person_uuid_list',
     fieldType: 'array',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'visitor_uuid_list',
     fieldType: 'array',
-    required: true,
+    required: false,
   },
 ];
 
@@ -26,6 +26,11 @@ module.exports = (data) => {
     data,
     fieldChecks,
   });
+
+  // optional paramters set default value
+  if (!data.remarks) data.remarks = '';
+  if (!data.person_uuid_list) data.person_uuid_list = [];
+  if (!data.visitor_uuid_list) data.visitor_uuid_list = [];
 
   if (data.name.length === 0) throw Error('Name cannot be empty.');
 

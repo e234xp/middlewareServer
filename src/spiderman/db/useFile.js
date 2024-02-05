@@ -10,7 +10,14 @@ module.exports = ({
     maxBytes: maxBytesCache = 0,
   },
 }) => {
-  const FILE_PATH = `${workingFolder}/${name}.db`;
+  let FILE_PATH = '';
+
+  if (name === 'system_settings') {
+    FILE_PATH = `${workingFolder}/${name}.cfg`;
+  } else {
+    FILE_PATH = `${workingFolder}/${name}.db`;
+  }
+
   // 缓存資料
   let cachedData = null;
 
@@ -84,16 +91,27 @@ module.exports = ({
 
   // 更新資料
   function updateOne(query, update) {
-    const data = readData();
+    let data = readData();
 
-    const { indexes } = global.spiderman.query({ data, queryObject: query });
-    if (indexes.length === 0) {
-      throw Error('Item not found.');
+    let updatedItem = {};
+    if (Array.isArray(data)) {
+      const { indexes } = global.spiderman.query({ data, queryObject: query });
+      if (indexes.length === 0) {
+        throw Error('Item not found.');
+      }
+      const index = indexes[0];
+      updatedItem = { ...data[index], ...update };
+      data[index] = updatedItem;
+      // console.log('aa', data);
+      writeData(data);
+    } else {
+      updatedItem = { ...data, ...update };
+      data = updatedItem;
+
+      // console.log('bb', data);
+      writeData(data);
     }
-    const index = indexes[0];
-    const updatedItem = { ...data[index], ...update };
-    data[index] = updatedItem;
-    writeData(data);
+
     return updatedItem;
   }
 
@@ -131,7 +149,7 @@ module.exports = ({
   }
 
   function consoleCache() {
-    console.log(cachedData);
+    // console.log("cachedData : ",cachedData);
   }
 
   return {

@@ -1,35 +1,55 @@
 const fieldChecks = [
   {
     fieldName: 'uuid',
-    fieldType: 'string',
+    fieldType: 'nonempty',
     required: true,
   },
   {
-    fieldName: 'remarks',
-    fieldType: 'string',
-    required: true,
-  },
-  {
-    fieldName: 'person_uuid_list',
-    fieldType: 'array',
-    required: true,
-  },
-  {
-    fieldName: 'visitor_uuid_list',
-    fieldType: 'array',
+    fieldName: 'data',
+    fieldType: 'object',
     required: true,
   },
 ];
 
-module.exports = (data) => {
-  data = global.spiderman.validate.data({
-    data,
+const fieldChecksData = [
+  // person, visitor group is assigned by group name, so can't modify
+  // {
+  //   fieldName: 'name',
+  //   fieldType: 'string',
+  //   required: false,
+  // },
+  {
+    fieldName: 'remarks',
+    fieldType: 'string',
+    required: false,
+  },
+  {
+    fieldName: 'person_uuid_list',
+    fieldType: 'array',
+    required: false,
+  },
+  {
+    fieldName: 'visitor_uuid_list',
+    fieldType: 'array',
+    required: false,
+  },
+];
+
+module.exports = async (rData) => {
+  const { uuid } = global.spiderman.validate.data({
+    data: rData,
     fieldChecks,
   });
 
-  if (data.uuid.length === 0) throw Error('Name cannot be empty.');
+  const data = global.spiderman.validate.data({
+    data: rData.data,
+    fieldChecks: fieldChecksData,
+  });
+  
+  if (!data.person_uuid_list) data.person_uuid_list = [];
+  if (!data.visitor_uuid_list) data.visitor_uuid_list = [];
 
-  global.domain.group.modifyAndModifyPersonGroup(data);
+  await global.domain.group.modifyAndModifyPersonGroup({ uuid, ...data });
 
   return {
     message: 'ok',

@@ -55,7 +55,8 @@ module.exports = () => {
   async function modify({
     uuid,
     name,
-    wiegand_converter_uuid_list: wiegandConverterUuidList, iobox_uuid_list: ioBoxUuidList,
+    wiegand_converter_uuid_list: wiegandConverterUuidList,
+    iobox_uuid_list: ioBoxUuidList,
   }) {
     const fixedUuids = ['0', '1'];
     if (fixedUuids.includes(uuid)) throw Error('The item can not be change.');

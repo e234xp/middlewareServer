@@ -82,7 +82,6 @@ function processResponse(jsonResponse, res) {
 
 function handleError(error, res, cgi) {
   const errorCode = determinErrorCode(error);
-  console.log(cgi, errorCode, error);
 
   const warningCodes = [401];
   if (warningCodes.includes(errorCode)) {
@@ -106,9 +105,11 @@ function authorize({ req, publicCgi = [] }) {
 
   const isPassed = (() => {
     if (publicCgi.includes(cgi)) return true;
+
     const token = req.headers.token ?? req.query?.token
-    ?? req.headers.sessionId ?? req.query?.sessionId
-    ?? null;
+      ?? req.headers.sessionId ?? req.query?.sessionId
+      ?? null;
+
     return token && (token === '83522758' || global.spiderman.token.decryptToAccountInTime(token));
   })();
 

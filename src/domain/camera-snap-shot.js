@@ -17,6 +17,7 @@ module.exports = () => {
   }) {
     return new Promise((resolve) => {
       const saveFolder = `${global.params.dataPath}/camera-snap-shots`;
+
       if (!fs.existsSync(saveFolder)) {
         fs.mkdirSync(saveFolder);
       }
@@ -26,19 +27,46 @@ module.exports = () => {
         fs.unlinkSync(filePath);
       }
 
-      execute(
-        `ffmpeg -rtsp_transport tcp -i ${url} -f image2 -vframes 1 ${filePath}`,
-        () => {
-          let base64 = '';
+      const rtsp = url.includes('rtsp://');
+      if (rtsp) {
+        execute(
+          `ffmpeg -i '${url}' -f image2 -vframes 1 '${filePath}'`,
+          () => {
+            let base64 = '';
+            if (fs.existsSync(filePath)) {
+              base64 = fs.readFileSync(filePath, 'base64');
 
-          if (fs.existsSync(filePath)) {
-            base64 = fs.readFileSync(filePath, 'base64');
+              fs.unlinkSync(filePath);
+            }
+
+            resolve(base64);
+          },
+        );
+      } else {
+        const sdp = url.includes('sdp://');
+        if (sdp) {
+          const sdpData = url.replace('sdp://', '');
+          const sdpCfg = `${saveFolder}/${uuid}.sdp`;
+          if (fs.existsSync(sdpCfg)) {
+            fs.unlinkSync(sdpCfg);
           }
-          fs.unlinkSync(filePath);
-
-          resolve(base64);
-        },
-      );
+          fs.writeFileSync(sdpCfg, sdpData);
+          if (fs.existsSync(sdpCfg)) {
+            execute(
+              `ffmpeg -protocol_whitelist "file,udp,rtp" -i '${sdpCfg}' -f image2 -vframes 1 '${filePath}'`,
+              () => {
+                let base64 = '';
+                if (fs.existsSync(filePath)) {
+                  base64 = fs.readFileSync(filePath, 'base64');
+                  fs.unlinkSync(filePath);
+                }
+                fs.unlinkSync(sdpCfg);
+                resolve(base64);
+              },
+            );
+          }
+        }
+      }
     });
   }
 

@@ -6,15 +6,18 @@ module.exports = () => {
       'personverifyresult',
       'visitorverifyresult',
       'nonverifyresult',
+      'manualverifyresult',
     ];
     if (!collection || !collections.includes(collection)) throw Error('Unknown collection');
 
-    return global.spiderman.db[collection]
+    const resultList = global.spiderman.db[collection]
       .find({
         startTime,
         endTime,
         query,
       });
+
+    return resultList;
   }
 
   function fetchPhoto({ uuid, f }) {
@@ -34,8 +37,73 @@ module.exports = () => {
     return global.spiderman.db[collection].findOne(`${f}.db_photos/${uuid}.photo`);
   }
 
+  async function addcommands({
+    records, commands,
+  }) {
+    for (let i = 0; i < records.length; i += 1) {
+      const rec = records[i];
+
+      const verifyUuid = rec.verify_uuid;
+      const startTime = +rec.timestamp - 1;
+      const endTime = +rec.timestamp + 1;
+      const vidList = [verifyUuid];
+      // console.log('111', verifyUuid, startTime, endTime);
+
+      let resultList = queryResults(
+        {
+          collection: 'personverifyresult',
+          startTime,
+          endTime,
+          query: {
+            ...vidList ? { verify_uuid: { $in: vidList } } : {},
+          },
+        },
+      );
+      // console.log('222', resultList.length);
+
+      if (resultList.length >= 1) {
+        global.spiderman.db.personverifyresult
+          .updateCommands(startTime, endTime, verifyUuid, commands);
+      } else {
+        resultList = queryResults(
+          {
+            collection: 'visitorverifyresult',
+            startTime: +rec.timestamp - 1,
+            endTime: +rec.timestamp + 1,
+            query: {
+              ...vidList ? { verify_uuid: { $in: vidList } } : {},
+            },
+          },
+        );
+        // console.log('333', resultList.length);
+
+        if (resultList.length >= 1) {
+          global.spiderman.db.visitorverifyresult
+            .updateCommands(startTime, endTime, verifyUuid, commands);
+        } else {
+          resultList = queryResults(
+            {
+              collection: 'nonverifyresult',
+              startTime: +rec.timestamp - 1,
+              endTime: +rec.timestamp + 1,
+              query: {
+                ...vidList ? { verify_uuid: { $in: vidList } } : {},
+              },
+            },
+          );
+          // console.log('444', resultList.length);
+          if (resultList.length >= 1) {
+            global.spiderman.db.nonverifyresult
+              .updateCommands(startTime, endTime, verifyUuid, commands);
+          }
+        }
+      }
+    }
+  }
+
   return {
     queryResults,
     fetchPhoto,
+    addcommands,
   };
 };

@@ -30,6 +30,10 @@ module.exports = () => ({
         return typeof fieldValue !== 'number' || fieldValue < 0 || fieldValue > 65535;
       }
 
+      if (typeof fieldType === 'boolean') {
+        return typeof fieldValue !== 'boolean' || fieldValue !== true || fieldValue !== false;
+      }
+
       if (fieldType === 'http-method') {
         return !['GET', 'POST', 'PUT', 'DELETE'].includes(fieldValue);
       }

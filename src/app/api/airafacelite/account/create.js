@@ -24,6 +24,7 @@ const fieldChecks = [
 ];
 
 module.exports = (data, token) => {
+  // paramters checker
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
@@ -31,9 +32,9 @@ module.exports = (data, token) => {
 
   const tokenUser = global.spiderman.token.decryptToAccount(token);
   const isPassed = tokenUser.u.length > 0
-  && data.username.length > 0
-  && data.password.length > 0
-  && data.permission.length > 0;
+    && data.username.length > 0
+    && data.password.length > 0
+    && data.permission.length > 0;
   if (!isPassed) throw Error('Username or password cannot be empty.');
 
   const accounts = global.spiderman.db.account.find();
@@ -44,6 +45,9 @@ module.exports = (data, token) => {
   const existededAccount = accounts.find((item) => (item.username === data.username));
   if (existededAccount) throw Error('The item has already existed.');
 
+  // optional paramters set default value
+
+  //  ===================================
   const {
     username, password, permission, remarks,
   } = data;

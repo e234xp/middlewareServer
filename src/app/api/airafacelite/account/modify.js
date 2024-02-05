@@ -17,10 +17,12 @@ const fieldChecks = [
 ];
 
 module.exports = (data, token) => {
+  // paramters checker
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
   });
+
   const tokenUser = global.spiderman.token.decryptToAccount(token);
 
   // 檢查使用者名稱和新密碼是否為空

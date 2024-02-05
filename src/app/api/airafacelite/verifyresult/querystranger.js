@@ -12,7 +12,7 @@ const fieldChecks = [
   {
     fieldName: 'slice_shift',
     fieldType: 'number',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'slice_length',
@@ -20,9 +20,9 @@ const fieldChecks = [
     required: false,
   },
   {
-    fieldName: 'with_image',
-    fieldType: 'boolean',
-    required: true,
+    fieldName: 'uuid_list',
+    fieldType: 'array',
+    required: false,
   },
 ];
 
@@ -31,23 +31,27 @@ module.exports = async (data) => {
     data,
     fieldChecks,
   });
-  const shift = data.slice_shift != null ? data.slice_shift : 0;
-  const sliceLength = data.slice_length || 100;
+
+  if (!data.slice_shift) data.slice_shift = 0;
+  if (!data.slice_length) data.slice_length = 100;
 
   const resultList = global.domain.verifyresult
     .queryResults({
       collection: 'nonverifyresult',
       startTime: data.start_time,
       endTime: data.end_time,
+      query: { ...(!data.uuid ? {} : { uuid: data.uuid }) },
     });
 
   return {
     message: 'ok',
     result: {
       total_length: resultList ? resultList.length : 0,
-      slice_shift: shift,
-      slice_length: sliceLength,
-      data: resultList ? resultList.slice(shift, shift + sliceLength) : [],
+      slice_shift: data.slice_shift,
+      slice_length: data.slice_length,
+      data: resultList
+        ? resultList.slice(data.slice_shift, data.slice_shift + data.slice_length)
+        : [],
     },
   };
 };

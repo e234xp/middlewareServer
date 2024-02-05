@@ -27,10 +27,12 @@ module.exports = async (data) => {
     fieldChecks,
   });
 
-  const sourceId = global.domain.tabletverify.verifyCard(data);
+  const verifyFaceId = global.domain.tabletverify.verifyCard(data);
+
+  console.log('verifycardnoservice', { message: 'ok', verify_face_id: verifyFaceId });
 
   return {
     message: 'ok',
-    verify_face_id: sourceId,
+    verify_face_id: verifyFaceId,
   };
 };

@@ -5,22 +5,20 @@ const fieldChecks = [
     required: true,
   },
   {
+    fieldName: 'data',
+    fieldType: 'object',
+    required: true,
+  },
+];
+
+const fieldChecksData = [
+  {
     fieldName: 'name',
     fieldType: 'nonempty',
     required: true,
   },
   {
     fieldName: 'identity',
-    fieldType: 'nonempty',
-    required: true,
-  },
-  {
-    fieldName: 'ip_address',
-    fieldType: 'nonempty',
-    required: true,
-  },
-  {
-    fieldName: 'code',
     fieldType: 'nonempty',
     required: true,
   },
@@ -341,13 +339,20 @@ const fieldChecks = [
   },
 ];
 
-module.exports = (data) => {
-  data = global.spiderman.validate.data({
-    data,
+module.exports = async (rData) => {
+  const { uuid } = global.spiderman.validate.data({
+    data: rData,
     fieldChecks,
   });
 
-  global.domain.tablet.modify(data);
+  const data = global.spiderman.validate.data({
+    data: rData.data,
+    fieldChecks: fieldChecksData,
+  });
+
+  // data.uuid = uuid;
+
+  await global.domain.tablet.modify({ uuid, data });
 
   return {
     message: 'ok',

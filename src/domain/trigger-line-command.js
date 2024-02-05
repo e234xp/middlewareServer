@@ -1,27 +1,72 @@
+const fs = require('fs');
+
 module.exports = () => {
   const triggered = {};
+  function readRegisterPhoto(uuid) {
+    const dbPhotoFolder = `${global.params.dataPath}/db/dbPhoto/`;
+    let photo = '';
+    try {
+      if (uuid) {
+        const registerPhotoFile = `${dbPhotoFolder}${uuid}.register`;
+        photo = fs.readFileSync(registerPhotoFile).toString('utf8');
+      }
+    } catch (e) {
+      console.log('readRegisterPhoto', e);
+    }
+    return photo;
+  }
 
-  function trigger({ uuid, data }) {
-    const triggeredKey = generateTriggeredKey({ uuid, data });
+  function readDisplayPhoto(uuid) {
+    const dbPhotoFolder = `${global.params.dataPath}/db/dbPhoto/`;
+    let photo = '';
+    try {
+      if (uuid) {
+        const displayPhotoFile = `${dbPhotoFolder}${uuid}.display`;
+        photo = fs.readFileSync(displayPhotoFile).toString('utf8');
+      }
+    } catch (e) {
+      console.log('readDisplayPhoto', e);
+    }
+    return photo;
+  }
+
+  function trigger({ action, data }) {
+    const triggeredKey = generateTriggeredKey({ data });
     if (triggered[triggeredKey]) return;
 
-    const linecommand = global.spiderman.db.linecommands
-      .findOne({ uuid });
-    if (!linecommand) return;
+    const {
+      token: accesstoken, data_list: fields, language, note,
+    } = action;
 
-    const { access_token: accesstoken, fields, note } = linecommand;
-    const message = generateMessage({ fields, note, data });
+    let transform = {};
+    try {
+      transform = require(`./lang/${language}.json`);
+    } catch (e) {
+      transform = require('./lang/en.json');
+    }
+
+    const message = generateMessage({
+      fields, note, transform, data,
+    });
+
     const image = (() => {
-      if (fields.includes('face_image')) return `${data.face_image}`;
-      return '';
+      let ret = '';
+      if (fields.display_image === 'captured') {
+        ret = `${data.face_image}`;
+      } else if (fields.display_image === 'display') {
+        ret = readDisplayPhoto(data.person?.uuid ?? null);
+      } else if (fields.display_image === 'register') {
+        ret = readRegisterPhoto(data.person?.uuid ?? null);
+      }
+      return ret;
     })();
 
     global.spiderman.line.notify({ accesstoken, message, image });
     handleTriggeredKey(triggeredKey);
   }
 
-  function generateTriggeredKey({ uuid, data }) {
-    return `${data.source_id}-${uuid}-${data.person?.uuid ?? 'stranger'}`;
+  function generateTriggeredKey({ data }) {
+    return `${data.source_id}-${data.verify_uuid}-${data.person?.uuid ?? 'stranger'}`;
   }
 
   function handleTriggeredKey(triggeredKey) {
@@ -33,106 +78,63 @@ module.exports = () => {
     }, COOL_DOWN_TIME);
   }
 
-  function generateMessage({ fields, note, data }) {
-    let message = fields.reduce((acc, cur) => {
-      const { key, value } = (() => {
-        if (cur === 'timestamp') {
-          const time = global.spiderman.dayjs(data[cur]).format('YYYY/MM/DD HH:mm:ss');
-          return {
-            key: '時間',
-            value: time,
-          };
-        }
+  function generateMessage({
+    fields, note, transform, data,
+  }) {
+    let message = '';
 
-        if (cur === 'foreHead_temperature') {
-          return {
-            key: '額溫',
-            value: data.foreHead_temperature,
-          };
-        }
+    Object.keys(fields).forEach((key1) => {
+      switch (key1) {
+        case 'foreHead_temperature':
+          message += (`${transform.Temperature || 'Temperature'}: ${data[key1]}\n`);
+          break;
+        case 'verified_timestamp':
+          message += (`${transform.Datetime || 'Datetime'}: ${global.spiderman.dayjs(data[key1]).format('YYYY/MM/DD HH:mm:ss')}\n`);
+          break;
+        case 'person':
+          Object.keys(fields[key1]).forEach((key2) => {
+            switch (key2) {
+              case 'card_number':
+                message += (`${transform.Card_Number || 'Card Number'}: ${fields[key1][key2]}\n`);
+                break;
+              case 'department':
+                message += (`${transform.Department || 'Department'}: ${fields[key1][key2]}\n`);
+                break;
+              case 'email':
+                message += (`${transform.Email_Address || 'Email Address'}: ${fields[key1][key2]}\n`);
+                break;
+              case 'extension_number':
+                message += (`${transform.Extension_Number || 'Extension Number'}: ${fields[key1][key2]}\n`);
+                break;
+              case 'group_list':
+                message += (`${transform.Groups || 'Groups'}: ${fields[key1][key2]}\n`);
+                break;
+              case 'id':
+                message += (`${transform.Id || 'Id'}: ${fields[key1][key2]}\n`);
+                break;
+              case 'name':
+                message += (`${transform.Fullname || 'Fullname'}: ${fields[key1][key2]}\n`);
+                break;
+              case 'phone_number':
+                message += (`${transform.Phone_Number || 'Phone Number'}: ${fields.person[key2]}\n`);
+                break;
+              case 'remarks':
+                message += (`${transform.Remark || 'Remark'}: ${fields[key1][key2]}\n`);
+                break;
+              case 'title':
+                message += (`${transform.Title || 'Title'}: ${fields[key1][key2]}\n`);
+                break;
+              default:
 
-        if (cur === 'person_id') {
-          return {
-            key: '編號',
-            value: data.person?.id,
-          };
-        }
+                break;
+            }
+          });
+          break;
+        default:
 
-        if (cur === 'person_name') {
-          return {
-            key: '全名',
-            value: data.person?.name,
-          };
-        }
-
-        if (cur === 'group_list') {
-          return {
-            key: '群組',
-            value: data.person?.group_list,
-          };
-        }
-
-        if (cur === 'card_number') {
-          return {
-            key: '卡號',
-            value: data.person?.card_number,
-          };
-        }
-
-        if (cur === 'title') {
-          return {
-            key: '職稱',
-            value: data.person?.extra_info.title,
-          };
-        }
-
-        if (cur === 'department') {
-          return {
-            key: '部門',
-            value: data.person?.extra_info.department,
-          };
-        }
-
-        if (cur === 'email') {
-          return {
-            key: 'email',
-            value: data.person?.extra_info.email,
-          };
-        }
-
-        if (cur === 'phone_number') {
-          return {
-            key: '手機',
-            value: data.person?.extra_info.phone_number,
-          };
-        }
-
-        if (cur === 'extension_number') {
-          return {
-            key: '分機',
-            value: data.person?.extra_info.extension_number,
-          };
-        }
-
-        if (cur === 'remarks') {
-          return {
-            key: '備註',
-            value: data.person?.extra_info.remarks,
-          };
-        }
-
-        return {
-          key: null,
-          value: null,
-        };
-      })();
-
-      if (value) {
-        acc += `${key}: ${value}\n`;
+          break;
       }
-
-      return acc;
-    }, '');
+    });
 
     if (note) {
       message += `\n${note}`;

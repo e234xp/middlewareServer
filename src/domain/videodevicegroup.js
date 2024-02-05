@@ -55,7 +55,8 @@ module.exports = () => {
   async function modify({
     uuid,
     name,
-    camera_uuid_list: cameraUuidList, tablet_uuid_list: tabletUuidList,
+    camera_uuid_list: cameraUuidList,
+    tablet_uuid_list: tabletUuidList,
   }) {
     const fixedUuids = ['0', '1'];
     if (fixedUuids.includes(uuid)) throw Error('The item can not be change.');

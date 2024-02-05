@@ -14,6 +14,8 @@ module.exports = {
       iobox: require('./iobox')(),
       outputdevicegroup: require('./outputdevicegroup')(),
 
+      eventhandle: require('./eventhandle')(),
+
       rule: require('./rule')(),
       schedule: require('./schedule')(),
       linecommand: require('./linecommand')(),
@@ -23,6 +25,7 @@ module.exports = {
       workerIobox: require('./worker-iobox')(),
       workerWiegand: require('./worker-wiegand')(),
       workerResult: require('./worker-result')(),
+      workerCameraStatus: require('./worker-camerastatus')(),
 
       triggerLineCommand: require('./trigger-line-command')(),
       triggerEmailCommand: require('./trigger-email-command')(),

@@ -12,47 +12,47 @@ const fieldChecks = [
   {
     fieldName: 'card_facility_code',
     fieldType: 'string',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'card_number',
     fieldType: 'string',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'group_list',
     fieldType: 'array',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'begin_date',
     fieldType: 'number',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'expire_date',
     fieldType: 'number',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'as_admin',
     fieldType: 'boolean',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'extra_info',
     fieldType: 'object',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'display_image',
     fieldType: 'string',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'register_image',
     fieldType: 'string',
-    required: true,
+    required: false,
   },
 ];
 
@@ -62,39 +62,76 @@ module.exports = async (data) => {
     fieldChecks,
   });
 
-  // 檢查是否超過
-  const MAX_AMOUNT_OF_PERSON = 3000;
-  const people = global.spiderman.db.person.find();
-  if (people.length >= MAX_AMOUNT_OF_PERSON) throw Error(`Items in database has exceeded ${MAX_AMOUNT_OF_PERSON} (max).`);
+  // 檢查是否超過 License
+  {
+    const DEFAULT_MAX_AMOUNT_OF_PERSON = 10000;
+
+    let personLen = 0;
+    const people = global.spiderman.db.person.find();
+    const visitor = global.spiderman.db.visitor.find();
+
+    personLen += people.length;
+    personLen += visitor.length;
+
+    if (personLen >= DEFAULT_MAX_AMOUNT_OF_PERSON) {
+      const response = await global.spiderman.request.make({
+        url: `http://${global.params.localhost}/system/findlicense`,
+        method: 'POST',
+        pool: { maxSockets: 10 },
+        time: true,
+        timeout: 5000,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        json: data,
+      });
+
+      let faceDbSize = DEFAULT_MAX_AMOUNT_OF_PERSON;
+      if (response && response.license) {
+        const DbSize = response.license.filter((l) => l.default_face_db_size !== undefined);
+
+        DbSize.forEach((a) => {
+          faceDbSize += a.default_face_db_size;
+        });
+      }
+
+      if (personLen >= faceDbSize) {
+        throw Error(`Items in database has exceeded ${faceDbSize} (max).`);
+      }
+    }
+  }
 
   // 檢查 id 是否重複
-  const existPerson = global.spiderman.db.person.findOne({
-    id: data.id,
-  });
-  if (existPerson) throw Error('Id existed.');
+  {
+    const existed = global.spiderman.db.person.findOne({
+      id: data.id,
+    });
+    if (existed) throw Error('Id existed.');
+  }
 
   // 至少讓 group_list 有 All Person
   if (!data.group_list.includes('All Person')) {
     data.group_list.push('All Person');
   }
 
+  let faceImage = '';
+  let faceFeature = '';
+  let upperFaceFeature = '';
+
   if (!data.register_image) {
     await global.domain.person.insert({ data });
+  } else {
+    const personFeature = await global.spiderman.facefeature.engineGenerate(data.register_image);
 
-    return {
-      message: 'ok',
-    };
+    if (personFeature) {
+      faceImage = personFeature.face_image;
+      faceFeature = personFeature.face_feature;
+      upperFaceFeature = personFeature.upper_face_feature;
+    }
+    await global.domain.person.insert({
+      data, faceImage, faceFeature, upperFaceFeature,
+    });
   }
-
-  const {
-    face_image: faceImage = '',
-    face_feature: faceFeature = '',
-    upper_face_feature: upperFaceFeature = '',
-  } = await global.spiderman.facefeature.engineGenerate(data.register_image);
-
-  await global.domain.person.insert({
-    data, faceImage, faceFeature, upperFaceFeature,
-  });
 
   return {
     message: 'ok',

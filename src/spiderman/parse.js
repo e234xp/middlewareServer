@@ -15,15 +15,22 @@ module.exports = () => {
   function circularJson(data) {
     let reqData = null;
     const circularReplacedata = JSON.stringify(data, getCircularReplacer());
-    reqData = JSON.parse(circularReplacedata);
-
+    try {
+      reqData = JSON.parse(circularReplacedata);
+    } catch (e) {
+      console.log('circularJson', e);
+    }
     return reqData;
   }
 
   function json(data) {
     let reqData = null;
     if (typeof data === 'string') {
-      reqData = JSON.parse(data);
+      try {
+        reqData = JSON.parse(data);
+      } catch (e) {
+        console.log('json', e);
+      }
     } else if (typeof data === 'object') {
       reqData = data;
     }

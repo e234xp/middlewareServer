@@ -57,7 +57,6 @@ module.exports = (collection = global.spiderman.db.person) => {
       ...otherData,
       face_feature: faceFeature,
       upper_face_feature: upperFaceFeature,
-      create_date: now,
       last_modify_date: now,
       last_modify_date_by_manager: now,
     };

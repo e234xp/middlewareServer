@@ -39,7 +39,18 @@ const fieldChecks = [
     fieldType: 'number',
     required: true,
   },
+  {
+    fieldName: 'verified_merge_setting',
+    fieldType: 'object',
+    required: true,
+  },
+  {
+    fieldName: 'non_verified_merge_setting',
+    fieldType: 'object',
+    required: true,
+  },
 ];
+
 const rtspFieldChecks = [
   {
     fieldName: 'ip_address',

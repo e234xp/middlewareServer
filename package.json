@@ -30,10 +30,13 @@
   },
   "scripts": {
     "test": "node --experimental-vm-modules ./node_modules/.bin/jest",
-    "dev": "nodemon src/main fileroot=/Users/liaoguanjie/aira/test-file-root localhost=192.168.10.124:8588",
-    "build": "webpack",
-    "bundle": "nodemon dist/main-bundle fileroot=/Users/liaoguanjie/aira/middlewareServerFiles localhost=192.168.10.124:8588",
-    "deploy": "sh scripts/deploy.sh"
+    "dev": "node src/main fileroot=/home/aira/test-file-root localhost=127.0.0.1:8588",
+    "build": "webpack --config ./webpack.config.js && ./buildexe.sh",
+    "deploy": "sh scripts/deploy.sh",
+    "MUST_MANUAL": "",
+    "insall nexe": "npm i nexe -g",
+    "build1": "rm ./dist/mainService.js && webpack --config ./webpack.config.js",
+    "nexe1": "nexe ./mainService.js --target linux-x64-12.16.2 -o ./mainService"
   },
   "repository": {
     "type": "git",

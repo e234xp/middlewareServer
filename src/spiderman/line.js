@@ -1,5 +1,5 @@
 module.exports = () => {
-  function notify({ accesstoken, message, image }) {
+  async function notify({ accesstoken, message, image }) {
     const formData = (() => {
       const imageData = Buffer.from(image, 'base64');
       return {
@@ -16,7 +16,7 @@ module.exports = () => {
       };
     })();
 
-    return global.spiderman.request.make({
+    const aaa = await global.spiderman.request.make({
       url: 'https://notify-api.line.me/api/notify',
       method: 'POST',
       timeout: 5000,
@@ -26,6 +26,8 @@ module.exports = () => {
       },
       formData,
     });
+
+    return aaa;
   }
 
   return {

@@ -2,8 +2,13 @@ const { uuid: uuidv4 } = require('uuidv4');
 
 module.exports = () => {
   function findWithPerson({ uuid }) {
+    // console.log('aaa', uuid);
+
     const groups = global.spiderman.db.groups.find();
+    // console.log('bbb', groups);
+
     const filteredGroups = uuid ? groups.filter((group) => group.uuid === uuid) : groups;
+    // console.log('ccc', filteredGroups);
 
     if (uuid && filteredGroups.length === 0) return filteredGroups;
 
@@ -38,6 +43,7 @@ module.exports = () => {
       };
     });
 
+    console.log('ddd', groupList);
     if (uuid) return groupList;
 
     // 透過 person, visitor 的 assigned_group_list 產生假的 assignedGroupList 提供前端檢視
@@ -125,6 +131,7 @@ module.exports = () => {
     global.spiderman.db.groups.updateOne({ uuid }, { remarks });
 
     removeGroupsFromPerson([group.name]);
+
     addGroupToPerson({ name: group.name, personUuidList, visitorUuidList });
   }
 
@@ -161,21 +168,27 @@ module.exports = () => {
   }
 
   function addGroupToPerson({ name, personUuidList, visitorUuidList }) {
-    personUuidList.forEach((uuid) => {
-      const person = global.spiderman.db.person.findOne({ uuid });
-      if (!person) return;
-      global.spiderman.db.person.updateOne({ uuid }, {
-        group_list: [...person.group_list, name],
-      });
-    });
+    if (personUuidList && personUuidList.length >= 1) {
+      personUuidList.forEach((uuid) => {
+        const person = global.spiderman.db.person.findOne({ uuid });
+        if (!person) return;
 
-    visitorUuidList.forEach((uuid) => {
-      const visitor = global.spiderman.db.visitor.findOne({ uuid });
-      if (!visitor) return;
-      global.spiderman.db.visitor.updateOne({ uuid }, {
-        group_list: [...visitor.group_list, name],
+        global.spiderman.db.person.updateOne({ uuid }, {
+          group_list: [...person.group_list, name],
+        });
       });
-    });
+    }
+
+    if (visitorUuidList && visitorUuidList.length >= 1) {
+      visitorUuidList.forEach((uuid) => {
+        const visitor = global.spiderman.db.visitor.findOne({ uuid });
+        if (!visitor) return;
+
+        global.spiderman.db.visitor.updateOne({ uuid }, {
+          group_list: [...visitor.group_list, name],
+        });
+      });
+    }
   }
 
   function removeGroupsFromPerson(names) {

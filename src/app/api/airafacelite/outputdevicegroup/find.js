@@ -2,17 +2,17 @@ const fieldChecks = [
   {
     fieldName: 'uuid',
     fieldType: 'string',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'slice_shift',
     fieldType: 'number',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'slice_length',
     fieldType: 'number',
-    required: true,
+    required: false,
   },
 ];
 
@@ -22,11 +22,16 @@ module.exports = async (data) => {
     fieldChecks,
   });
 
+  if (!data.slice_shift) data.slice_shift = 0;
+  if (!data.slice_length) data.slice_length = 100;
+
   const { totalLength, result } = await global.domain.outputdevicegroup.find(data);
 
   return {
     message: 'ok',
-    totalLength,
+    total_length: totalLength,
+    slice_shift: data.slice_shift,
+    slice_length: data.slice_length,
     result,
   };
 };

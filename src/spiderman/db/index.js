@@ -33,8 +33,6 @@ module.exports = ({ collections }) => {
           });
           break;
 
-          // use mysql,...
-
         default:
           instance = {};
           console.log(`Sorry, we are out of ${type}.`);

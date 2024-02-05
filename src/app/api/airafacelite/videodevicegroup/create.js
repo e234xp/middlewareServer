@@ -7,12 +7,12 @@ const fieldChecks = [
   {
     fieldName: 'camera_uuid_list',
     fieldType: 'array',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'tablet_uuid_list',
     fieldType: 'array',
-    required: true,
+    required: false,
   },
 ];
 
@@ -21,6 +21,9 @@ module.exports = async (data) => {
     data,
     fieldChecks,
   });
+
+  if (!data.camera_uuid_list) data.camera_uuid_list = [];
+  if (!data.tablet_uuid_list) data.tablet_uuid_list = [];
 
   await global.domain.videodevicegroup.create(data);
 

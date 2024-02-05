@@ -10,12 +10,15 @@ module.exports = () => {
     const cameras = global.spiderman.db.cameras.find();
     if (cameras.length >= MAX_AMOUNT) throw Error(`Items in database has exceeded ${MAX_AMOUNT} (max).`);
 
-    const repeatDevice = global.domain.device.findByName(data.name);
-    if (repeatDevice) throw Error(`Name existed. type: ${repeatDevice.type}`);
+    const repeatItem = global.domain.device.findByName(data.name);
+    if (repeatItem) throw Error(`Name existed. type: ${repeatItem.type}`);
 
     data.divice_groups = generateGroups(data.divice_groups);
 
-    await global.domain.crud.insertOne({ collection: 'cameras', data });
+    await global.domain.crud.insertOne({
+      collection: 'cameras', 
+      data,
+    });
   }
 
   async function modify({ uuid, data }) {
@@ -23,13 +26,15 @@ module.exports = () => {
     const { roi } = data;
     if (roi.length > MAX_ROI) throw Error(`Roi number has exceeded ${MAX_ROI} (max).`);
 
-    const repeatDevice = global.domain.device.findByName(data.name);
-    if (repeatDevice && repeatDevice.uuid !== uuid) throw Error(`Name existed. type: ${repeatDevice.type}`);
+    const repeatItem = global.domain.device.findByName(data.name);
+    if (repeatItem && repeatItem.uuid !== uuid) throw Error(`Name existed. type: ${repeatItem.type}`);
 
     data.divice_groups = generateGroups(data.divice_groups);
 
     await global.domain.crud.modify({
-      collection: 'cameras', uuid, data,
+      collection: 'cameras', 
+      uuid, 
+      data,
     });
   }
 
@@ -43,9 +48,15 @@ module.exports = () => {
 
     return result;
   }
+  async function status() {
+    return new Promise((resolve) => {
+      resolve([...global.runtimcache.camerasStatus, ...global.runtimcache.tabletsStatus]);
+    });
+  }
 
   return {
     create,
     modify,
+    status,
   };
 };

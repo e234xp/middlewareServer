@@ -20,17 +20,17 @@ const fieldChecksData = [
   {
     fieldName: 'brand',
     fieldType: 'nonempty',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'model',
     fieldType: 'nonempty',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'divice_groups',
     fieldType: 'array',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'ip_address',
@@ -45,12 +45,12 @@ const fieldChecksData = [
   {
     fieldName: 'username',
     fieldType: 'string',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'password',
     fieldType: 'string',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'iopoint',
@@ -59,7 +59,7 @@ const fieldChecksData = [
   },
 ];
 
-module.exports = (rData) => {
+module.exports = async (rData) => {
   const { uuid } = global.spiderman.validate.data({
     data: rData,
     fieldChecks,
@@ -70,7 +70,12 @@ module.exports = (rData) => {
     fieldChecks: fieldChecksData,
   });
 
-  global.domain.iobox.modify({ uuid, data });
+  try {
+    await global.domain.iobox.modify({ uuid, data });
+  } catch (ex) {
+    throw Error(ex.message);
+  }
+
   global.domain.workerIobox.init();
 
   return {

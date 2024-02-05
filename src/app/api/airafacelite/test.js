@@ -1,5 +1,5 @@
 module.exports = async () => {
-  global.spiderman.socket.broadcastMessage({ wss: global.spiderman.server.wss, message: 'broadcastMessage!!' });
+  global.spiderman.socket.broadcastMessage({ wss: global.spiderman.server.wsVerifyresults, message: 'broadcastMessage!!' });
   return {
     message: 'ok',
   };

@@ -1,5 +1,5 @@
 module.exports = () => {
-  const publicCgi = ['checkin'];
+  const publicCgi = ['checkin', 'verifyfaceservice'];
 
   const router = {
     checkin: require('../../app/api/tablet/checkin'),

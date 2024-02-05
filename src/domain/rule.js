@@ -34,9 +34,6 @@ function filterExistUuids(data) {
   data.condition.video_device_groups = global.domain.crud.filterExistUuids({ collection: 'videodevicegroups', uuids: data.condition.video_device_groups });
   if (data.condition.video_device_groups.length === 0) throw Error('video_device_groups not exist');
 
-  data.condition.groups = global.domain.crud.filterExistUuids({ collection: 'groups', uuids: data.condition.groups });
-  if (data.condition.groups.length === 0) throw Error('groups not exist');
-
   const ioboxUuidList = global.domain.crud.filterExistUuids({ collection: 'ioboxes', uuids: data.actions.ioboxes.map(({ uuid }) => uuid) });
   data.actions.ioboxes = data.actions.ioboxes
     .filter(({ uuid }) => ioboxUuidList.includes(uuid));

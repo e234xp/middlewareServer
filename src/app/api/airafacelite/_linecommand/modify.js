@@ -1,11 +1,21 @@
 const fieldChecks = [
   {
+    fieldName: 'uuid',
+    fieldType: 'nonempty',
+    required: true,
+  },
+  {
     fieldName: 'name',
     fieldType: 'nonempty',
     required: true,
   },
   {
     fieldName: 'access_token',
+    fieldType: 'nonempty',
+    required: true,
+  },
+  {
+    fieldName: 'language',
     fieldType: 'nonempty',
     required: true,
   },
@@ -27,9 +37,11 @@ module.exports = (data) => {
     fieldChecks,
   });
 
-  global.domain.crud.insertOne({
+  const { uuid, ...others } = data;
+  global.domain.crud.modify({
     collection: 'linecommands',
-    data,
+    uuid,
+    data: others,
     uniqueKeys: ['name'],
   });
 

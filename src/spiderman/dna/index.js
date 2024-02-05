@@ -137,12 +137,24 @@ module.exports = {
         workingFolder: DATA_FOLDER,
       },
       {
+        name: 'manualverifyresult',
+        type: 'record',
+        cache: { isOpen: true, maxBytes: 20 * 1024 * 1024 },
+        workingFolder: DATA_FOLDER,
+      },
+      {
         name: 'dbPhoto',
         type: 'image',
         workingFolder: DB_FOLDER,
       },
       {
         name: 'settings',
+        type: 'file',
+        cache: { isOpen: true },
+        workingFolder: DB_FOLDER,
+      },
+      {
+        name: 'system_settings',
         type: 'file',
         cache: { isOpen: true },
         workingFolder: DB_FOLDER,
@@ -176,6 +188,12 @@ module.exports = {
         type: 'record',
         cache: { isOpen: true, maxBytes: 20 * 1024 * 1024 },
         workingFolder: DATA_FOLDER,
+      },
+      {
+        name: 'eventhandle',
+        type: 'file',
+        cache: { isOpen: true, maxBytes: 20 * 1024 * 1024 },
+        workingFolder: DB_FOLDER,
       },
     ],
   },

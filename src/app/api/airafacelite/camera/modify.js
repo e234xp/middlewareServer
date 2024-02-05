@@ -1,7 +1,7 @@
 const fieldChecks = [
   {
     fieldName: 'uuid',
-    fieldType: 'string',
+    fieldType: 'nonempty',
     required: true,
   },
   {
@@ -50,6 +50,16 @@ const fieldChecksData = [
   {
     fieldName: 'capture_interval',
     fieldType: 'number',
+    required: true,
+  },
+  {
+    fieldName: 'verified_merge_setting',
+    fieldType: 'object',
+    required: true,
+  },
+  {
+    fieldName: 'non_verified_merge_setting',
+    fieldType: 'object',
     required: true,
   },
 ];
@@ -101,6 +111,21 @@ module.exports = async (rData) => {
         port: 0,
         user: '',
         pass: '',
+      },
+      ...{
+        verified_merge_setting: {
+          enable: true,
+          merge_duration: 0,
+          non_action: true,
+        },
+      },
+      ...{
+        non_verified_merge_setting: {
+          enable: false,
+          merge_score: 0.8,
+          merge_duration: 0,
+          non_action: true,
+        },
       },
     };
   } else {

@@ -2,35 +2,45 @@ const fieldChecks = [
   {
     fieldName: 'uuid',
     fieldType: 'string',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'slice_shift',
     fieldType: 'number',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'slice_length',
     fieldType: 'number',
-    required: true,
+    required: false,
   },
 ];
 
-module.exports = (data) => {
+module.exports = async (data) => {
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
   });
 
-  const { uuid, slice_shift: sliceShift, slice_length: sliceLength } = data;
+  const sliceShift = data.slice_shift ? data.slice_shift : 0;
+  const sliceLength = data.slice_length ? data.slice_length : 100;
+  const { uuid } = data;
 
   const { totalLength, result } = global.domain.crud
     .find({
       collection: 'tablets',
-      query: { ...(uuid === '' ? {} : { uuid }) },
+      query: { ...(!uuid ? {} : { uuid }) },
       sliceShift,
       sliceLength,
     });
+
+  const status = await global.domain.tablet.status();
+  result.forEach((e) => {
+    const r = status.filter((s) => (s.uuid === e.uuid));
+    if (r.length > 0) {
+      e.alive = r[0].alive;
+    } else e.alive = false;
+  });
 
   return {
     message: 'ok',

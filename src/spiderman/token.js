@@ -32,7 +32,7 @@ module.exports = () => {
 
   function decryptToAccountInTime(token) {
     const accountData = decryptToAccount(token);
-    const EXPIRED_MS = 300000;
+    const EXPIRED_MS = 3600000;
     const isExpired = Date.now() > (accountData.t + EXPIRED_MS);
 
     if (isExpired) return null;

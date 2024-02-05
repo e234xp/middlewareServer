@@ -27,10 +27,12 @@ module.exports = async (data) => {
     fieldChecks,
   });
 
-  const sourceId = await global.domain.tabletverify.verifyFace(data);
+  const verifyFaceId = await global.domain.tabletverify.verifyFace(data);
+
+  console.log('verifyfaceservice', { message: 'ok', verify_face_id: verifyFaceId });
 
   return {
     message: 'ok',
-    verify_face_id: sourceId,
+    verify_face_id: verifyFaceId,
   };
 };

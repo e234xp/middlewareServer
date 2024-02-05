@@ -2,21 +2,21 @@ const fieldChecks = [
   {
     fieldName: 'uuid',
     fieldType: 'string',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'slice_shift',
     fieldType: 'number',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'slice_length',
     fieldType: 'number',
-    required: true,
+    required: false,
   },
 ];
 
-module.exports = (data) => {
+module.exports = async (data) => {
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
@@ -29,10 +29,18 @@ module.exports = (data) => {
   const { totalLength, result } = global.domain.crud
     .find({
       collection: 'cameras',
-      query: { ...(uuid === '' ? {} : { uuid }) },
+      query: { ...(!uuid ? {} : { uuid }) },
       sliceShift,
       sliceLength,
     });
+
+  const status = await global.domain.camera.status();
+  result.forEach((e) => {
+    const r = status.filter((s) => (s.uuid === e.uuid));
+    if (r.length > 0) {
+      e.alive = r[0].alive;
+    } else e.alive = false;
+  });
 
   return {
     message: 'ok',

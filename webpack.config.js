@@ -7,7 +7,7 @@ module.exports = {
   entry: ['babel-polyfill', path.resolve(__dirname, 'src', 'main.js')],
   output: {
     path: path.resolve(__dirname, 'dist'), // 指定輸出路徑為绝对路径
-    filename: 'main-bundle.js',
+    filename: 'mainService.js',
   },
   resolve: {
     extensions: ['.js', '.tsx', '.ts', '.json', '.html'], // 可解析的副檔名

@@ -7,6 +7,7 @@ const fieldChecks = [
 ];
 
 module.exports = (data, token) => {
+  // paramters checker
   data = global.spiderman.validate.data({
     data,
     fieldChecks,

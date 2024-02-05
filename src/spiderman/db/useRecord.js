@@ -1,4 +1,6 @@
 const fs = require('fs');
+const jsonfile = require('jsonfile');
+// const _ = require('lodash');
 
 module.exports = ({
   workingFolder,
@@ -111,12 +113,14 @@ module.exports = ({
       const filePath = `${FOLIDER_PATH}/${file}`;
       const [fileName] = file.split('.');
 
-      const cache = getCache(fileName);
-      if (cache) {
-        setCache({ id: fileName, item: cache.value });
+      // const cache = getCache(fileName);
+      // if (cache) {
+      //   setCache({ id: fileName, item: cache.value });
 
-        return cache.value;
-      }
+      //   console.log('useRecord find getCache', cache.value);
+
+      //   return cache.value;
+      // }
 
       const item = (() => {
         let fileString = fs.readFileSync(filePath).toString('utf8');
@@ -126,8 +130,7 @@ module.exports = ({
 
         const fileArray = (() => {
           try {
-            const result = JSON
-              .parse(`[${fileString}]`);
+            const result = JSON.parse(`[${fileString}]`);
 
             return result;
           } catch (e) {
@@ -172,7 +175,71 @@ module.exports = ({
     return queriedRecords;
   }
 
+  // 更新資料
+  function updateCommands(startTime, endTime, verifyUuid, commands) {
+    const dir = fs.readdirSync(FOLIDER_PATH);
+
+    const filterdFiles = dir.filter((file) => {
+      const [fileName, type] = file.split('.');
+      if (type !== 'db') return false;
+
+      const [, fileStartTime, fileEndTime] = fileName.split('_');
+      const v = (startTime <= fileStartTime && endTime >= fileEndTime)
+        || (startTime >= fileStartTime && startTime <= fileEndTime)
+        || (endTime >= fileStartTime && endTime <= fileEndTime);
+
+      return v;
+    });
+
+    const allRecordsInFiles = filterdFiles.flatMap((file) => {
+      const filePath = `${FOLIDER_PATH}/${file}`;
+      const [fileName] = file.split('.');
+
+      const item = (() => {
+        let fileString = fs.readFileSync(filePath).toString('utf8');
+        if (fileString[0] === ',') {
+          fileString = fileString.substring(1);
+        }
+
+        const fileArray = (() => {
+          try {
+            const result = JSON
+              .parse(`[${fileString}]`);
+
+            return result;
+          } catch (e) {
+            global.spiderman.systemlog.writeError(`error:${e}: ${filePath}`);
+
+            return [];
+          }
+        })();
+
+        return fileArray.map((i) => ({
+          ...i,
+          face_image_id: {
+            f: `${fileName}`,
+            uuid: i.verify_uuid,
+          },
+        }));
+      })();
+
+      return item;
+    });
+
+    const record = {};
+    for (let i = 0; i < allRecordsInFiles.length; i += 1) {
+      if (allRecordsInFiles[i].verify_uuid === verifyUuid) {
+        allRecordsInFiles[i].commands = commands;
+      }
+    }
+
+    jsonfile.writeStringFileSync(`${FOLIDER_PATH}/${filterdFiles[0]}`, allRecordsInFiles, { spaces: 0 });
+
+    return record;
+  }
+
   return {
     find,
+    updateCommands,
   };
 };

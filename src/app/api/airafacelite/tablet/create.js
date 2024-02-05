@@ -10,16 +10,6 @@ const fieldChecks = [
     required: true,
   },
   {
-    fieldName: 'ip_address',
-    fieldType: 'nonempty',
-    required: true,
-  },
-  {
-    fieldName: 'code',
-    fieldType: 'nonempty',
-    required: true,
-  },
-  {
     fieldName: 'divice_groups',
     fieldType: 'array',
     required: true,
@@ -336,13 +326,13 @@ const fieldChecks = [
   },
 ];
 
-module.exports = (data) => {
+module.exports = async (data) => {
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
   });
 
-  global.domain.tablet.create(data);
+  await global.domain.tablet.create(data);
 
   return {
     message: 'ok',

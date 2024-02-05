@@ -5,6 +5,11 @@ const fieldChecks = [
     required: true,
   },
   {
+    fieldName: 'enable',
+    fieldType: 'boolean',
+    required: true,
+  },
+  {
     fieldName: 'name',
     fieldType: 'nonempty',
     required: true,

@@ -1,26 +1,31 @@
 module.exports = () => {
-  function create(data) {
+  async function create(data) {
     // todo 確認 MAX 數量
     const MAX_AMOUNT = 500;
     const wiegandConverters = global.spiderman.db.wiegandconverters.find();
     if (wiegandConverters.length >= MAX_AMOUNT) throw Error(`Items in database has exceeded ${MAX_AMOUNT} (max).`);
 
-    const repeatDevice = global.domain.device.findByName(data.name);
-    if (repeatDevice) throw Error(`Name existed. type: ${repeatDevice.type}`);
+    const repeatItem = global.domain.device.findByName(data.name);
+    if (repeatItem) throw Error(`Name existed. type: ${repeatItem.type}`);
 
     data.divice_groups = generateGroups(data.divice_groups);
 
-    global.domain.crud.insertOne({ collection: 'wiegandconverters', data });
+    await global.domain.crud.insertOne({
+      collection: 'wiegandconverters',
+      data,
+    });
   }
 
-  function modify({ uuid, data }) {
-    const repeatDevice = global.domain.device.findByName(data.name);
-    if (repeatDevice && repeatDevice.uuid !== uuid) throw Error(`Name existed. type: ${repeatDevice.type}`);
+  async function modify({ uuid, data }) {
+    const repeatItem = global.domain.device.findByName(data.name);
+    if (repeatItem && repeatItem.uuid !== uuid) throw Error(`Name existed. type: ${repeatItem.type}`);
 
     data.divice_groups = generateGroups(data.divice_groups);
 
     global.domain.crud.modify({
-      collection: 'wiegandconverters', uuid, data,
+      collection: 'wiegandconverters',
+      uuid,
+      data,
     });
   }
 

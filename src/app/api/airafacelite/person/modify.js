@@ -15,57 +15,57 @@ const fieldChecksData = [
   {
     fieldName: 'id',
     fieldType: 'string',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'name',
     fieldType: 'string',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'card_number',
     fieldType: 'string',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'display_image',
     fieldType: 'string',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'register_image',
     fieldType: 'string',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'begin_date',
     fieldType: 'number',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'expire_date',
     fieldType: 'number',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'group_list',
     fieldType: 'array',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'card_facility_code',
     fieldType: 'string',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'as_admin',
     fieldType: 'boolean',
-    required: true,
+    required: false,
   },
   {
     fieldName: 'extra_info',
     fieldType: 'object',
-    required: true,
+    required: false,
   },
 ];
 
@@ -75,28 +75,56 @@ module.exports = async (rData) => {
     fieldChecks,
   });
 
-  const data = global.spiderman.validate.data({
+  let data = global.spiderman.validate.data({
     data: rData.data,
     fieldChecks: fieldChecksData,
   });
 
-  if (!data.register_image) {
-    await global.domain.person.modify({ uuid, data });
-
-    return {
-      message: 'ok',
-    };
+  // 檢查 id 是否重複
+  {
+    const existed = global.spiderman.db.person.findOne({
+      id: data.id, uuid: { $ne: uuid },
+    });
+    if (existed) throw Error('Id existed.');
   }
 
-  const {
-    face_image: faceImage = '',
-    face_feature: faceFeature = '',
-    upper_face_feature: upperFaceFeature = '',
-  } = await global.spiderman.facefeature.engineGenerate(data.register_image);
+  // 至少讓 group_list 有 All Person
+  if (!data.group_list.includes('All Person')) {
+    data.group_list.push('All Person');
+  }
 
-  await global.domain.person.modify({
-    uuid, data, faceImage, faceFeature, upperFaceFeature,
-  });
+  data = Object.entries(data)
+    .filter(([key, value]) => value !== undefined)
+    .reduce((obj, [key, value]) => {
+      obj[key] = value;
+      return obj;
+    }, {});
+
+  let faceImage = '';
+  let faceFeature = '';
+  let upperFaceFeature = '';
+
+  const dbPerson = global.spiderman.db.person.findOne({ uuid });
+
+  if (dbPerson) {
+    data = { ...dbPerson, ...data };
+  }
+
+  if (!data.register_image) {
+    await global.domain.person.modify({ uuid, data });
+  } else {
+    const personFeature = await global.spiderman.facefeature.engineGenerate(data.register_image);
+
+    if (personFeature) {
+      faceImage = personFeature.face_image;
+      faceFeature = personFeature.face_feature;
+      upperFaceFeature = personFeature.upper_face_feature;
+    }
+
+    await global.domain.person.modify({
+      uuid, data, faceImage, faceFeature, upperFaceFeature,
+    });
+  }
 
   return {
     message: 'ok',

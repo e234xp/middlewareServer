@@ -15,6 +15,9 @@ module.exports = () => {
         headers,
         ...others,
       }, (error, response, body) => {
+        // console.log('error', error);
+        // console.log('body', body);
+
         if (error) {
           reject(error);
         } else {

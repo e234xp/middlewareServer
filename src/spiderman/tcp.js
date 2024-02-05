@@ -2,7 +2,7 @@ const net = require('net');
 
 module.exports = () => {
   function connect({
-    host, port, onConnect = () => {}, onData = () => {}, onClose = () => {}, onError = () => {},
+    host, port, onConnect = () => { }, onData = () => { }, onClose = () => { }, onError = () => { },
   }) {
     // 建立 TCP 連線
     const client = new net.Socket();

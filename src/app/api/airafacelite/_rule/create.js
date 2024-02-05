@@ -1,5 +1,10 @@
 const fieldChecks = [
   {
+    fieldName: 'enable',
+    fieldType: 'boolean',
+    required: true,
+  },
+  {
     fieldName: 'name',
     fieldType: 'nonempty',
     required: true,
@@ -23,12 +28,12 @@ const conditionFieldChecks = [
     required: true,
   },
   {
-    fieldName: 'video_device_groups',
-    fieldType: 'nonempty-array',
+    fieldName: 'groups',
+    fieldType: 'array',
     required: true,
   },
   {
-    fieldName: 'groups',
+    fieldName: 'video_device_groups',
     fieldType: 'nonempty-array',
     required: true,
   },
