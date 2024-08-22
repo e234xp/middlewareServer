@@ -26,7 +26,8 @@
     "webpack": "^5.88.1",
     "webpack-cli": "^4.10.0",
     "webpack-node-externals": "^3.0.0",
-    "ws": "^7.5.9"
+    "ws": "^7.5.9",
+    "shelljs": "^0.8.5"
   },
   "scripts": {
     "test": "node --experimental-vm-modules ./node_modules/.bin/jest",
@@ -35,8 +36,9 @@
     "deploy": "sh scripts/deploy.sh",
     "MUST_MANUAL": "",
     "insall nexe": "npm i nexe -g",
-    "build1": "rm ./dist/mainService.js && webpack --config ./webpack.config.js",
-    "nexe1": "nexe ./mainService.js --target linux-x64-12.16.2 -o ./mainService"
+    "build1": "NODE_ENV=production rm ./dist/mainService.js && webpack --config ./webpack.config.js",
+    "nexe1": "nexe ./mainService.js --target linux-x64-12.16.2 -o ./mainService",
+    "deb": "dpkg -b deb/ airaFace-Server-2.00.01.deb"
   },
   "repository": {
     "type": "git",

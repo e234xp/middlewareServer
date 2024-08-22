@@ -1,4 +1,6 @@
 process.env.UV_THREADPOOL_SIZE = 128;
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 // 引入 .env
 require('dotenv').config();
 
@@ -7,6 +9,19 @@ require('dotenv').config();
 const express = require('express');
 const http = require('http');
 const https = require('https');
+
+// function defineLog(logLevel, logString) {
+//   // const scriptName = require('path').basename(__filename);
+//   let scriptName = __filename.replace(global.params.swPath, '');
+//   scriptName = scriptName.replace(global.params.devPath, '');
+
+//   const { pid } = process;
+//   const callerName = defineLog.caller.name;
+
+//   global.spiderman.systemlog.writeLog({
+//     logLevel, pid, scriptName, callerName, logString,
+//   });
+// }
 
 const argObject = (() => {
   const result = {};
@@ -26,13 +41,35 @@ const argObject = (() => {
 global.params = generateParams(argObject);
 function generateParams({
   fileroot = '/home/aira/product',
+  httpport = 80,
+  httpsport = 443,
   localhost = '127.0.0.1:8588',
-  // localhost = '192.168.10.122:8588',
+  loglevel = 2,
+  logreset = 0,
 }) {
+  if (process.env.NODE_ENV !== 'production') {
+    localhost = '192.168.10.122:8588';
+    loglevel = 5;
+  } else {
+    loglevel = 4;
+  }
+
+  // 1. 'FATAL',
+  // 2. 'ERROR',
+  // 3. 'WARN',
+  // 4. 'INFO',
+  // 5. 'DEBUG',
+  // 6. 'TRACE'
+
+  if ([1, 2, 3, 4, 5, 6].indexOf(loglevel) <= -1) {
+    loglevel = 2;
+  }
+
   const dataPath = `${fileroot}/data`;
   const swPath = `${fileroot}/sw`;
   const fwPath = `${fileroot}/fw`;
   const importPath = `${fileroot}/import`;
+  const devPath = `${fileroot}/middlewareServer-main/src`;
 
   return {
     fileroot,
@@ -40,7 +77,12 @@ function generateParams({
     dataPath,
     swPath,
     fwPath,
+    devPath,
     importPath,
+    httpport,
+    httpsport,
+    loglevel,
+    logreset,
   };
 }
 
@@ -50,7 +92,20 @@ const runtimcache = require('./runtimcache/index');
 
 global.spiderman = spiderman.init();
 
+global.spiderman.systemlog.generateLog(4, `
+  fileroot=${global.params.fileroot},
+  localhost=${global.params.localhost},
+  dataPath=${global.params.dataPath},
+  swPath=${global.params.swPath},
+  httpport=${global.params.httpport},
+  httpsport=${global.params.httpsport},
+  loglevel=${global.params.loglevel}`);
+
 process.on('uncaughtException', (err) => {
+  global.spiderman.systemlog.generateLog(2, `
+    err=[${err.message}]
+    err=[${err}]`);
+
   console.log('system UCE : ', err);
 });
 
@@ -65,8 +120,10 @@ const expressApp = express()
   .use(express.static(`${global.params.swPath}/wwwdist`));
 
 global.spiderman.server = (() => {
-  const httpServer = global.spiderman.express.createAndListenServer(http, 80, expressApp);
-  const httpsServer = global.spiderman.express.createAndListenServer(https, 443, expressApp);
+  const httpServer = global.spiderman.express
+    .createAndListenServer(http, global.params.httpport, expressApp, false);
+  const httpsServer = global.spiderman.express
+    .createAndListenServer(https, global.params.httpsport, expressApp, true);
 
   const wsVerifyresults = global.spiderman.socket.create(
     { server: null, path: '/airafacelite/verifyresults', noServer: true },
@@ -84,14 +141,17 @@ global.spiderman.server = (() => {
     const pathname = request.url;
 
     if (pathname === '/airafacelite/verifyresults') {
+      global.spiderman.systemlog.generateLog(4, 'create http websocket path=[/airafacelite/verifyresults]');
       wsVerifyresults.handleUpgrade(request, socket, head, (ws) => {
         wsVerifyresults.emit('connection', ws, request);
       });
     } else if (pathname === '/fcsrecognizedresult') {
+      global.spiderman.systemlog.generateLog(4, 'create http websocket path=[/fcsrecognizedresult]');
       wsRecognized.handleUpgrade(request, socket, head, (ws) => {
         wsRecognized.emit('connection', ws, request);
       });
     } else if (pathname === '/fcsnonrecognizedresult') {
+      global.spiderman.systemlog.generateLog(4, 'create http websocket path=[/fcsnonrecognizedresult]');
       wsNonrecognized.handleUpgrade(request, socket, head, (ws) => {
         wsNonrecognized.emit('connection', ws, request);
       });
@@ -104,14 +164,17 @@ global.spiderman.server = (() => {
     const pathname = request.url;
 
     if (pathname === '/airafacelite/verifyresults') {
+      global.spiderman.systemlog.generateLog(4, 'create https websocket path=[/airafacelite/verifyresults]');
       wsVerifyresults.handleUpgrade(request, socket, head, (ws) => {
         wsVerifyresults.emit('connection', ws, request);
       });
     } else if (pathname === '/fcsrecognizedresult') {
+      global.spiderman.systemlog.generateLog(4, 'create https websocket path=[/fcsrecognizedresult]');
       wsRecognized.handleUpgrade(request, socket, head, (ws) => {
         wsRecognized.emit('connection', ws, request);
       });
     } else if (pathname === '/fcsnonrecognizedresult') {
+      global.spiderman.systemlog.generateLog(4, 'create https websocket path=[/fcsnonrecognizedresult]');
       wsNonrecognized.handleUpgrade(request, socket, head, (ws) => {
         wsNonrecognized.emit('connection', ws, request);
       });
@@ -134,45 +197,3 @@ global.domain = domain.init();
 global.domain.initdb.init();
 global.runtimcache = runtimcache.init();
 require('./interface/init')();
-
-// const data = {
-//   source_id: '3b17203c-cdb5-4bdb-8807-1c937be3c8b3',
-//   verify_uuid: '670002dd-2d37-481f-9bc2-0851ddc98e68',
-//   target_score: 0.85,
-//   match: true,
-//   timestamp: 1706759421114,
-//   verify_mode: 0,
-//   face_image: '/9j/4AAQSkZJRgABAQAAAQABAAD/',
-//   is_stranger: false,
-//   is_person: true,
-//   verify_score: 0.8667039275169373,
-//   person: {
-//     uuid: 'e70db843-b8ed-492e-802f-650c46671eff',
-//     id: 'A-0004',
-//     name: 'YC',
-//     card_facility_code: '',
-//     card_number: '84325749',
-//     group_list: ['New group', 'All Person'],
-//     begin_date: 0,
-//     expire_date: 0,
-//     as_admin: false,
-//     extra_info: {
-//       title: 'RD',
-//       department: 'Department-3',
-//       email: 'merry@abc.com.tw',
-//       phone_number: '0912345681',
-//       extension_number: '1236',
-//       remarks: 'undefined',
-//     },
-//     upper_face_feature: '',
-//     create_date: 1706083594988,
-//     last_modify_date: 1706083594988,
-//     last_modify_date_by_manager: 1706083594988,
-//   },
-//   foreHead_temperature: 36,
-//   is_high_temperature: false,
-//   merged: false,
-//   non_action: true,
-// };
-
-// global.domain.workerResult.triggerByResult(data);

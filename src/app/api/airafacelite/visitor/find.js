@@ -32,6 +32,8 @@ const fieldChecks = [
 ];
 
 module.exports = (data) => {
+  global.spiderman.systemlog.generateLog(4, `visitor find ${JSON.stringify(data)}`);
+
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
@@ -48,7 +50,7 @@ module.exports = (data) => {
 
   const { uuid } = data;
 
-  const visitorList = global.domain.visitor
+  const { totalLength, result } = global.domain.visitor
     .find({
       query: { ...(!uuid ? {} : { uuid }) },
       shift: data.slice_shift,
@@ -56,11 +58,15 @@ module.exports = (data) => {
       data,
     });
 
-  return {
+  const ret = {
     message: 'ok',
-    total_length: visitorList.length,
+    total_length: totalLength,
     slice_shift: data.slice_shift,
     slice_length: data.slice_length,
-    visitor_list: visitorList,
+    visitor_list: result,
   };
+
+  global.spiderman.systemlog.generateLog(4, `visitor find ${JSON.stringify(ret)}`);
+
+  return ret;
 };

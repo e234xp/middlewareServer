@@ -1,21 +1,18 @@
 const { uuid: uuidv4 } = require('uuidv4');
 
 module.exports = () => {
-  function findWithPerson({ uuid }) {
-    // console.log('aaa', uuid);
+  function findWithPerson(query) {
+    global.spiderman.systemlog.generateLog(4, `domain group findWithPerson ${query}`);
 
-    const groups = global.spiderman.db.groups.find();
-    // console.log('bbb', groups);
+    const filteredGroups = global.spiderman.db.groups.find(query);
 
-    const filteredGroups = uuid ? groups.filter((group) => group.uuid === uuid) : groups;
-    // console.log('ccc', filteredGroups);
+    // const filteredGroups = uuid ? groups.filter((group) => group.uuid === uuid) : groups;
 
-    if (uuid && filteredGroups.length === 0) return filteredGroups;
+    // if (uuid && filteredGroups.length === 0) return filteredGroups;
 
     const personList = global.spiderman.db.person.find();
     const visitorList = global.spiderman.db.visitor.find();
 
-    // 將 groupList 填上 person_list 和 visitor_list
     const groupList = filteredGroups.map((group) => {
       const personListInGroup = personList
         .filter(
@@ -26,6 +23,7 @@ module.exports = () => {
           id: person.id,
           name: person.name,
         }));
+
       const visitorListInGroup = visitorList
         .filter(
           (visitor) => visitor.group_list && visitor.group_list.includes(group.name),
@@ -43,8 +41,7 @@ module.exports = () => {
       };
     });
 
-    console.log('ddd', groupList);
-    if (uuid) return groupList;
+    // if (uuid) return groupList;
 
     // 透過 person, visitor 的 assigned_group_list 產生假的 assignedGroupList 提供前端檢視
     const assignedGroupList = (() => {
@@ -105,9 +102,14 @@ module.exports = () => {
   function createAndModifyPersonGroup({
     name, remarks, person_uuid_list: personUuidList, visitor_uuid_list: visitorUuidList,
   }) {
+    global.spiderman.systemlog.generateLog(4, `domain group createAndModifyPersonGroup ${name}`);
+
     const doesExist = !!global.spiderman.db.groups.findOne({ name });
 
-    if (doesExist) throw Error('The item has already existed.');
+    if (doesExist) {
+      global.spiderman.systemlog.writeError('The item has already existed.');
+      throw Error('The item has already existed.');
+    }
 
     global.spiderman.db.groups.insertOne({
       uuid: uuidv4(),
@@ -124,9 +126,14 @@ module.exports = () => {
   function modifyAndModifyPersonGroup({
     uuid, remarks, person_uuid_list: personUuidList, visitor_uuid_list: visitorUuidList,
   }) {
+    global.spiderman.systemlog.generateLog(4, `domain group modifyAndModifyPersonGroup ${uuid}`);
+
     const group = global.spiderman.db.groups.findOne({ uuid });
 
-    if (!group) throw Error('Item not found.');
+    if (!group) {
+      global.spiderman.systemlog.writeError('Item not found.');
+      throw Error('Item not found.');
+    }
 
     global.spiderman.db.groups.updateOne({ uuid }, { remarks });
 
@@ -136,9 +143,14 @@ module.exports = () => {
   }
 
   function removeAndModifyPersonGroup({ uuid }) {
+    global.spiderman.systemlog.generateLog(4, `domain group removeAndModifyPersonGroup ${uuid}`);
+
     const groupList = global.spiderman.db.groups.find({ uuid: { $in: uuid } });
 
-    if (groupList.length === 0) throw Error('Item not found.');
+    if (groupList.length === 0) {
+      global.spiderman.systemlog.writeError('Item not found.');
+      throw Error('Item not found.');
+    }
 
     global.spiderman.db.groups.deleteMany({ uuid: { $in: uuid } });
 
@@ -160,22 +172,27 @@ module.exports = () => {
       field: 'bcc',
       uuids: uuid,
     });
-    global.domain.crud.handleRelatedUuids({
-      collection: 'rules',
-      field: 'condition.groups',
-      uuids: uuid,
-    });
+
+    // global.domain.crud.handleRelatedUuids({
+    //   collection: 'rules',
+    //   field: 'condition.groups',
+    //   uuids: uuid,
+    // });
   }
 
   function addGroupToPerson({ name, personUuidList, visitorUuidList }) {
+    global.spiderman.systemlog.generateLog(4, `domain group addGroupToPerson ${name}`);
+
     if (personUuidList && personUuidList.length >= 1) {
       personUuidList.forEach((uuid) => {
         const person = global.spiderman.db.person.findOne({ uuid });
         if (!person) return;
 
-        global.spiderman.db.person.updateOne({ uuid }, {
-          group_list: [...person.group_list, name],
-        });
+        if (person.group_list.indexOf(name) >= 0) {
+          global.spiderman.db.person.updateOne({ uuid }, {
+            group_list: [...person.group_list, name],
+          });
+        }
       });
     }
 
@@ -184,14 +201,18 @@ module.exports = () => {
         const visitor = global.spiderman.db.visitor.findOne({ uuid });
         if (!visitor) return;
 
-        global.spiderman.db.visitor.updateOne({ uuid }, {
-          group_list: [...visitor.group_list, name],
-        });
+        if (visitor.group_list.indexOf(name) >= 0) {
+          global.spiderman.db.visitor.updateOne({ uuid }, {
+            group_list: [...visitor.group_list, name],
+          });
+        }
       });
     }
   }
 
   function removeGroupsFromPerson(names) {
+    global.spiderman.systemlog.generateLog(4, `domain group removeGroupsFromPerson ${names}`);
+
     const personList = global.spiderman.db.person.find();
     const visitorList = global.spiderman.db.visitor.find();
 

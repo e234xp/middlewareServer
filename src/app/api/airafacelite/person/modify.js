@@ -70,6 +70,8 @@ const fieldChecksData = [
 ];
 
 module.exports = async (rData) => {
+  global.spiderman.systemlog.generateLog(4, `person modify ${rData}`);
+
   const { uuid } = global.spiderman.validate.data({
     data: rData,
     fieldChecks,
@@ -81,11 +83,12 @@ module.exports = async (rData) => {
   });
 
   // 檢查 id 是否重複
-  {
-    const existed = global.spiderman.db.person.findOne({
-      id: data.id, uuid: { $ne: uuid },
-    });
-    if (existed) throw Error('Id existed.');
+  const existed = global.spiderman.db.person.findOne({
+    id: data.id, uuid: { $ne: uuid },
+  });
+  if (existed) {
+    global.spiderman.systemlog.writeError('Id existed.');
+    throw Error('Id existed.');
   }
 
   // 至少讓 group_list 有 All Person
@@ -126,7 +129,12 @@ module.exports = async (rData) => {
     });
   }
 
+  global.spiderman.systemlog.generateLog(4, `person modify ${data.name}`);
+
   return {
     message: 'ok',
+    uuid: data.uuid,
+    id: data.id,
+    name: data.name,
   };
 };

@@ -2,8 +2,13 @@ const { promisify } = require('util');
 const fs = require('fs');
 
 module.exports = async (data) => {
+  global.spiderman.systemlog.generateLog(4, 'uploaddb');
+
   const { file } = data;
-  if (!file) throw Error('Invalid parameter.');
+  if (!file) {
+    global.spiderman.systemlog.writeError('Invalid parameter.');
+    throw Error('Invalid parameter.');
+  }
 
   const fileMove = promisify(file.mv);
   const targetZipFile = `${global.params.importPath}/${file.name}`;

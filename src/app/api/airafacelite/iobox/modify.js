@@ -60,6 +60,8 @@ const fieldChecksData = [
 ];
 
 module.exports = async (rData) => {
+  global.spiderman.systemlog.generateLog(4, `iobox modify ${rData}`);
+
   const { uuid } = global.spiderman.validate.data({
     data: rData,
     fieldChecks,
@@ -73,12 +75,17 @@ module.exports = async (rData) => {
   try {
     await global.domain.iobox.modify({ uuid, data });
   } catch (ex) {
-    throw Error(ex.message);
+    global.spiderman.systemlog.writeError(ex);
+    throw Error(ex);
   }
 
   global.domain.workerIobox.init();
 
+  global.spiderman.systemlog.generateLog(4, `iobox modify ${data.name}`);
+
   return {
     message: 'ok',
+    uuid: data.uuid,
+    name: data.name,
   };
 };

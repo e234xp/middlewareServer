@@ -12,6 +12,8 @@ const fieldChecks = [
 ];
 
 module.exports = async (data) => {
+  global.spiderman.systemlog.generateLog(4, `verifyresult fetchperson ${JSON.stringify(data)}`);
+
   data = global.spiderman.validate.data({
     data,
     fieldChecks,

@@ -296,6 +296,8 @@ const ioboxFieldChecks = [
 // ];
 
 module.exports = async (data) => {
+  global.spiderman.systemlog.generateLog(4, `eventhandle create ${JSON.stringify(data)}`);
+
   const { action_type: actionType } = data;
 
   if (actionType === 'line') {
@@ -324,12 +326,17 @@ module.exports = async (data) => {
       fieldChecks: [...fieldChecks, ...ioboxFieldChecks],
     });
   } else {
+    global.spiderman.systemlog.writeError('action_type error.');
     throw Error('action_type error.');
   }
 
   await global.domain.eventhandle.create(data);
 
+  global.spiderman.systemlog.generateLog(4, `eventhandle create ${data.action_type} ${data.name}`);
+
   return {
     message: 'ok',
+    uuid: data.uuid,
+    name: data.name,
   };
 };

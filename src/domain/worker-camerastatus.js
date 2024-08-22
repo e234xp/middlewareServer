@@ -1,17 +1,19 @@
 module.exports = () => {
   function init() {
+    global.spiderman.systemlog.generateLog(4, 'domain worker-camerastatus init');
+
     const receivePort = 2221;
 
     const server = global.spiderman.udp.create();
 
     server.on('listening', () => {
       const address = server.address();
-      console.log(`接收伺服器正在監聽 camerastatus ${address.address}:${address.port}`);
+      global.spiderman.systemlog.generateLog(5, `domain worker-camerastatus camerastatus ${address.address}:${address.port}`);
     });
 
     server.on('message', (msg) => {
       const camerasStatus = [];
-      // const totalLen = Number(msg.readUInt32LE(0));
+
       let currentPos = 4;
       while (msg.length > currentPos) {
         const mediaAlive = Number(msg.readUInt32LE(currentPos));
@@ -28,11 +30,9 @@ module.exports = () => {
         });
       }
 
-      // { uuid: '3b17203c-cdb5-4bdb-8807-1c937be3c8b3', alive: true },
-
       global.runtimcache.camerasStatus = camerasStatus;
 
-      // console.log('camerasStatus', global.runtimcache.camerasStatus);
+      global.spiderman.systemlog.generateLog(5, `domain worker-camerastatus camerastatus ${global.runtimcache.camerasStatus}`);
     });
     server.bind(receivePort);
   }

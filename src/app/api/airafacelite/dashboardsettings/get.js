@@ -7,6 +7,8 @@ const fieldChecks = [
 ];
 
 module.exports = (data) => {
+  global.spiderman.systemlog.generateLog(4, `dashboardsettings get ${JSON.stringify(data)}`);
+
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
@@ -22,8 +24,12 @@ module.exports = (data) => {
     settings = modeNode;
   }
 
-  return {
+  const ret = {
     message: 'ok',
     settings,
   };
+
+  global.spiderman.systemlog.generateLog(4, `dashboardsettings get ${JSON.stringify(ret)}`);
+
+  return ret;
 };

@@ -4,13 +4,14 @@ module.exports = () => {
   function readRegisterPhoto(uuid) {
     const dbPhotoFolder = `${global.params.dataPath}/db/dbPhoto/`;
     let photo = '';
+    let registerPhotoFile = '';
     try {
       if (uuid) {
-        const registerPhotoFile = `${dbPhotoFolder}${uuid}.register`;
+        registerPhotoFile = `${dbPhotoFolder}${uuid}.register`;
         photo = fs.readFileSync(registerPhotoFile).toString('utf8');
       }
     } catch (e) {
-      console.log('readRegisterPhoto', e);
+      global.spiderman.systemlog.generateLog(2, `readRegisterPhoto ${registerPhotoFile} ${e}`);
     }
     return photo;
   }
@@ -18,32 +19,38 @@ module.exports = () => {
   function readDisplayPhoto(uuid) {
     const dbPhotoFolder = `${global.params.dataPath}/db/dbPhoto/`;
     let photo = '';
+    let displayPhotoFile = '';
     try {
       if (uuid) {
-        const displayPhotoFile = `${dbPhotoFolder}${uuid}.display`;
+        displayPhotoFile = `${dbPhotoFolder}${uuid}.display`;
         photo = fs.readFileSync(displayPhotoFile).toString('utf8');
       }
     } catch (e) {
-      console.log('readDisplayPhoto', e);
+      global.spiderman.systemlog.generateLog(2, `readDisplayPhoto ${displayPhotoFile} ${e}`);
     }
     return photo;
   }
 
-  function trigger({ action, data }) {
+  async function trigger({ action, data }) {
+    global.spiderman.systemlog.generateLog(5, `domain trigger-http-command trigger ${action.host} ${action.port} ${action.url}`);
+
     const {
       https, method,
       user: username, pass: password,
       host, port,
-      uri,
+      url: path,
       custom_data: fields,
       note,
     } = action;
 
-    const body = generateBody({
-      method, uri, fields, note, data,
+    const { uri, body } = generateBody({
+      path, fields, note, data,
     });
 
-    const url = `${https ? 'https://' : 'http://'}${host}${port ? `:${port}` : ''}${body}`;
+    const url = `${https ? 'https://' : 'http://'}${host}${port ? `:${port}` : ''}${method === 'GET' ? `${uri}` : ''}`;
+
+    global.spiderman.systemlog.generateLog(5, `domain trigger-http-command trigger url ${url}`);
+    global.spiderman.systemlog.generateLog(5, `domain trigger-http-command trigger body ${body}`);
 
     const requestConfig = {
       url,
@@ -62,23 +69,50 @@ module.exports = () => {
         } : {
           qs: body,
         },
-      timeout: 5000,
+      timeout: 30000,
     };
 
-    global.spiderman.request.make(requestConfig);
+    const result = await global.spiderman.request.make(requestConfig);
+    // const result = {
+    //   message: 'ok',
+    // };
+
+    global.spiderman.systemlog.generateLog(5, `domain trigger-http-command trigger ${JSON.stringify(result)}`);
   }
 
   function generateBody({
-    method, uri, fields, note, data,
+    path, fields, note, data,
   }) {
-    let format = '';
-    if (method === 'GET') {
-      format = uri;
-    } else {
-      format = fields;
+    let dataToParse = '';
+
+    if (note.length > 0) {
+      if (note[0] !== '&') note = `&${note}`;
+      dataToParse = note;
     }
 
-    let body = {};
+    const urlArray = path.split('?');
+    const urlToQuery = urlArray.shift();
+
+    urlArray.forEach((u) => {
+      if (u.length > 0) {
+        if (u.length > 0 && u[0] !== '&') u = `&${u}`;
+        dataToParse = u + dataToParse;
+      }
+    });
+
+    if (fields.length > 0) {
+      fields = fields.replace(new RegExp(escapeRegExp('\n'), 'g'), '');
+      fields = fields.replace(new RegExp(escapeRegExp('"'), 'g'), '');
+      fields = fields.replace(new RegExp(escapeRegExp(','), 'g'), '&');
+      fields = fields.replace(new RegExp(escapeRegExp(':'), 'g'), '=');
+
+      if (fields[0] !== '&') fields = `&${fields}`;
+
+      dataToParse += fields;
+    }
+
+    // let format = fields;
+    const body = {};
 
     function escapeRegExp(string) {
       return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
@@ -104,124 +138,87 @@ module.exports = () => {
       return ret;
     }
 
-    if (format.indexOf('##VerifiedTimeStamp##') >= 0) {
-      format.replace(
-        new RegExp(escapeRegExp('##VerifiedTimeStamp##'), 'g'),
-        global.spiderman.dayjs(data.timestamp).format('YYYY/MM/DD HH:mm:ss'),
-      );
-    }
-    if (format.indexOf('##IsStranger##') >= 0) {
-      format.replace(
-        new RegExp(escapeRegExp('##IsStranger##'), 'g'),
-        data.is_stranger ? 'True' : 'False',
-      );
-    }
-    if (format.indexOf('##PersonId##') >= 0) {
-      format.replace(
-        new RegExp(escapeRegExp('##PersonId##'), 'g'),
-        getPersonInfo('id'),
-      );
-    }
-    if (format.indexOf('##PersonName##') >= 0) {
-      format.replace(
-        new RegExp(escapeRegExp('##PersonName##'), 'g'),
-        getPersonInfo('name'),
-      );
-    }
-    if (format.indexOf('##CardNumber##') >= 0) {
-      format.replace(
-        new RegExp(escapeRegExp('##CardNumber##'), 'g'),
-        getPersonInfo('card_number'),
-      );
-    }
-    if (format.indexOf('##Group##') >= 0) {
-      format.replace(
-        new RegExp(escapeRegExp('##Group##'), 'g'),
-        getPersonInfo('group_list'),
-      );
-    }
-    if (format.indexOf('##JobTitle##') >= 0) {
-      format.replace(
-        new RegExp(escapeRegExp('##JobTitle##'), 'g'),
-        getPersonInfo('title'),
-      );
-    }
-    if (format.indexOf('##Department##') >= 0) {
-      format.replace(
-        new RegExp(escapeRegExp('##Department##'), 'g'),
-        getPersonInfo('department'),
-      );
-    }
-    if (format.indexOf('##EmailAddress##') >= 0) {
-      format.replace(
-        new RegExp(escapeRegExp('##EmailAddress##'), 'g'),
-        getPersonInfo('email'),
-      );
-    }
-    if (format.indexOf('##PhoneNumber##') >= 0) {
-      format.replace(
-        new RegExp(escapeRegExp('##PhoneNumber##'), 'g'),
-        getPersonInfo('phone_number'),
-      );
-    }
-    if (format.indexOf('##ExtensionNumber##') >= 0) {
-      format.replace(
-        new RegExp(escapeRegExp('##ExtensionNumber##'), 'g'),
-        getPersonInfo('extension_number'),
-      );
-    }
-    if (format.indexOf('##Remarks##') >= 0) {
-      format.replace(
-        new RegExp(escapeRegExp('##Remarks##'), 'g'),
-        getPersonInfo('remarks'),
-      );
-    }
-    if (format.indexOf('##Temperature##') >= 0) {
-      format.replace(
-        new RegExp(escapeRegExp('##Temperature##'), 'g'),
-        data.foreHead_temperature ? '' : data.foreHead_temperature,
-      );
-    }
-    if (format.indexOf('##IsHighTemperature##') >= 0) {
-      format.replace(
-        new RegExp(escapeRegExp('##IsHighTemperature##'), 'g'),
-        data.foreHead_temperature ? 'True' : 'False',
-      );
-    }
-    if (method === 'POST' && format.indexOf('##RegisterPhoto##') >= 0) {
-      format.replace(
-        new RegExp(escapeRegExp('##RegisterPhoto##'), 'g'),
-        '',
-      );
+    const dataArray = dataToParse.split('&');
+    dataArray.forEach((d) => {
+      const dArr = d.split('=');
+      if (dArr.length === 2) {
+        let key = dArr[0];
+        let value = dArr[1];
 
-      body.face_image = readRegisterPhoto(data.person?.uuid ?? null);
-    }
-    if (method === 'POST' && format.indexOf('##DisplayPhoto##') >= 0) {
-      format.replace(
-        new RegExp(escapeRegExp('##DisplayPhoto##'), 'g'),
-        '',
-      );
+        switch (value) {
+          case '##VerifiedDatetime##':
+            value = global.spiderman.dayjs(data.timestamp).format('YYYY/MM/DD HH:mm:ss');
+            break;
+          case '##VerifiedTimeStamp##':
+            value = data.timestamp;
+            break;
+          case '##SourceDevice##': {
+            const { name } = global.domain.device.findByUuid(data.source_id);
+            value = name;
+            break;
+          }
+          case '##SourceDeviceId##':
+            value = data.source_id;
+            break;
+          case '##IsStranger##':
+            value = data.is_stranger ? 'True' : 'False';
+            break;
+          case '##PersonId##':
+            value = getPersonInfo('id');
+            break;
+          case '##PersonName##':
+            value = getPersonInfo('name');
+            break;
+          case '##CardNumber##':
+            value = getPersonInfo('card_number');
+            break;
+          case '##Group##':
+            value = getPersonInfo('group_list');
+            break;
+          case '##JobTitle##':
+            value = getPersonInfo('title');
+            break;
+          case '##Department##':
+            value = getPersonInfo('department');
+            break;
+          case '##EmailAddress##':
+            value = getPersonInfo('email');
+            break;
+          case '##PhoneNumber##':
+            value = getPersonInfo('phone_number');
+            break;
+          case '##ExtensionNumber##':
+            value = getPersonInfo('extension_number');
+            break;
+          case '##Remarks##':
+            value = getPersonInfo('remarks');
+            break;
+          case '##Temperature##':
+            value = data.foreHead_temperature ? '' : data.foreHead_temperature;
+            break;
+          case '##IsHighTemperature##':
+            value = data.foreHead_temperature ? 'True' : 'False';
+            break;
+          case '##RegisterPhoto##':
+            key = 'face_image';
+            value = readRegisterPhoto(data.person?.uuid ?? null);
+            break;
+          case '##DisplayPhoto##':
+            key = 'face_image';
+            value = readDisplayPhoto(data.person?.uuid ?? null);
+            break;
+          case '##CapturedPhoto##':
+            key = 'face_image';
+            value = data.face_image;
+            break;
+          default:
+        }
 
-      body.face_image = readDisplayPhoto(data.person?.uuid ?? null);
-    }
-    if (method === 'POST' && format.indexOf('##CapturedPhoto##') >= 0) {
-      format.replace(
-        new RegExp(escapeRegExp('##CapturedPhoto##'), 'g'),
-        '',
-      );
+        body[key] = value;
+      }
+    });
 
-      body.face_image = data.face_image;
-    }
-
-    if (method === 'POST') {
-      try { format = JSON.parse(format); } catch (ex) { console.log(ex); }
-      body = { ...body, ...format };
-      if (note) { body.note = note; }
-    } else if (method === 'GET') {
-      if (note) format += (`&${note}`);
-    }
-
-    return body;
+    return { uri: urlToQuery, body };
   }
 
   return {

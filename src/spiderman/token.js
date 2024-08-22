@@ -27,7 +27,12 @@ module.exports = () => {
       .map((charCode) => String.fromCharCode(charCode))
       .join('');
 
-    return JSON.parse(string);
+    let ret = {};
+    try {
+      ret = JSON.parse(string);
+    } catch (ex) { console.log(ex); }
+
+    return ret;
   }
 
   function decryptToAccountInTime(token) {

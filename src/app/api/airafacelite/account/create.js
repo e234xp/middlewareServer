@@ -23,7 +23,9 @@ const fieldChecks = [
   },
 ];
 
-module.exports = (data, token) => {
+module.exports = async (data, token) => {
+  global.spiderman.systemlog.generateLog(4, `account create ${data.username}`);
+
   // paramters checker
   data = global.spiderman.validate.data({
     data,
@@ -35,37 +37,32 @@ module.exports = (data, token) => {
     && data.username.length > 0
     && data.password.length > 0
     && data.permission.length > 0;
-  if (!isPassed) throw Error('Username or password cannot be empty.');
+  if (!isPassed) {
+    global.spiderman.systemlog.generateLog(4, 'Username or password cannot be empty.');
+    throw Error('Username or password cannot be empty.');
+  }
 
   const accounts = global.spiderman.db.account.find();
 
   const adminAccount = accounts.find((item) => (item.username === tokenUser.u) && (item.permission === 'Admin'));
-  if (!adminAccount) throw Error('No permission.');
+  if (!adminAccount) {
+    global.spiderman.systemlog.generateLog(4, 'No permission.');
+    throw Error('No permission.');
+  }
 
   const existededAccount = accounts.find((item) => (item.username === data.username));
-  if (existededAccount) throw Error('The item has already existed.');
+  if (existededAccount) {
+    global.spiderman.systemlog.generateLog(4, 'The item has already existed.');
+    throw Error('The item has already existed.');
+  }
 
-  // optional paramters set default value
+  const account = await global.domain.account.create(data);
 
-  //  ===================================
-  const {
-    username, password, permission, remarks,
-  } = data;
-
-  const account = {
-    uuid: uuid(),
-    username,
-    password,
-    permission,
-    remarks: remarks || '',
-    fixed: false,
-    create_date: Date.now(),
-    last_modify_date: Date.now(),
-  };
-
-  global.spiderman.db.account.insertOne(account);
+  global.spiderman.systemlog.generateLog(4, `account create ${JSON.stringify({ uuid: account.uuid, username: account.username })}`);
 
   return {
     message: 'ok',
+    uuid: account.uuid,
+    username: account.username,
   };
 };

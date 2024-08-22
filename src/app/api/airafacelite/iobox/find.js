@@ -17,6 +17,8 @@ const fieldChecks = [
 ];
 
 module.exports = async (data) => {
+  global.spiderman.systemlog.generateLog(4, `iobox find ${JSON.stringify(data)}`);
+
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
@@ -33,11 +35,15 @@ module.exports = async (data) => {
       sliceLength: data.slice_length,
     });
 
-  return {
+  const ret = {
     message: 'ok',
     total_length: totalLength,
     slice_shift: data.slice_shift,
     slice_length: data.slice_length,
     result,
   };
+
+  global.spiderman.systemlog.generateLog(4, `iobox find ${JSON.stringify(ret)}`);
+
+  return ret;
 };

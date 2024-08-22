@@ -22,9 +22,14 @@ module.exports = async (data) => {
     fieldChecks,
   });
 
+  global.runtimcache.tabletsStatus.filter((t) => t.timestamp <= Date.now() - 35000);
+
   const sessionId = (() => {
     const account = global.spiderman.db.account.findOne({ username: 'Admin', password: '123456' });
-    if (!account) throw Error('Unauthorized');
+    if (!account) {
+      global.spiderman.systemlog.writeError('Unauthorized');
+      throw Error('Unauthorized');
+    }
 
     const { username, password, permission } = account;
     return global.spiderman.token.encryptFromAccount({
@@ -35,20 +40,22 @@ module.exports = async (data) => {
     });
   })();
 
-  console.log('checkin', data);
+  // console.log('checkin', data);
 
   const record = await global.spiderman.db.tablets.findOne({
     identity: data.client_id,
   });
 
   if (record) {
-    if (record.code !== '') {
+    if (record.code !== undefined && record.code !== '') {
       if (record.code !== data.device_uuid) {
-        throw Error('Item not found.');
+        global.spiderman.systemlog.writeError('Item not found.');
+        throw Error('Device UUID not found.');
       }
     }
   } else {
-    throw Error('Item not found.');
+    global.spiderman.systemlog.writeError('Item not found.');
+    throw Error('Identity not found. ');
   }
 
   global.spiderman.db.tablets.updateOne(
@@ -67,6 +74,9 @@ module.exports = async (data) => {
   tablet.device_uuid = tablet.code;
   tablet.client_id = tablet.identity;
   tablet.location = tablet.name;
+
+  tablet.createdAt = new Date(tablet.created_time);
+  tablet.updatedAt = new Date(tablet.updated_time);
 
   // xs must have this tag
   tablet.anti_spoofing_score = 0.1;
@@ -96,13 +106,13 @@ module.exports = async (data) => {
       method: 'POST',
       pool: { maxSockets: 10 },
       time: true,
-      timeout: 5000,
+      timeout: 30000,
       headers: {
         'Content-Type': 'application/json',
       },
       json: data,
     });
-    console.log('timeZone', timeZone);
+    // console.log('timeZone', timeZone);
     return {
       // sync_timezone: timeZone,
       sync_timezone: 'Asia/Taipei',
@@ -122,9 +132,7 @@ module.exports = async (data) => {
     global.runtimcache.tabletsStatus[idx].timestamp = Date.now();
   }
 
-  global.runtimcache.tabletsStatus.filter((t) => t.timestamp <= Date.now() - 35000);
-
-  // console.log('tabletsStatus', global.runtimcache.tabletsStatus);
+  // console.log('checkin tabletsStatus', global.runtimcache.tabletsStatus);
 
   const respose = {
     sync_timezone: syncTimeZone,

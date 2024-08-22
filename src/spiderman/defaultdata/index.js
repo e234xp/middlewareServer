@@ -3,13 +3,20 @@ module.exports = () => {
   const items = [
     'account.js',
     'attendancesettings.js',
+    'cameras.js',
     'dashboardsettings.js',
-    'eventsettings.js',
+    'eventhandle.js',
     'groups.js',
+    'ioboxes.js',
     'managersettings.js',
-    'settings.js',
-    'videodevicegroups.js',
     'outputdevicegroups.js',
+    'person.js',
+    'system_settings.js',
+    'systemlog.js',
+    'tablets.js',
+    'videodevicegroups.js',
+    'visitor.js',
+    'wiegandconverters.js',
   ];
 
   const defaultData = (() => {

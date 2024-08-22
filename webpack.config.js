@@ -23,6 +23,9 @@ module.exports = {
   stats: {
     warningsFilter: (w) => w !== 'CriticalDependenciesWarning',
   },
+  node: {
+    __dirname: false,
+  },
   module: {
     rules: [
       {

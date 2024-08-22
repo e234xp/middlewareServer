@@ -6,6 +6,8 @@ module.exports = () => {
     to, cc, bcc,
     body, images,
   }) {
+    global.spiderman.systemlog.generateLog(4, `spiderman mailer send ${to} ${subject}`);
+
     const transporter = (() => {
       const config = {
         host,
@@ -20,9 +22,11 @@ module.exports = () => {
           rejectUnauthorized: false, // don't verify certificates
           ciphers: 'SSLv3',
         },
-        debug: true, // show debug output
-        logger: true, // log information in console
+        debug: false, // show debug output
+        logger: false, // log information in console
       };
+
+      global.spiderman.systemlog.generateLog(5, `spiderman mailer send config ${config}`);
 
       return nodemailer.createTransport(config);
     })();
@@ -53,13 +57,23 @@ module.exports = () => {
       };
     })();
 
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error('郵件發送失敗：', error);
-      } else {
-        console.log('郵件已成功發送：', info.response);
-      }
+    const result = new Promise((resolve, reject) => {
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          global.spiderman.systemlog.generateLog(2, `spiderman mailer sendMail ${error}`);
+          // console.error('郵件發送失敗：', error);
+          reject(error);
+        } else {
+          global.spiderman.systemlog.generateLog(5, `spiderman mailer sendMail ${info.response}`);
+          // console.log('郵件已成功發送：', info.response);
+          resolve(info.response);
+        }
+      });
     });
+
+    global.spiderman.systemlog.generateLog(4, `spiderman mailer send ${to} ${subject} ${result}`);
+
+    return result;
   }
 
   return {

@@ -5,6 +5,11 @@ const fieldChecks = [
     required: false,
   },
   {
+    fieldName: 'keyword',
+    fieldType: 'string',
+    required: false,
+  },
+  {
     fieldName: 'action_type',
     fieldType: 'array',
     required: false,
@@ -12,6 +17,8 @@ const fieldChecks = [
 ];
 
 module.exports = async (data) => {
+  global.spiderman.systemlog.generateLog(4, `eventhandle find ${JSON.stringify(data)}`);
+
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
@@ -19,17 +26,21 @@ module.exports = async (data) => {
 
   const sliceShift = data.slice_shift ? data.slice_shift : 0;
   const sliceLength = data.slice_length ? data.slice_length : 10000;
-  const { uuid, action_type: actionType } = data;
+  const { uuid, keyword, action_type: actionType } = data;
 
   const { totalLength, result } = await global.domain.eventhandle.find({
-    uuid, actionType, sliceShift, sliceLength,
+    uuid, keyword, actionType, sliceShift, sliceLength,
   });
 
-  return {
+  const ret = {
     message: 'ok',
     total_length: totalLength,
     slice_shift: sliceShift,
     slice_length: sliceLength,
     list: result,
   };
+
+  global.spiderman.systemlog.generateLog(4, `dashboardsettings get ${JSON.stringify(ret)}`);
+
+  return ret;
 };

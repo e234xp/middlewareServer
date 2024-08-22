@@ -1,4 +1,6 @@
 module.exports = async () => {
+  global.spiderman.systemlog.generateLog(4, 'downloaddb');
+
   const path = `${global.params.dataPath}/dbbak.dbf`;
   const fileName = (() => {
     const now = new Date();

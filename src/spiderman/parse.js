@@ -18,6 +18,7 @@ module.exports = () => {
     try {
       reqData = JSON.parse(circularReplacedata);
     } catch (e) {
+      global.spiderman.systemlog.generateLog(2, `spiderman parse circularJson ${e}`);
       console.log('circularJson', e);
     }
     return reqData;
@@ -29,6 +30,7 @@ module.exports = () => {
       try {
         reqData = JSON.parse(data);
       } catch (e) {
+        global.spiderman.systemlog.generateLog(2, `spiderman parse json ${e}`);
         console.log('json', e);
       }
     } else if (typeof data === 'object') {

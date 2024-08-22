@@ -22,6 +22,8 @@ const fieldChecks = [
 ];
 
 module.exports = (data) => {
+  global.spiderman.systemlog.generateLog(4, `group create ${JSON.stringify(data)}`);
+
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
@@ -32,11 +34,18 @@ module.exports = (data) => {
   if (!data.person_uuid_list) data.person_uuid_list = [];
   if (!data.visitor_uuid_list) data.visitor_uuid_list = [];
 
-  if (data.name.length === 0) throw Error('Name cannot be empty.');
+  if (data.name.length === 0) {
+    global.spiderman.systemlog.writeError('Name cannot be empty.');
+    throw Error('Name cannot be empty.');
+  }
 
   global.domain.group.createAndModifyPersonGroup(data);
 
+  global.spiderman.systemlog.generateLog(4, `group create ${data.name}`);
+
   return {
     message: 'ok',
+    uuid: data.uuid,
+    name: data.name,
   };
 };

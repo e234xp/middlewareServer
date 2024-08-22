@@ -1,10 +1,12 @@
 module.exports = {
   init: () => {
     const instance = {
+      account: require('./account')(),
       group: require('./group')(),
       person: require('./person')(),
       visitor: require('./person')(global.spiderman.db.visitor),
       verifyresult: require('./verifyresult')(),
+      verifyresult2: require('./verifyresult2')(),
       device: require('./device')(),
       crud: require('./crud')(),
       camera: require('./camera')(),

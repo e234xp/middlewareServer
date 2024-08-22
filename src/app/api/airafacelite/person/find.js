@@ -5,6 +5,11 @@ const fieldChecks = [
     required: false,
   },
   {
+    fieldName: 'keyword',
+    fieldType: 'string',
+    required: false,
+  },
+  {
     fieldName: 'slice_shift',
     fieldType: 'number',
     required: false,
@@ -32,6 +37,8 @@ const fieldChecks = [
 ];
 
 module.exports = (data) => {
+  global.spiderman.systemlog.generateLog(4, `person find ${JSON.stringify(data)}`);
+
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
@@ -39,6 +46,7 @@ module.exports = (data) => {
 
   data.slice_shift = data.slice_shift ? data.slice_shift : 0;
   data.slice_length = data.slice_length ? data.slice_length : 100;
+
   data.download_register_image = data.download_register_image
     ? data.download_register_image : false;
   data.download_display_image = data.download_display_image
@@ -46,21 +54,31 @@ module.exports = (data) => {
   data.download_face_feature = data.download_face_feature
     ? data.download_face_feature : false;
 
-  const { uuid } = data;
+  const { uuid, keyword } = data;
 
-  const personList = global.domain.person
+  let query = { ...(!uuid ? {} : { uuid }) };
+  if (keyword) {
+    query = { ...query, ...{ $or: [{ id: { $regex: keyword } }, { name: { $regex: keyword } }] } };
+  }
+
+  const { totalLength, result } = global.domain.person
     .find({
-      query: { ...(!uuid ? {} : { uuid }) },
+      // query: { ...(!uuid ? {} : { uuid }) },
+      query,
       shift: data.slice_shift,
       sliceLength: data.slice_length,
       data,
     });
 
-  return {
+  const ret = {
     message: 'ok',
-    total_length: personList.length,
+    total_length: totalLength,
     slice_shift: data.slice_shift,
     slice_length: data.slice_length,
-    person_list: personList,
+    person_list: result,
   };
+
+  global.spiderman.systemlog.generateLog(4, `outputdevicegroup find ${JSON.stringify(ret)}`);
+
+  return ret;
 };

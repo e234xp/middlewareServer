@@ -2,13 +2,18 @@ module.exports = () => {
   function queryResults({
     collection, startTime, endTime, query,
   }) {
+    global.spiderman.systemlog.generateLog(4, `domain verifyresult queryResults ${collection} ${startTime} ${endTime} ${query}`);
+
     const collections = [
       'personverifyresult',
       'visitorverifyresult',
       'nonverifyresult',
       'manualverifyresult',
     ];
-    if (!collection || !collections.includes(collection)) throw Error('Unknown collection');
+    if (!collection || !collections.includes(collection)) {
+      global.spiderman.systemlog.generateLog(2, `verifyresult queryResults ${collection} ${startTime} ${endTime} ${query} Unknown collection`);
+      throw Error('Unknown collection');
+    }
 
     const resultList = global.spiderman.db[collection]
       .find({
@@ -21,6 +26,8 @@ module.exports = () => {
   }
 
   function fetchPhoto({ uuid, f }) {
+    global.spiderman.systemlog.generateLog(4, `domain verifyresult fetchPhoto ${uuid} ${f}`);
+
     const collection = (() => {
       const [type] = f.split('_');
       const typeToCollection = {
@@ -32,7 +39,10 @@ module.exports = () => {
       return typeToCollection[type];
     })();
 
-    if (!collection) throw Error('System: unknown photo type');
+    if (!collection) {
+      global.spiderman.systemlog.generateLog(2, 'verifyresult queryResults System: unknown photo type');
+      throw Error('System: unknown photo type');
+    }
 
     return global.spiderman.db[collection].findOne(`${f}.db_photos/${uuid}.photo`);
   }
@@ -40,6 +50,8 @@ module.exports = () => {
   async function addcommands({
     records, commands,
   }) {
+    global.spiderman.systemlog.generateLog(4, `domain verifyresult addcommands ${commands}`);
+
     for (let i = 0; i < records.length; i += 1) {
       const rec = records[i];
 

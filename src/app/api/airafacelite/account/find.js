@@ -1,27 +1,33 @@
 const fieldChecks = [
+  {
+    fieldName: 'uuid',
+    fieldType: 'string',
+    required: false,
+  },
+  {
+    fieldName: 'keyword',
+    fieldType: 'string',
+    required: false,
+  },
 ];
 
-module.exports = (data, token) => {
+module.exports = async (data, token) => {
+  global.spiderman.systemlog.generateLog(4, `account find ${JSON.stringify(data)}`);
+
   // paramters checker
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
   });
 
-  // optional paramters set default value
+  const { totalLength, result } = await global.domain.account.find({ data, token });
 
-  //  ===================================
-  const accounts = (() => {
-    const accountsTmp = global.spiderman.db.account.find();
-    const tokenUser = global.spiderman.token.decryptToAccount(token);
-
-    return tokenUser.x === 'Admin'
-      ? accountsTmp
-      : accountsTmp.filter((d) => tokenUser.u === d.username);
-  })();
-
-  return {
+  const ret = {
     message: 'ok',
-    account_list: accounts,
+    total_length: totalLength,
+    account_list: result,
   };
+
+  global.spiderman.systemlog.generateLog(4, `account find total_length=[${totalLength}]`);
+  return ret;
 };

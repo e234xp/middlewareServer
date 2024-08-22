@@ -21,6 +21,7 @@ module.exports = () => {
     removeperson: require('../../app/api/airafacelite/person/remove'),
     removeallpersons: require('../../app/api/airafacelite/person/removeall'),
     fetchphoto: require('../../app/api/airafacelite/person/fetchphoto'),
+    sendnotification: require('../../app/api/airafacelite/person/sendnotification'),
 
     // V
     createvisitor: require('../../app/api/airafacelite/visitor/create'),
@@ -56,27 +57,28 @@ module.exports = () => {
     removevideodevicegroup: require('../../app/api/airafacelite/videodevicegroup/remove'),
 
     // V
-    createwiegandconverter: require('../../app/api/airafacelite/wiegandconverter/create'),
-    findwiegandconverter: require('../../app/api/airafacelite/wiegandconverter/find'),
-    modifywiegandconverter: require('../../app/api/airafacelite/wiegandconverter/modify'),
-    removewiegandconverter: require('../../app/api/airafacelite/wiegandconverter/remove'),
+    // createwiegandconverter: require('../../app/api/airafacelite/wiegandconverter/create'),
+    // findwiegandconverter: require('../../app/api/airafacelite/wiegandconverter/find'),
+    // modifywiegandconverter: require('../../app/api/airafacelite/wiegandconverter/modify'),
+    // removewiegandconverter: require('../../app/api/airafacelite/wiegandconverter/remove'),
 
     // V
-    createiobox: require('../../app/api/airafacelite/iobox/create'),
-    findiobox: require('../../app/api/airafacelite/iobox/find'),
-    modifyiobox: require('../../app/api/airafacelite/iobox/modify'),
-    removeiobox: require('../../app/api/airafacelite/iobox/remove'),
+    // createiobox: require('../../app/api/airafacelite/iobox/create'),
+    // findiobox: require('../../app/api/airafacelite/iobox/find'),
+    // modifyiobox: require('../../app/api/airafacelite/iobox/modify'),
+    // removeiobox: require('../../app/api/airafacelite/iobox/remove'),
 
     // V
-    createoutputdevicegroup: require('../../app/api/airafacelite/outputdevicegroup/create'),
-    findoutputdevicegroup: require('../../app/api/airafacelite/outputdevicegroup/find'),
-    modifyoutputdevicegroup: require('../../app/api/airafacelite/outputdevicegroup/modify'),
-    removeoutputdevicegroup: require('../../app/api/airafacelite/outputdevicegroup/remove'),
+    // createoutputdevicegroup: require('../../app/api/airafacelite/outputdevicegroup/create'),
+    // findoutputdevicegroup: require('../../app/api/airafacelite/outputdevicegroup/find'),
+    // modifyoutputdevicegroup: require('../../app/api/airafacelite/outputdevicegroup/modify'),
+    // removeoutputdevicegroup: require('../../app/api/airafacelite/outputdevicegroup/remove'),
 
     // V
     querypersonverifyresult: require('../../app/api/airafacelite/verifyresult/queryperson'),
     queryvisitorverifyresult: require('../../app/api/airafacelite/verifyresult/queryvisitor'),
     querystrangerverifyresult: require('../../app/api/airafacelite/verifyresult/querystranger'),
+    queryattendanceverifyresult: require('../../app/api/airafacelite/verifyresult/queryattendance'),
     fetchverifyphoto: require('../../app/api/airafacelite/verifyresult/fetchperson'),
     addcommands: require('../../app/api/airafacelite/verifyresult/addcommands'),
 
@@ -87,6 +89,7 @@ module.exports = () => {
     // V
     getsystemsettings: require('../../app/api/airafacelite/systemsettings/get'),
     setsystemsettings: require('../../app/api/airafacelite/systemsettings/set'),
+    restartservice: require('../../app/api/airafacelite/systemsettings/restartservice'),
 
     // V
     getattendancesettings: require('../../app/api/airafacelite/attendancesettings/get'),
@@ -100,9 +103,11 @@ module.exports = () => {
 
     // V
     querysystemlog: require('../../app/api/airafacelite/systemlog/query'),
+    loglevel: require('../../app/api/airafacelite/systemlog/loglevel'),
 
     // V
     addlicense: require('../../app/api/airafacelite/license/add'),
+    addlicenseex: require('../../app/api/airafacelite/license/addex'),
     findlicense: require('../../app/api/airafacelite/license/find'),
     removelicense: require('../../app/api/airafacelite/license/remove'),
     defaultlicense: require('../../app/api/airafacelite/license/default'),

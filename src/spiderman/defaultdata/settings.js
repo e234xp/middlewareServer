@@ -8,8 +8,10 @@ module.exports = [{
   rtsp_password: 'pass',
   audio_alarm_volume: 0.1,
   face_detection_threshold: 0.6,
+  face_detection_score: 0.5,
+  april_tag_type: '',
   // disable = 0.0, lowest = 0.1 , middle = 0.5(default), higher = 0.9
-  anti_spoofing_score: 0.5,
+  anti_spoofing_score: 0.0,
   score_for_valid_face: 0.9,
   display_verify_result_time: 3000,
   show_profile_photo: true,

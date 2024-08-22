@@ -42,6 +42,8 @@ const fieldChecks = [
 ];
 
 module.exports = async (data) => {
+  global.spiderman.systemlog.generateLog(4, `wiegandconverter create ${JSON.stringify(data)}`);
+
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
@@ -50,12 +52,17 @@ module.exports = async (data) => {
   try {
     await global.domain.wiegandconverter.create(data);
   } catch (ex) {
-    throw Error(ex.message);
+    global.spiderman.systemlog.writeError(ex);
+    throw Error(ex);
   }
 
   global.domain.workerWiegand.init();
 
+  global.spiderman.systemlog.generateLog(4, `wiegandconverter create ${data.name}`);
+
   return {
     message: 'ok',
+    uuid: data.uuid,
+    name: data.name,
   };
 };

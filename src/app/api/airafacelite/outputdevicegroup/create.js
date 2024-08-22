@@ -17,6 +17,8 @@ const fieldChecks = [
 ];
 
 module.exports = async (data) => {
+  global.spiderman.systemlog.generateLog(4, `outputdevicegroup create ${JSON.stringify(data)}`);
+
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
@@ -27,7 +29,11 @@ module.exports = async (data) => {
 
   await global.domain.outputdevicegroup.create(data);
 
+  global.spiderman.systemlog.generateLog(4, `outputdevicegroup create ${data.name}`);
+
   return {
     message: 'ok',
+    uuid: data.uuid,
+    name: data.name,
   };
 };

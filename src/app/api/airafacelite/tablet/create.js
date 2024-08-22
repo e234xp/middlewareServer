@@ -30,6 +30,21 @@ const fieldChecks = [
     required: true,
   },
   {
+    fieldName: 'anti_spoofing_score',
+    fieldType: 'number',
+    required: false,
+  },
+  {
+    fieldName: 'face_detection_score',
+    fieldType: 'number',
+    required: false,
+  },
+  {
+    fieldName: 'april_tag_type',
+    fieldType: 'string',
+    required: false,
+  },
+  {
     fieldName: 'face_capture_interval',
     fieldType: 'number',
     required: true,
@@ -327,14 +342,75 @@ const fieldChecks = [
 ];
 
 module.exports = async (data) => {
+  global.spiderman.systemlog.generateLog(4, `tablet create ${JSON.stringify(data)}`);
+
+  const cameras = global.domain.camera.count();
+  const tablets = global.domain.tablet.count();
+
+  try {
+    const response = await global.spiderman.request.make({
+      url: `http://${global.params.localhost}/system/findlicense`,
+      method: 'POST',
+      pool: { maxSockets: 10 },
+      time: true,
+      timeout: 30000,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      json: data,
+    });
+
+    let licAmount = 0;
+    if (response) {
+      const formalLic = response.license.filter((l) => l.permanent === true);
+
+      if (formalLic.length >= 1) {
+        for (let j = 0; j < formalLic.length; j += 1) {
+          licAmount += (formalLic[j].channel_amount || 0);
+        }
+      } else {
+        const trialLic = response.license.filter(
+          (l) => l.permanent === false && l.trial_end_time >= new Date().toISOString(),
+        );
+
+        if (trialLic.length >= 1) {
+          if (trialLic.length >= 2) {
+            trialLic.sort((a, b) => b.activation_date - a.activation_date);
+          }
+
+          licAmount = trialLic[0].channel_amount;
+        }
+      }
+    } else {
+      global.spiderman.systemlog.writeError('license not found.');
+      throw Error('license not found.');
+    }
+
+    if ((cameras + tablets) >= licAmount) {
+      global.spiderman.systemlog.writeError(`limit of airaFace amount [ ${licAmount} ].`);
+      throw Error(`limit of airaFace amount [ ${licAmount} ].`);
+    }
+  } catch (e) {
+    global.spiderman.systemlog.writeError(`fatch license error. ${e}`);
+    throw Error(`fatch license error. ${e}`);
+  }
+
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
   });
 
+  data.anti_spoofing_score = data.anti_spoofing_score ? data.anti_spoofing_score : 0.0;
+  data.face_detection_score = data.face_detection_score ? data.face_detection_score : 0.5;
+  data.april_tag_type = data.april_tag_type ? data.april_tag_type : '';
+
   await global.domain.tablet.create(data);
+
+  global.spiderman.systemlog.generateLog(4, `tablet create ${data.name}`);
 
   return {
     message: 'ok',
+    uuid: data.uuid,
+    name: data.name,
   };
 };

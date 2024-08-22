@@ -7,6 +7,8 @@ const fieldChecks = [
 ];
 
 module.exports = (data) => {
+  global.spiderman.systemlog.generateLog(4, `person fetchphoto ${JSON.stringify(data)}`);
+
   data = global.spiderman.validate.data({
     data,
     fieldChecks,

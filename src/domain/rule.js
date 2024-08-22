@@ -2,23 +2,23 @@ module.exports = () => {
   function create(data) {
     data = filterExistUuids(data);
 
-    global.domain.crud.insertOne({
-      collection: 'rules',
-      data,
-      uniqueKeys: ['name'],
-    });
+    // global.domain.crud.insertOne({
+    //   collection: 'rules',
+    //   data,
+    //   uniqueKeys: ['name'],
+    // });
   }
 
   function modify(data) {
     data = filterExistUuids(data);
 
     const { uuid, ...others } = data;
-    global.domain.crud.modify({
-      collection: 'rules',
-      uuid,
-      data: others,
-      uniqueKeys: ['name'],
-    });
+    // global.domain.crud.modify({
+    //   collection: 'rules',
+    //   uuid,
+    //   data: others,
+    //   uniqueKeys: ['name'],
+    // });
   }
 
   return {
@@ -29,10 +29,16 @@ module.exports = () => {
 
 function filterExistUuids(data) {
   const scheduleUuid = global.domain.crud.filterExistUuids({ collection: 'schedules', uuids: [data.condition.schedule] })[0];
-  if (!scheduleUuid) throw Error('schedule not exist');
+  if (!scheduleUuid) {
+    global.spiderman.systemlog.writeError('schedule not exist.');
+    throw Error('schedule not exist');
+  }
 
   data.condition.video_device_groups = global.domain.crud.filterExistUuids({ collection: 'videodevicegroups', uuids: data.condition.video_device_groups });
-  if (data.condition.video_device_groups.length === 0) throw Error('video_device_groups not exist');
+  if (data.condition.video_device_groups.length === 0) {
+    global.spiderman.systemlog.writeError('video_device_groups not exist.');
+    throw Error('video_device_groups not exist');
+  }
 
   const ioboxUuidList = global.domain.crud.filterExistUuids({ collection: 'ioboxes', uuids: data.actions.ioboxes.map(({ uuid }) => uuid) });
   data.actions.ioboxes = data.actions.ioboxes

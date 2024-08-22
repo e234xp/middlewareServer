@@ -19,19 +19,19 @@ module.exports = ({
   }
 
   // 缓存資料
-  let cachedData = null;
+  // let cachedData = null;
 
   // 讀取資料
   function readData() {
-    if (cachedData !== null) {
-      return _.cloneDeep(cachedData);
-    }
+    // if (cachedData !== null) {
+    //   return _.cloneDeep(cachedData);
+    // }
     if (!fs.existsSync(FILE_PATH)) {
-      setCache([]);
+    //   setCache([]);
       return [];
     }
     const file = jsonfile.readFileSync(FILE_PATH);
-    setCache(file);
+    // setCache(file);
 
     return _.cloneDeep(file);
   }
@@ -40,23 +40,23 @@ module.exports = ({
   function writeData(data) {
     jsonfile.writeFileSync(FILE_PATH, data, { spaces: 2 });
     // 更新缓存的数据
-    setCache(data);
+    // setCache(data);
   }
 
-  function setCache(data) {
-    if (!isOpenCache) {
-      cachedData = null;
-      return;
-    }
+  // function setCache(data) {
+  //   if (!isOpenCache) {
+  //     // cachedData = null;
+  //     return;
+  //   }
 
-    if (maxBytesCache && global.spiderman.calculate.size(data) > maxBytesCache) {
-      console.log(`${name} file too big: ${global.spiderman.calculate.size(data)}, cache null`);
-      cachedData = null;
-      return;
-    }
+  //   if (maxBytesCache && global.spiderman.calculate.size(data) > maxBytesCache) {
+  //     console.log(`${name} file too big: ${global.spiderman.calculate.size(data)}, cache null`);
+  //     // cachedData = null;
+  //     return;
+  //   }
 
-    cachedData = data;
-  }
+  //   // cachedData = data;
+  // }
 
   // 建立資料
   function insertOne(item) {
@@ -78,6 +78,7 @@ module.exports = ({
     if (!query) {
       return data;
     }
+
     const { data: filterd } = global.spiderman.query({ data, queryObject: query });
 
     return filterd;
@@ -133,6 +134,7 @@ module.exports = ({
   // 刪除符合條件的多筆資料
   function deleteMany(query) {
     const data = readData();
+    // console.log('deleteMany', query);
 
     const { data: deletedItems } = global.spiderman.query({ data, queryObject: query });
     if (deletedItems.length === 0) {

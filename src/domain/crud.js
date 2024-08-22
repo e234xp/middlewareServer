@@ -4,6 +4,8 @@ module.exports = () => {
   function find({
     collection, query, sliceShift, sliceLength,
   }) {
+    global.spiderman.systemlog.generateLog(4, `domain crud find collection=[${collection}] query=[${JSON.stringify(query)}] sliceShift=[${sliceShift}]`);
+
     const allData = global.spiderman.db[collection]
       .find(query);
 
@@ -16,6 +18,8 @@ module.exports = () => {
   }
 
   function insertOne({ collection, data, uniqueKeys = null }) {
+    global.spiderman.systemlog.generateLog(4, `domain crud insertOne collection=[${collection}] data=[${JSON.stringify(data).substring(0, 150)}]`);
+
     if (uniqueKeys) {
       const uniqueObject = uniqueKeys
         .map((key) => [key, data[key]])
@@ -27,7 +31,10 @@ module.exports = () => {
       const doesExist = global.spiderman.db[collection]
         .findOne(uniqueObject);
 
-      if (doesExist) throw Error('duplicate data found');
+      if (doesExist) {
+        global.spiderman.systemlog.generateLog(4, `domain crud insertOne collection=[${collection}] duplicate data found`);
+        throw Error('duplicate data found');
+      }
     }
 
     const now = Date.now();
@@ -45,6 +52,8 @@ module.exports = () => {
   }
 
   function insertMany({ collection, data }) {
+    global.spiderman.systemlog.generateLog(4, `domain crud insertMany collection=[${collection}] data[0]=[${data ? data[0] : ''}]`);
+
     const now = Date.now();
 
     data = data.map((item) => ({
@@ -60,6 +69,8 @@ module.exports = () => {
   function modify({
     collection, uuid, data, uniqueKeys = null,
   }) {
+    global.spiderman.systemlog.generateLog(4, `domain crud modify collection=[${collection}] uuid=[${uuid}]`);
+
     if (uniqueKeys) {
       const uniqueObject = uniqueKeys
         .map((key) => [key, data[key]])
@@ -71,7 +82,10 @@ module.exports = () => {
       const doesExist = global.spiderman.db[collection]
         .findOne({ ...uniqueObject, uuid: { $ne: uuid } });
 
-      if (doesExist) throw Error('duplicate data found');
+      if (doesExist) {
+        global.spiderman.systemlog.generateLog(4, `domain crud modify collection=[${collection}] duplicate data found`);
+        throw Error('duplicate data found');
+      }
     }
 
     const now = Date.now();
@@ -80,10 +94,14 @@ module.exports = () => {
       updated_time: now,
     };
 
+    global.spiderman.systemlog.generateLog(4, `domain crud modify collection=[${collection}] uuid=[${uuid}] ok`);
+
     global.spiderman.db[collection].updateOne({ uuid }, dataToWrite);
   }
 
   function remove({ collection, uuid }) {
+    global.spiderman.systemlog.generateLog(4, `domain crud remove collection=[${collection}] uuid=[${uuid}]`);
+
     global.spiderman.db[collection].deleteMany({ uuid: { $in: uuid } });
   }
 

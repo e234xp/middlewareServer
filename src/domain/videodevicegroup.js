@@ -1,13 +1,16 @@
 module.exports = () => {
   const { db } = global.spiderman;
+
   async function find({
-    uuid,
+    query,
     slice_shift: sliceShift, slice_length: sliceLength,
   }) {
+    global.spiderman.systemlog.generateLog(4, `domain videodevicegroup find query=[${JSON.stringify(query)}]`);
+
     const { totalLength, result } = await global.domain.crud
       .find({
         collection: 'videodevicegroups',
-        query: { ...(uuid === '' ? {} : { uuid }) },
+        query,
         sliceShift,
         sliceLength,
       });
@@ -29,6 +32,8 @@ module.exports = () => {
       };
     });
 
+    global.spiderman.systemlog.generateLog(4, `domain videodevicegroup find totalLength=[${totalLength}]`);
+
     return { totalLength, result: resultWithDevices };
   }
 
@@ -36,9 +41,7 @@ module.exports = () => {
     name,
     camera_uuid_list: cameraUuidList, tablet_uuid_list: tabletUuidList,
   }) {
-    const doesExist = !!db.videodevicegroups.findOne({ name });
-
-    if (doesExist) throw Error('The item has already existed.');
+    global.spiderman.systemlog.generateLog(4, `domain videodevicegroup create name=[${name}]`);
 
     const { uuid } = await global.domain.crud.insertOne({
       collection: 'videodevicegroups',
@@ -50,6 +53,8 @@ module.exports = () => {
       cameraUuidList,
       tabletUuidList,
     });
+
+    global.spiderman.systemlog.generateLog(4, `domain videodevicegroup create uuid=[${uuid}] name=[${name}]`);
   }
 
   async function modify({
@@ -58,11 +63,16 @@ module.exports = () => {
     camera_uuid_list: cameraUuidList,
     tablet_uuid_list: tabletUuidList,
   }) {
-    const fixedUuids = ['0', '1'];
-    if (fixedUuids.includes(uuid)) throw Error('The item can not be change.');
+    global.spiderman.systemlog.generateLog(4, `domain videodevicegroup modify uuid=[${uuid}] name=[${name}]`);
 
-    const doesExist = !!db.videodevicegroups.findOne({ name, uuid: { $ne: uuid } });
-    if (doesExist) throw Error('The name has already existed.');
+    // const fixedUuids = ['0', '1'];
+    // if (fixedUuids.includes(uuid)) throw Error('The item can not be change.');
+
+    // const doesExist = !!db.videodevicegroups.findOne({ name, uuid: { $ne: uuid } });
+    // if (doesExist) {
+    //   global.spiderman.systemlog.generateLog(4, `domain videodevicegroup create The item uuid=[${uuid}] name=[${name}] has already existed.`);
+    //   throw Error('The name has already existed.');
+    // }
 
     await global.domain.crud.modify({
       collection: 'videodevicegroups',
@@ -70,33 +80,38 @@ module.exports = () => {
       data: { name },
     });
 
-    global.domain.crud.handleRelatedUuids({
-      collection: 'cameras',
-      field: 'divice_groups',
-      uuids: uuid,
-    });
-    global.domain.crud.handleRelatedUuids({
-      collection: 'tablets',
-      field: 'divice_groups',
-      uuids: uuid,
-    });
+    // global.domain.crud.handleRelatedUuids({
+    //   collection: 'cameras',
+    //   field: 'divice_groups',
+    //   uuids: uuid,
+    // });
+    // global.domain.crud.handleRelatedUuids({
+    //   collection: 'tablets',
+    //   field: 'divice_groups',
+    //   uuids: uuid,
+    // });
 
-    addGroupToDevices({
-      uuid,
-      cameraUuidList,
-      tabletUuidList,
-    });
+    // addGroupToDevices({
+    //   uuid,
+    //   cameraUuidList,
+    //   tabletUuidList,
+    // });
+
+    global.spiderman.systemlog.generateLog(4, `domain videodevicegroup modify uuid=[${uuid}] name=[${name}] ok`);
   }
 
   async function remove({ uuid }) {
+    global.spiderman.systemlog.generateLog(4, `domain videodevicegroup remove uuid=[${uuid}]`);
+
     const fixedUuids = ['0', '1'];
     uuid = uuid.filter((item) => !fixedUuids.includes(item));
 
-    global.domain.crud.handleRelatedUuids({
-      collection: 'rules',
-      field: 'condition.video_device_groups',
-      uuids: uuid,
-    });
+    // global.domain.crud.handleRelatedUuids({
+    //   collection: 'rules',
+    //   field: 'condition.video_device_groups',
+    //   uuids: uuid,
+    // });
+
     global.domain.crud.handleRelatedUuids({
       collection: 'cameras',
       field: 'divice_groups',
@@ -107,6 +122,8 @@ module.exports = () => {
       field: 'divice_groups',
       uuids: uuid,
     });
+
+    global.spiderman.systemlog.generateLog(4, `domain videodevicegroup remove uuid=[${uuid}] ok`);
 
     db.videodevicegroups.deleteMany({ uuid: { $in: uuid } });
   }
@@ -115,6 +132,8 @@ module.exports = () => {
     uuid: groupUuid,
     cameraUuidList, tabletUuidList,
   }) {
+    global.spiderman.systemlog.generateLog(4, `domain videodevicegroup addGroupToDevices uuid=[${groupUuid}]`);
+
     cameraUuidList.forEach((deviceUuid) => {
       const camera = db.cameras.findOne({ uuid: deviceUuid });
       if (!camera) return;
@@ -130,6 +149,8 @@ module.exports = () => {
         divice_groups: [...tablet.divice_groups, groupUuid],
       });
     });
+
+    global.spiderman.systemlog.generateLog(4, `domain videodevicegroup addGroupToDevices uuid=[${groupUuid}] ok`);
   }
 
   return {

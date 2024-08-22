@@ -7,6 +7,8 @@ const fieldChecks = [
 ];
 
 module.exports = (data) => {
+  global.spiderman.systemlog.generateLog(4, `visitor remove ${JSON.stringify(data)}`);
+
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
@@ -16,5 +18,8 @@ module.exports = (data) => {
 
   return {
     message: 'ok',
+    uuid: data.uuid,
+    id: data.id,
+    name: data.name,
   };
 };

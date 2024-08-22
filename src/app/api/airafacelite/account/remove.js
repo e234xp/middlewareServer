@@ -7,6 +7,8 @@ const fieldChecks = [
 ];
 
 module.exports = (data, token) => {
+  global.spiderman.systemlog.generateLog(4, `account remove ${JSON.stringify(data.account_uuid_list)}`);
+
   // paramters checker
   data = global.spiderman.validate.data({
     data,
@@ -15,7 +17,8 @@ module.exports = (data, token) => {
 
   const tokenUser = global.spiderman.token.decryptToAccount(token);
   if (!tokenUser.u || data.account_uuid_list.length === 0) {
-    throw new Error('list cannot be empty');
+    global.spiderman.systemlog.generateLog(4, 'account_uuid_list cannot be empty');
+    throw new Error('account_uuid_list cannot be empty');
   }
 
   const accounts = global.spiderman.db.account.find();
@@ -23,6 +26,7 @@ module.exports = (data, token) => {
   // 檢查是否為使用Admin權限
   const isAdmin = accounts.some((a) => a.username === tokenUser.u && a.permission === 'Admin');
   if (!isAdmin) {
+    global.spiderman.systemlog.generateLog(4, 'No permission.');
     throw Error('No permission.');
   }
 
@@ -32,10 +36,14 @@ module.exports = (data, token) => {
   });
 
   if (newAccountList.length === accounts.length) {
+    global.spiderman.systemlog.writeError('Item not found.');
+    global.spiderman.systemlog.generateLog(4, `Item ${JSON.stringify(data.account_uuid_list)} not found.`);
     throw Error('Item not found.');
   }
 
   global.spiderman.db.account.set(newAccountList);
+
+  global.spiderman.systemlog.generateLog(4, `account removed ${JSON.stringify(data.account_uuid_list.length)}.`);
 
   return {
     message: 'ok',

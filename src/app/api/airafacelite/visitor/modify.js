@@ -70,6 +70,8 @@ const fieldChecksData = [
 ];
 
 module.exports = async (rData) => {
+  global.spiderman.systemlog.generateLog(4, `visitor modify ${rData}`);
+
   const { uuid } = global.spiderman.validate.data({
     data: rData,
     fieldChecks,
@@ -85,7 +87,10 @@ module.exports = async (rData) => {
     const existed = global.spiderman.db.visitor.findOne({
       id: data.id, uuid: { $ne: uuid },
     });
-    if (existed) throw Error('Id existed.');
+    if (existed) {
+      global.spiderman.systemlog.writeError('Id existed.');
+      throw Error('Id existed.');
+    }
   }
 
   // 至少讓 group_list 有 All Person
@@ -125,6 +130,8 @@ module.exports = async (rData) => {
       uuid, data, faceImage, faceFeature, upperFaceFeature,
     });
   }
+
+  global.spiderman.systemlog.generateLog(4, `visitor modify ${data.name}`);
 
   return {
     message: 'ok',

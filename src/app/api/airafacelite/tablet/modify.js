@@ -43,6 +43,21 @@ const fieldChecksData = [
     required: true,
   },
   {
+    fieldName: 'anti_spoofing_score',
+    fieldType: 'number',
+    required: false,
+  },
+  {
+    fieldName: 'face_detection_score',
+    fieldType: 'number',
+    required: false,
+  },
+  {
+    fieldName: 'april_tag_type',
+    fieldType: 'string',
+    required: false,
+  },
+  {
     fieldName: 'face_capture_interval',
     fieldType: 'number',
     required: true,
@@ -340,6 +355,8 @@ const fieldChecksData = [
 ];
 
 module.exports = async (rData) => {
+  global.spiderman.systemlog.generateLog(4, `tablet modify ${rData}`);
+
   const { uuid } = global.spiderman.validate.data({
     data: rData,
     fieldChecks,
@@ -350,11 +367,17 @@ module.exports = async (rData) => {
     fieldChecks: fieldChecksData,
   });
 
-  // data.uuid = uuid;
+  data.anti_spoofing_score = data.anti_spoofing_score ? data.anti_spoofing_score : 0.0;
+  data.face_detection_score = data.face_detection_score ? data.face_detection_score : 0.5;
+  data.april_tag_type = data.april_tag_type ? data.april_tag_type : '';
 
   await global.domain.tablet.modify({ uuid, data });
 
+  global.spiderman.systemlog.generateLog(4, `tablet modify ${data.name}`);
+
   return {
     message: 'ok',
+    uuid: data.uuid,
+    name: data.name,
   };
 };

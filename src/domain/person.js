@@ -1,11 +1,17 @@
-const { uuid: uuidv4 } = require('uuidv4');
+// const { uuid: uuidv4 } = require('uuidv4');
 
 module.exports = (collection = global.spiderman.db.person) => {
   function find({
     query, shift, sliceLength, data,
   }) {
-    const result = collection
-      .find(query)
+    global.spiderman.systemlog.generateLog(4, `domain person find ${query} ${shift} ${sliceLength} ${JSON.stringify(data)}`);
+
+    const allData = collection
+      .find(query);
+
+    const totalLength = allData.length;
+
+    const result = allData
       .slice(shift, shift + sliceLength)
       .map((item) => {
         delete item.___id;
@@ -20,31 +26,39 @@ module.exports = (collection = global.spiderman.db.person) => {
         return item;
       });
 
-    return result;
+    return { totalLength, result };
   }
 
   async function insert({
     data: { display_image: displayImage, register_image: _, ...otherData }, faceImage = '', faceFeature = '', upperFaceFeature = '',
   }) {
+    global.spiderman.systemlog.generateLog(4, `domain person insert ${otherData}`);
+
     const now = Date.now();
     const dataToWrite = {
-      uuid: uuidv4(),
+      // uuid: uuidv4(),
       ...otherData,
-      face_feature: faceFeature,
-      upper_face_feature: upperFaceFeature,
+      // face_feature: faceFeature,
+      // upper_face_feature: upperFaceFeature,
       create_date: now,
       last_modify_date: now,
       last_modify_date_by_manager: now,
     };
 
+    if (faceFeature) dataToWrite.face_feature = faceFeature;
+    if (upperFaceFeature) dataToWrite.upper_face_feature = upperFaceFeature;
+
     displayImage = await global.spiderman.image.resize(displayImage);
 
     const registerImage = faceImage;
-    savePhoto({
-      uuid: dataToWrite.uuid,
-      displayImage,
-      registerImage,
-    });
+
+    if (displayImage || registerImage) {
+      savePhoto({
+        uuid: dataToWrite.uuid,
+        displayImage,
+        registerImage,
+      });
+    }
 
     collection.insertOne(dataToWrite);
   }
@@ -52,44 +66,65 @@ module.exports = (collection = global.spiderman.db.person) => {
   async function modify({
     uuid, data: { display_image: displayImage, register_image: _, ...otherData }, faceImage = '', faceFeature = '', upperFaceFeature = '',
   }) {
+    global.spiderman.systemlog.generateLog(4, `domain person modify ${otherData}`);
+
     const now = Date.now();
     const dataToWrite = {
       ...otherData,
-      face_feature: faceFeature,
-      upper_face_feature: upperFaceFeature,
+      // face_feature: faceFeature,
+      // upper_face_feature: upperFaceFeature,
       last_modify_date: now,
       last_modify_date_by_manager: now,
     };
 
+    if (faceFeature) dataToWrite.face_feature = faceFeature;
+    if (upperFaceFeature) dataToWrite.upper_face_feature = upperFaceFeature;
+
     displayImage = await global.spiderman.image.resize(displayImage);
 
     const registerImage = faceImage;
-    savePhoto({
-      uuid,
-      displayImage,
-      registerImage,
-    });
+
+    if (displayImage || registerImage) {
+      savePhoto({
+        uuid,
+        displayImage,
+        registerImage,
+      });
+    }
 
     collection.updateOne({ uuid }, dataToWrite);
   }
 
   function remove({ uuid }) {
+    global.spiderman.systemlog.generateLog(4, `domain person remove ${uuid}`);
+
     collection.deleteMany({ uuid: { $in: uuid } });
     removePhoto(uuid);
   }
 
   function removeAll() {
+    global.spiderman.systemlog.generateLog(4, 'domain person removeAll');
+
     const items = collection.deleteMany({});
     const uuids = items.map(({ uuid }) => uuid);
     removePhoto(uuids);
   }
 
   function savePhoto({ uuid, displayImage, registerImage }) {
-    global.spiderman.db.dbPhoto.insertOne(`${uuid}.display`, displayImage);
-    global.spiderman.db.dbPhoto.insertOne(`${uuid}.register`, registerImage);
+    global.spiderman.systemlog.generateLog(4, `domain person savePhoto ${uuid}`);
+
+    if (displayImage) {
+      global.spiderman.db.dbPhoto.insertOne(`${uuid}.display`, displayImage);
+    }
+
+    if (registerImage) {
+      global.spiderman.db.dbPhoto.insertOne(`${uuid}.register`, registerImage);
+    }
   }
 
   function removePhoto(uuid) {
+    global.spiderman.systemlog.generateLog(4, `domain person removePhoto ${uuid}`);
+
     const fileNames = uuid
       .map((item) => ([`${item}.display`, `${item}.register`]))
       .flat();
@@ -98,6 +133,8 @@ module.exports = (collection = global.spiderman.db.person) => {
   }
 
   function fetchPhoto(uuid) {
+    global.spiderman.systemlog.generateLog(4, `domain person fetchPhoto ${uuid}`);
+
     const isFetch = uuid && uuid.length > 0;
 
     return isFetch

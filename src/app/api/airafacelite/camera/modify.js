@@ -53,6 +53,21 @@ const fieldChecksData = [
     required: true,
   },
   {
+    fieldName: 'antispoofing_score',
+    fieldType: 'number',
+    required: true,
+  },
+  {
+    fieldName: 'face_detection_score',
+    fieldType: 'number',
+    required: true,
+  },
+  {
+    fieldName: 'april_tag_type',
+    fieldType: 'string',
+    required: true,
+  },
+  {
     fieldName: 'verified_merge_setting',
     fieldType: 'object',
     required: true,
@@ -77,17 +92,19 @@ const rtspFieldChecks = [
   },
   {
     fieldName: 'user',
-    fieldType: 'nonempty',
-    required: true,
+    fieldType: 'string',
+    required: false,
   },
   {
     fieldName: 'pass',
-    fieldType: 'nonempty',
-    required: true,
+    fieldType: 'string',
+    required: false,
   },
 ];
 
 module.exports = async (rData) => {
+  global.spiderman.systemlog.generateLog(4, `camera modify uuid=[${rData.uuid}] name=[${rData.data.name}]`);
+
   const { uuid } = global.spiderman.validate.data({
     data: rData,
     fieldChecks,
@@ -129,12 +146,16 @@ module.exports = async (rData) => {
       },
     };
   } else {
+    global.spiderman.systemlog.generateLog(4, 'camera modify stream_type error.');
     throw Error('stream_type error.');
   }
 
   await global.domain.camera.modify({ uuid, data });
 
+  global.spiderman.systemlog.generateLog(4, `camera modify uuid: ${data.uuid} name: ${data.name})}`);
   return {
     message: 'ok',
+    uuid: data.uuid,
+    name: data.name,
   };
 };

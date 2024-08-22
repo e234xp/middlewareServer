@@ -1,4 +1,6 @@
 module.exports = async () => {
+  global.spiderman.systemlog.generateLog(4, 'downloadcrashlog');
+
   const path = '/data/user/0/com.aira.airatabletlite/files/lastcrashlog.log';
   const fileName = (() => {
     const now = new Date();

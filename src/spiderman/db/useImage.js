@@ -8,14 +8,13 @@ module.exports = ({ workingFolder, name }) => {
 
   function findOne(path) {
     const FILE_PATH = `${FOLIDER_PATH}/${path}`;
-
     try {
       const image = fs
         .readFileSync(FILE_PATH)
         .toString('utf8');
       return image;
     } catch {
-      throw Error('Item not found.');
+      return '';
     }
   }
 

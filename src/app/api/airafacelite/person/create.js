@@ -1,3 +1,5 @@
+const { uuid: uuidv4 } = require('uuidv4');
+
 const fieldChecks = [
   {
     fieldName: 'id',
@@ -57,6 +59,8 @@ const fieldChecks = [
 ];
 
 module.exports = async (data) => {
+  global.spiderman.systemlog.generateLog(4, `person create ${JSON.stringify(data)}`);
+
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
@@ -79,7 +83,7 @@ module.exports = async (data) => {
         method: 'POST',
         pool: { maxSockets: 10 },
         time: true,
-        timeout: 5000,
+        timeout: 30000,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -96,6 +100,7 @@ module.exports = async (data) => {
       }
 
       if (personLen >= faceDbSize) {
+        global.spiderman.systemlog.writeError(`Items in database has exceeded ${faceDbSize} (max).`);
         throw Error(`Items in database has exceeded ${faceDbSize} (max).`);
       }
     }
@@ -106,7 +111,10 @@ module.exports = async (data) => {
     const existed = global.spiderman.db.person.findOne({
       id: data.id,
     });
-    if (existed) throw Error('Id existed.');
+    if (existed) {
+      global.spiderman.systemlog.writeError('Id existed.');
+      throw Error('Id existed.');
+    }
   }
 
   // 至少讓 group_list 有 All Person
@@ -117,6 +125,8 @@ module.exports = async (data) => {
   let faceImage = '';
   let faceFeature = '';
   let upperFaceFeature = '';
+
+  data.uuid = uuidv4();
 
   if (!data.register_image) {
     await global.domain.person.insert({ data });
@@ -133,7 +143,12 @@ module.exports = async (data) => {
     });
   }
 
+  global.spiderman.systemlog.generateLog(4, `person create ${data.name}`);
+
   return {
     message: 'ok',
+    uuid: data.uuid,
+    id: data.id,
+    name: data.name,
   };
 };

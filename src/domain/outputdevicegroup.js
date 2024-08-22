@@ -1,13 +1,15 @@
 module.exports = () => {
   const { db } = global.spiderman;
   async function find({
-    uuid,
+    query,
     slice_shift: sliceShift, slice_length: sliceLength,
   }) {
+    global.spiderman.systemlog.generateLog(4, `domain outputdevicegroup find ${query}, ${sliceShift}, ${sliceLength}`);
+
     const { totalLength, result } = await global.domain.crud
       .find({
         collection: 'outputdevicegroups',
-        query: { ...(uuid === '' ? {} : { uuid }) },
+        query,
         sliceShift,
         sliceLength,
       });
@@ -36,9 +38,14 @@ module.exports = () => {
     name,
     wiegand_converter_uuid_list: wiegandConverterUuidList, iobox_uuid_list: ioBoxUuidList,
   }) {
+    global.spiderman.systemlog.generateLog(4, `domain outputdevicegroup create ${name}`);
+
     const doesExist = !!db.outputdevicegroups.findOne({ name });
 
-    if (doesExist) throw Error('The item has already existed.');
+    if (doesExist) {
+      global.spiderman.systemlog.writeError('The item has already existed.');
+      throw Error('The item has already existed.');
+    }
 
     const { uuid } = await global.domain.crud.insertOne({
       collection: 'outputdevicegroups',
@@ -58,11 +65,19 @@ module.exports = () => {
     wiegand_converter_uuid_list: wiegandConverterUuidList,
     iobox_uuid_list: ioBoxUuidList,
   }) {
+    global.spiderman.systemlog.generateLog(4, `domain outputdevicegroup modify ${uuid} ${name}`);
+
     const fixedUuids = ['0', '1'];
-    if (fixedUuids.includes(uuid)) throw Error('The item can not be change.');
+    if (fixedUuids.includes(uuid)) {
+      global.spiderman.systemlog.writeError('The item can not be change.');
+      throw Error('The item can not be change.');
+    }
 
     const doesExist = !!db.outputdevicegroups.findOne({ name, uuid: { $ne: uuid } });
-    if (doesExist) throw Error('The name has already existed.');
+    if (doesExist) {
+      global.spiderman.systemlog.writeError('The item has already existed.');
+      throw Error('The name has already existed.');
+    }
 
     await global.domain.crud.modify({
       collection: 'outputdevicegroups',
@@ -89,6 +104,8 @@ module.exports = () => {
   }
 
   async function remove({ uuid }) {
+    global.spiderman.systemlog.generateLog(4, `domain outputdevicegroup remove ${uuid}`);
+
     const fixedUuids = ['0', '1'];
     uuid = uuid.filter((item) => !fixedUuids.includes(item));
 
@@ -110,6 +127,8 @@ module.exports = () => {
     uuid: groupUuid,
     wiegandConverterUuidList, ioBoxUuidList,
   }) {
+    global.spiderman.systemlog.generateLog(4, `domain outputdevicegroup addGroupToDevices ${groupUuid}`);
+
     wiegandConverterUuidList.forEach((deviceUuid) => {
       const wiegandConverter = db.wiegandconverters.findOne({ uuid: deviceUuid });
       if (!wiegandConverter) return;

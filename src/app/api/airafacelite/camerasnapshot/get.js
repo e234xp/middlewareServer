@@ -13,6 +13,8 @@ const fieldChecks = [
 ];
 
 module.exports = async (data) => {
+  global.spiderman.systemlog.generateLog(4, `camerasnapshot get url=[${data.url}]`);
+
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
@@ -20,6 +22,8 @@ module.exports = async (data) => {
 
   const { url, uuid } = data;
   const base64 = await global.domain.cameraSnapShot.get({ url, uuid });
+
+  global.spiderman.systemlog.generateLog(4, `camerasnapshot get url=[${data.url}] ok`);
 
   return {
     message: 'ok',

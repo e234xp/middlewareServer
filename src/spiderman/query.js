@@ -9,12 +9,20 @@ module.exports = () => ({ data, queryObject }) => {
 
 function _isMatchConditions({ item, queryObject }) {
   return Object.entries(queryObject).every(([key, value]) => {
-    if (typeof value === 'object' && value !== null) {
-      return Object.entries(value).every(
+    let ret = item[key] === value;
+    if ((key === '$or') || (key === '$and')) {
+      ret = _handleSpecialOperators(key, value, item);
+    } else if (typeof value === 'object' && value !== null) {
+      ret = Object.entries(value).every(
         ([op, opValue]) => _handleSpecialOperators(op, opValue, item[key]),
+
+        // ([op, opValue]) => (key === 'keyword'
+        //   ? _handleSpecialOperators(op, opValue, item)
+        //   : _handleSpecialOperators(op, opValue, item[key])),
       );
     }
-    return item[key] === value;
+
+    return ret;
   });
 }
 
@@ -64,6 +72,42 @@ function _handleSpecialOperators(key, value, item) {
     }
     return false;
   }
+
+  if (key === '$or') {
+    let ret = false;
+
+    value.forEach((obj) => {
+      // for (const field in obj) {
+      //   ret = ret || (item[field].match(new RegExp(obj[field].$regex, 'gi')));
+      // }
+
+      Object.entries(obj).forEach(([f, v]) => {
+        ret = ret || (item[f].match(new RegExp(v.$regex, 'gi')));
+      });
+    });
+
+    return ret;
+  }
+
+  if (key === '$and') {
+    let ret = false;
+
+    value.forEach((obj) => {
+      // for (const field in obj) {
+      //   ret = ret && (item[field].match(new RegExp(obj[field].$regex, 'gi')));
+      // }
+
+      Object.entries(obj).forEach(([f, v]) => {
+        ret = ret && (item[f].match(new RegExp(v.$regex, 'gi')));
+      });
+    });
+
+    return ret;
+  }
+
+  // if (key === '$regex') {
+  //   return item.id.match(new RegExp(value, 'gi')) || item.name.match(new RegExp(value, 'gi'));
+  // }
 
   return false;
 }

@@ -6,9 +6,9 @@ const fileUpload = require('express-fileupload');
 //   cert: process.env.SSL_CERT,
 // };
 
-var sslOptions = {
+const sslOptions = {
   key:
-`-----BEGIN PRIVATE KEY-----
+    `-----BEGIN PRIVATE KEY-----
 MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDj6A8fa+3VF1mk
 FQaSrbRtDhZOkd9D+CrQD2gxIMYy0Fog1opjFegDbmif2XthFyTriF1kHsh549DM
 jkKZpgxnWzo1JiG/GqiDdhBGImqN5/9cE0hOW1VpLFJF39gfgeOiJLP6yhEJi+vE
@@ -38,7 +38,7 @@ gPjiEm9cPABflqudBuKO2kE=
 -----END PRIVATE KEY-----
 `,
   cert:
-`-----BEGIN CERTIFICATE-----
+    `-----BEGIN CERTIFICATE-----
 MIID/zCCAuegAwIBAgIJAOWRMu1I01KiMA0GCSqGSIb3DQEBCwUAMIGhMQswCQYD
 VQQGEwJUVzEPMA0GA1UECBMGVGFpd2FuMQ8wDQYDVQQHEwZUYWlwZWkxGTAXBgNV
 BAoTEEFJUkEgQ29ycG9yYXRpb24xGTAXBgNVBAsTEEFJUkEgQ29ycG9yYXRpb24x
@@ -62,7 +62,7 @@ qeTQkAbO4R6Fr+CNAF59ACl6j/p9aVtwJCAARidUxEAJVvHyhGi9EkmpOUCYS/L4
 LOEvtJP5HusCtsDeiiGbmJD9kgWGhC5MI5hm0pxGOJ+U5/+fBpfk6eJU36FrZ2XU
 uNJRRuzG94By+yipQf7us1JHNA==
 -----END CERTIFICATE-----
-`
+`,
 };
 
 module.exports = () => {
@@ -85,18 +85,14 @@ module.exports = () => {
     });
   }
 
-  function createAndListenServer(serverType, port, app) {
+  function createAndListenServer(serverType, port, app, ssl) {
     serverType.globalAgent.maxSockets = 50;
-    const server = createServer(serverType, port, app);
-    server.listen(port, () => {});
+    const server = ssl ? serverType.createServer(sslOptions, app) : serverType.createServer(app);
+    server.listen(port, () => {
+      // console.log('listenling : ', port);
+    });
     server.headersTimeout = 300000;
     return server;
-  }
-
-  function createServer(serverType, port, app) {
-    if (port !== 443) return serverType.createServer(app);
-
-    return serverType.createServer(sslOptions, app);
   }
 
   return {

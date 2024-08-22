@@ -1,91 +1,149 @@
 module.exports = () => {
-  let allWiegandConverters = [];
+  let allConverter = [];
+
+  let ignoreConnectionLog = [];
 
   function init() {
-    allWiegandConverters.forEach(({ client }) => {
+    global.spiderman.systemlog.generateLog(4, 'domain worker-wiegand init');
+
+    allConverter.forEach(({ client }) => {
       client.end();
     });
-    allWiegandConverters = [];
+    allConverter = [];
 
     setTimeout(() => {
+      global.spiderman.systemlog.generateLog(4, 'domain worker-wiegand connectWiegandConverters');
       connectWiegandConverters();
-    }, 1000);
+    }, 100);
   }
 
   function connectWiegandConverters() {
-    const wiegandConverters = global.spiderman.db.wiegandconverters
-      .find();
+    global.spiderman.systemlog.generateLog(5, 'domain worker-wiegand connectWiegandConverters');
+
+    const wiegandConverters = global.spiderman.db.eventhandle.find({ action_type: 'wiegand' });
+    global.spiderman.systemlog.generateLog(5, `domain worker-wiegand wiegandConverters.length ${wiegandConverters.length}`);
 
     wiegandConverters.forEach((w) => {
-      connect(w);
+      // w.timeout = 15000;
+      const hostBox = allConverter.findIndex((item) => (item ? item.host === w.host : false));
+
+      if (hostBox <= -1) {
+        global.spiderman.systemlog.generateLog(4, `domain worker-wiegand connect ${w.host}`);
+        connect(w);
+      } else if (
+        allConverter[hostBox].connecting !== true
+        && allConverter[hostBox].connected !== true
+      ) {
+        allConverter.splice(hostBox, 1);
+
+        global.spiderman.systemlog.generateLog(4, `domain worker-wiegand re-connect ${w.host}`);
+        connect(w);
+      }
     });
+
+    setTimeout(() => {
+      global.spiderman.systemlog.generateLog(6, 'domain worker-wiegand connectWiegandConverters setInterval start');
+
+      connectWiegandConverters();
+    }, 15000);
   }
 
   function connect(w) {
-    let intervalId;
-    const { ip_address: host, port } = w;
+    global.spiderman.systemlog.generateLog(5, `domain worker-wiegand connect ${w.host}`);
+
+    // let intervalId;
+    w.connecting = true;
+    w.connected = false;
+
+    const { host, port, timeout } = w;
+
     global.spiderman.tcp.connect({
       host,
       port,
+      timeout,
       onConnect: (client) => {
+        ignoreConnectionLog = ignoreConnectionLog.filter((item) => item !== w.host);
+
+        w.connecting = false;
+        w.connected = true;
+
         const wiegand = {
           ...w,
           client,
           sequence: 0,
           lastSendTimestamp: null,
         };
-        allWiegandConverters.push(wiegand);
+
+        global.spiderman.systemlog.generateLog(4, `domain worker-wiegand onConnect ${w.host}`);
+
+        allConverter = allConverter.filter((item) => (item ? item.host !== w.host : false));
+        allConverter.push(wiegand);
 
         send({ wiegand, isSendAlive: true });
-        intervalId = setInterval(() => {
+        // intervalId =
+        setInterval(() => {
           send({ wiegand, isSendAlive: true });
-        }, 8 * 1000);
+        }, 5 * 1000);
       },
       onClose: () => {
-        // todo 自動恢復連線
-        clearInterval(intervalId);
+        if (ignoreConnectionLog.indexOf(w.host) < 0) {
+          global.spiderman.systemlog.generateLog(2, `domain worker-wiegand onClose ${w.host}`);
+          ignoreConnectionLog.push(w.host);
+        }
+
+        const idx = allConverter.findIndex((item) => (item ? item.host === w.host : false));
+        if (idx >= 0) {
+          allConverter[idx].connecting = false;
+          allConverter[idx].connected = false;
+        }
+      },
+      onError: () => {
+        if (ignoreConnectionLog.indexOf(w.host) < 0) {
+          global.spiderman.systemlog.generateLog(2, `domain worker-wiegand onError ${w.host}`);
+          ignoreConnectionLog.push(w.host);
+        }
+
+        const idx = allConverter.findIndex((item) => (item ? item.host === w.host : false));
+        if (idx >= 0) {
+          allConverter[idx].connecting = false;
+          allConverter[idx].connected = false;
+        }
+      },
+      onTimeout: () => {
+        if (ignoreConnectionLog.indexOf(w.host) < 0) {
+          global.spiderman.systemlog.generateLog(2, `domain worker-wiegand onTimeout ${w.host}`);
+          ignoreConnectionLog.push(w.host);
+        }
+
+        const idx = allConverter.findIndex((item) => (item ? item.host === w.host : false));
+        if (idx >= 0) {
+          allConverter[idx].connected = false;
+        }
       },
     });
   }
 
-  function trigger({ uuid, isSpecialCardNumber, cardNumber }) {
-    const wiegand = allWiegandConverters.find((w) => w.uuid === uuid);
-    if (!wiegand) {
-      console.error(`could not find ${uuid} Wiegand converter`);
-      return;
+  function trigger({ action, data }) {
+    try {
+      global.spiderman.systemlog.generateLog(5, `domain worker-wiegand trigger ${action.host} ${JSON.stringify(data).substring(0, 100)}`);
+      const wiegand = allConverter.find((item) => (item ? item.host === action.host : false));
+
+      let sendCardNumber = '';
+
+      if (data.person) {
+        sendCardNumber = data.person.card_facility_code + data.person.card_number;
+      } else {
+        sendCardNumber = action.special_card_number ? action.special_card_number : '';
+      }
+
+      if ((sendCardNumber !== '') && (wiegand !== undefined)) {
+        global.spiderman.systemlog.generateLog(4, `domain worker-wiegand trigger ${action.host} ${sendCardNumber}`);
+
+        send({ wiegand, isSendAlive: false, cardNumber: sendCardNumber });
+      }
+    } catch (ex) {
+      global.spiderman.systemlog.generateLog(2, `domain worker-wiegand trigger host ${action.host} ${ex}`);
     }
-
-    const sendCardNumber = isSpecialCardNumber ? wiegand.special_card_number : cardNumber;
-    if (!sendCardNumber) return;
-
-    send({ wiegand, isSendAlive: false, cardNumber: sendCardNumber });
-  }
-
-  function send({ wiegand, isSendAlive = true, cardNumber }) {
-    const now = Date.now();
-    if (wiegand.lastSendTimestamp && now - wiegand.lastSendTimestamp < 1000) {
-      setTimeout(() => {
-        send({ wiegand, isSendAlive, cardNumber });
-      }, 1 * 1000);
-      return;
-    }
-
-    const command = (() => {
-      const {
-        sequence, bits, index, syscode,
-      } = wiegand;
-
-      if (isSendAlive) return generateAliveCommand(sequence);
-      return generateCommand({
-        sequence, bits, index, syscode, cardNumber,
-      });
-    })();
-
-    const buffer = Buffer.from(command, 'ascii');
-    wiegand.client.write(buffer);
-    wiegand.lastSendTimestamp = Date.now();
-    wiegand.sequence = getNextSequence(wiegand.sequence);
-    console.log('send', command);
   }
 
   function generateCommand({
@@ -112,6 +170,43 @@ module.exports = () => {
     }
 
     return sequence + 1;
+  }
+
+  function send({ wiegand, isSendAlive = true, cardNumber }) {
+    if (!isSendAlive) {
+      global.spiderman.systemlog.generateLog(4, `domain worker-wiegand send ${wiegand.host} ${isSendAlive} ${cardNumber}`);
+    }
+
+    const now = Date.now();
+    if (wiegand.lastSendTimestamp && now - wiegand.lastSendTimestamp < 1000) {
+      setTimeout(() => {
+        send({ wiegand, isSendAlive, cardNumber });
+      }, 500);
+      return;
+    }
+
+    const command = (() => {
+      const {
+        sequence, bits, index, syscode,
+      } = wiegand;
+
+      if (isSendAlive) return generateAliveCommand(sequence);
+      return generateCommand({
+        sequence, bits, index, syscode, cardNumber,
+      });
+    })();
+
+    if (!isSendAlive) {
+      global.spiderman.systemlog.generateLog(4, `domain worker-wiegand send command=${command}`);
+    }
+
+    const buffer = Buffer.from(command, 'ascii');
+
+    const sendOk = wiegand.client.write(buffer);
+
+
+    wiegand.lastSendTimestamp = Date.now();
+    wiegand.sequence = getNextSequence(wiegand.sequence);
   }
 
   return {

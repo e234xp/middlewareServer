@@ -5,6 +5,11 @@ const fieldChecks = [
     required: false,
   },
   {
+    fieldName: 'keyword',
+    fieldType: 'string',
+    required: false,
+  },
+  {
     fieldName: 'slice_shift',
     fieldType: 'number',
     required: false,
@@ -17,6 +22,8 @@ const fieldChecks = [
 ];
 
 module.exports = async (data) => {
+  global.spiderman.systemlog.generateLog(4, `tablet find ${JSON.stringify(data)}`);
+
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
@@ -24,12 +31,17 @@ module.exports = async (data) => {
 
   const sliceShift = data.slice_shift ? data.slice_shift : 0;
   const sliceLength = data.slice_length ? data.slice_length : 100;
-  const { uuid } = data;
+  const { uuid, keyword } = data;
+
+  let query = { ...(!uuid ? {} : { uuid }) };
+  if (keyword) {
+    query = { ...query, ...{ $or: [{ name: { $regex: keyword } }] } };
+  }
 
   const { totalLength, result } = global.domain.crud
     .find({
       collection: 'tablets',
-      query: { ...(!uuid ? {} : { uuid }) },
+      query,
       sliceShift,
       sliceLength,
     });
@@ -42,11 +54,15 @@ module.exports = async (data) => {
     } else e.alive = false;
   });
 
-  return {
+  const ret = {
     message: 'ok',
     total_length: totalLength,
     slice_shift: sliceShift,
     slice_length: sliceLength,
     list: result,
   };
+
+  global.spiderman.systemlog.generateLog(4, `tablet find ${JSON.stringify(ret)}`);
+
+  return ret;
 };

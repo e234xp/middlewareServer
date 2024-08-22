@@ -27,6 +27,8 @@ const fieldChecks = [
 ];
 
 module.exports = async (data) => {
+  global.spiderman.systemlog.generateLog(4, `systemlog find ${JSON.stringify(data)}`);
+
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
@@ -45,7 +47,7 @@ module.exports = async (data) => {
     })
     .map(({ face_image_id: _, ...others }) => ({ ...others }));
 
-  return {
+  const ret = {
     message: 'ok',
     result: {
       total_length: resultList ? resultList.length : 0,
@@ -56,4 +58,8 @@ module.exports = async (data) => {
         : [],
     },
   };
+
+  global.spiderman.systemlog.generateLog(4, `systemlog find ${JSON.stringify(ret)}`);
+
+  return ret;
 };

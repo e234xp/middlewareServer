@@ -33,6 +33,11 @@ const fieldChecksData = [
     required: true,
   },
   {
+    fieldName: 'divice_groups',
+    fieldType: 'array',
+    required: false,
+  },
+  {
     fieldName: 'temperature_trigger_rule',
     fieldType: 'number',
     required: false,
@@ -61,9 +66,19 @@ const lineFieldChecks = [
     required: true,
   },
   {
+    fieldName: 'language',
+    fieldType: 'nonempty',
+    required: true,
+  },
+  {
     fieldName: 'data_list',
     fieldType: 'object',
     required: true,
+  },
+  {
+    fieldName: 'note',
+    fieldType: 'string',
+    required: false,
   },
 ];
 
@@ -113,6 +128,11 @@ const httpFieldChecks = [
     fieldType: 'string',
     required: false,
   },
+  {
+    fieldName: 'note',
+    fieldType: 'string',
+    required: false,
+  },
 ];
 
 const mailFieldChecks = [
@@ -152,6 +172,11 @@ const mailFieldChecks = [
     required: true,
   },
   {
+    fieldName: 'language',
+    fieldType: 'nonempty',
+    required: true,
+  },
+  {
     fieldName: 'subject',
     fieldType: 'string',
     required: true,
@@ -176,9 +201,116 @@ const mailFieldChecks = [
     fieldType: 'object',
     required: true,
   },
+  {
+    fieldName: 'note',
+    fieldType: 'string',
+    required: false,
+  },
+
 ];
 
+const wiegandFieldChecks = [
+  {
+    fieldName: 'host',
+    fieldType: 'string',
+    required: true,
+  },
+  {
+    fieldName: 'port',
+    fieldType: 'number',
+    required: true,
+  },
+  {
+    fieldName: 'bits',
+    fieldType: 'number',
+    required: true,
+  },
+  {
+    fieldName: 'index',
+    fieldType: 'number',
+    required: true,
+  },
+  {
+    fieldName: 'syscode',
+    fieldType: 'number',
+    required: true,
+  },
+  {
+    fieldName: 'special_card_number',
+    fieldType: 'string',
+    required: false,
+  },
+];
+
+const ioboxFieldChecks = [
+  {
+    fieldName: 'brand',
+    fieldType: 'string',
+    required: true,
+  },
+  {
+    fieldName: 'model',
+    fieldType: 'string',
+    required: true,
+  },
+  {
+    fieldName: 'host',
+    fieldType: 'string',
+    required: true,
+  },
+  {
+    fieldName: 'port',
+    fieldType: 'number',
+    required: true,
+  },
+  {
+    fieldName: 'user',
+    fieldType: 'string',
+    required: false,
+  },
+  {
+    fieldName: 'pass',
+    fieldType: 'string',
+    required: false,
+  },
+  {
+    fieldName: 'iopoint',
+    fieldType: 'array',
+    required: true,
+  },
+];
+
+// const iopointFieldChecks = [
+//   {
+//     fieldName: 'no',
+//     fieldType: 'number',
+//     required: true,
+//   },
+//   {
+//     fieldName: 'enable',
+//     fieldType: 'boolean',
+//     required: true,
+//   },
+//   {
+//     fieldName: 'default',
+//     fieldType: 'boolean',
+//     required: true,
+//   },
+//   {
+//     fieldName: 'trigger',
+//     fieldType: 'boolean',
+//     required: true,
+//   },
+//   {
+//     fieldName: 'delay',
+//     fieldType: 'number',
+//     required: true,
+//   },
+// ];
+
 module.exports = async (rData) => {
+  global.spiderman.systemlog.generateLog(4, `eventhandle find ${rData}`);
+
   const { uuid } = global.spiderman.validate.data({
     data: rData,
     fieldChecks,
@@ -201,15 +333,28 @@ module.exports = async (rData) => {
       data: rData.data,
       fieldChecks: [...fieldChecksData, ...mailFieldChecks],
     });
+  } else if (actionType === 'wiegand') {
+    data = global.spiderman.validate.data({
+      data: rData.data,
+      fieldChecks: [...fieldChecksData, ...wiegandFieldChecks],
+    });
+  } else if (actionType === 'iobox') {
+    data = global.spiderman.validate.data({
+      data: rData.data,
+      fieldChecks: [...fieldChecksData, ...ioboxFieldChecks],
+    });
   } else {
+    global.spiderman.systemlog.writeError('action_type error.');
     throw Error('action_type error.');
   }
 
-  console.log('aaa', { uuid, data });
-
   await global.domain.eventhandle.modify({ uuid, data });
+
+  global.spiderman.systemlog.generateLog(4, `eventhandle modify ${data.action_type} ${data.name}`);
 
   return {
     message: 'ok',
+    uuid: data.uuid,
+    name: data.name,
   };
 };

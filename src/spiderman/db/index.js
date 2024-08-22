@@ -35,7 +35,7 @@ module.exports = ({ collections }) => {
 
         default:
           instance = {};
-          console.log(`Sorry, we are out of ${type}.`);
+          // console.log(`Sorry, we are out of ${type}.`);
       }
 
       return instance;

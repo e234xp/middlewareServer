@@ -128,6 +128,9 @@ module.exports = ({
           fileString = fileString.substring(1);
         }
 
+        // systemlog will have bug with no comma
+        fileString = fileString.replace(/}{/g, '},{');
+
         const fileArray = (() => {
           try {
             const result = JSON.parse(`[${fileString}]`);

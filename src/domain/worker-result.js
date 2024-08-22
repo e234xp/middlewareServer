@@ -1,32 +1,47 @@
 module.exports = () => {
+  // let eventhandleBase = null;
+
   function init() {
+    global.spiderman.systemlog.generateLog(4, 'domain worker-result init port 9000');
+
     const receivePort = 9000;
 
     const server = global.spiderman.udp.create();
 
     server.on('listening', () => {
       const address = server.address();
-      console.log(`接收伺服器正在監聽 worker-result ${address.address}:${address.port}`);
+      global.spiderman.systemlog.generateLog(4, `domain worker-result listening ${address.address}:${address.port}`);
     });
 
     server.on('message', (message, rinfo) => {
       try {
-        console.log('==============================================================');
-        console.log(`message from enginee ${rinfo.address} ${rinfo.port}`);
+        // console.log('==============================================================');
+        // console.log(`message from enginee ${rinfo.address} ${rinfo.port}`);
+        global.spiderman.systemlog.generateLog(5, `domain worker-result message ${rinfo.address}`);
 
         message = message.toString('utf8');
 
-        const data = JSON.parse(message);
-        // console.log('message from enginee', data.source_id, data.verify_uuid);
-        // console.log('message from enginee', data);
+        let data = {};
+        try {
+          data = JSON.parse(message);
+        } catch (ex) {
+          global.spiderman.systemlog.generateLog(2, `domain worker-result message ${ex}`);
+        }
 
         data.channel = '';
         data.divice_groups = [];
+        let nonVerifiedMergeSetting = { enable: false };
+        // {enable: true, merge_score: 0.6, merge_duration: 5000, non_action: true}
+        let verifiedMergeSetting = { enable: false };
+        // {enable: true, merge_duration: 10000, non_action: true}
 
         let device = global.spiderman.db.cameras.findOne({ uuid: data.source_id });
+
         if (device) {
           data.channel = device.name || '';
           data.divice_groups = device.divice_groups || [];
+          nonVerifiedMergeSetting = device.non_verified_merge_setting || { enable: false };
+          verifiedMergeSetting = device.verified_merge_setting || { enable: false };
         } else {
           device = global.spiderman.db.tablets.findOne({ uuid: data.source_id });
 
@@ -35,6 +50,22 @@ module.exports = () => {
             data.divice_groups = device.divice_groups || [];
           }
         }
+        // global.spiderman.systemlog.generateLog(
+        //   5,
+        //   `domain worker-result nonVerifiedMergeSetting ${JSON.stringify(nonVerifiedMergeSetting)}`,
+        // );
+        // global.spiderman.systemlog.generateLog(
+        //   5,
+        //   `domain worker-result verifiedMergeSetting ${JSON.stringify(verifiedMergeSetting)}`
+        // );
+
+        if (!data.match) {
+          if (nonVerifiedMergeSetting.enable && data.merged) {
+            return;
+          }
+        } else if (verifiedMergeSetting.enable && data.merged) {
+          return;
+        }
 
         // 給 tablet
         global.domain.tabletverify.setResult(data);
@@ -42,7 +73,7 @@ module.exports = () => {
 
         // console.log('=====================================');
         // newData.snapshot = 'i1707117871252_9e95279228dd8683.jpg';
-        // console.log(newData);
+        // console.log('newData', newData);
 
         // 給 dash broad
         if (newData) {
@@ -52,7 +83,7 @@ module.exports = () => {
             message: JSON.stringify(newData),
           });
 
-          if (data.is_person) {
+          if (newData.type === 1) {
             // for person
             global.spiderman.socket.broadcastMessage({
               wss: global.spiderman.server.wsRecognized,
@@ -71,7 +102,8 @@ module.exports = () => {
         // trigger result
         triggerByResult(data);
       } catch (e) {
-        console.log('triggerByResult message', e);
+        global.spiderman.systemlog.generateLog(2, `domain worker-result triggerByResult ${e}`);
+        // console.log('triggerByResult message', e);
       }
     });
 
@@ -79,6 +111,8 @@ module.exports = () => {
   }
 
   function triggerByResult(data) {
+    global.spiderman.systemlog.generateLog(5, `domain worker-result triggerByResult source_id=${data.source_id} verify_uuid=${data.verify_uuid}`);
+
     const rules = generateRules(data);
 
     if (rules.length === 0) return;
@@ -88,41 +122,48 @@ module.exports = () => {
 
   function triggerActions({ actions, data }) {
     actions.forEach((action) => {
+      global.spiderman.systemlog.generateLog(5, `domain worker-result triggerActions action_type=${action.action_type} verify_uuid=${data.verify_uuid}`);
+
       switch (action.action_type) {
         case 'line':
-          triggerLineCommands({ action, data });
+          try {
+            triggerLineCommands({ action, data });
+          } catch (ex) {
+            global.spiderman.systemlog.generateLog(2, `domain worker-result triggerActions action_type=${action.action_type} verify_uuid=${data.verify_uuid} ${ex.toString()}`);
+          }
           break;
         case 'http':
-          triggerHttpCommands({ action, data });
+          try {
+            triggerHttpCommands({ action, data });
+          } catch (ex) {
+            global.spiderman.systemlog.generateLog(2, `domain worker-result triggerActions action_type=${action.action_type} verify_uuid=${data.verify_uuid} ${ex.toString()}`);
+          }
           break;
         case 'mail':
-          triggerEmailCommands({ action, data });
+          try {
+            triggerEmailCommands({ action, data });
+          } catch (ex) {
+            global.spiderman.systemlog.generateLog(2, `domain worker-result triggerActions action_type=${action.action_type} verify_uuid=${data.verify_uuid} ${ex.toString()}`);
+          }
+          break;
+        case 'wiegand':
+          try {
+            triggerWiegandConverters({ action, data });
+          } catch (ex) {
+            global.spiderman.systemlog.generateLog(2, `domain worker-result triggerActions action_type=${action.action_type} verify_uuid=${data.verify_uuid} ${ex.toString()}`);
+          }
+          break;
+        case 'iobox':
+          try {
+            triggerIoboxes({ action, data });
+          } catch (ex) {
+            global.spiderman.systemlog.generateLog(2, `domain worker-result triggerActions action_type=${action.action_type} verify_uuid=${data.verify_uuid} ${ex.toString()}`);
+          }
           break;
         default:
 
           break;
       }
-
-      // if (action.ioboxes.length > 0) triggerIoboxes(action.ioboxes);
-
-      // if (action.wiegand_converters.length > 0) {
-      //   triggerWiegandConverters({
-      //     wiegandConverters: action.wiegand_converters,
-      //     cardNumber: data.person?.card_number,
-      //   });
-      // }
-
-      // if (action.line_commands.length > 0) {
-      //   triggerLineCommands({ lineCommands: action.line_commands, data });
-      // }
-
-      // if (action.email_commands.length > 0) {
-      //   triggerEmailCommands({ emailCommands: action.email_commands, data });
-      // }
-
-      // if (action.http_commands.length > 0) {
-      //   triggerHttpCommands({ httpCommands: action.http_commands, data });
-      // }
     });
   }
 
@@ -143,6 +184,10 @@ module.exports = () => {
   function filterByEnabledRule({ eventhandle, data }) {
     if (eventhandle.length === 0) return { eventhandle, data };
 
+    const cnt = eventhandle.filter((rule) => rule.enable === true).length;
+
+    global.spiderman.systemlog.generateLog(4, `domain worker-result generateRules enable ${cnt}`);
+
     return {
       eventhandle: eventhandle.filter((rule) => rule.enable === true),
       data,
@@ -152,25 +197,25 @@ module.exports = () => {
   function filterByDeviceGroups({ eventhandle, data }) {
     if (eventhandle.length === 0) return { eventhandle, data };
 
-    // const camera = global.spiderman.db.cameras.findOne({ uuid: data.source_id });
-    // const tablet = global.spiderman.db.tablets.findOne({ uuid: data.source_id });
-    // if (!camera && !tablet) return { eventhandle: [], data };
-
     // const device = camera || tablet;
+    data.divice_groups = data.divice_groups || [];
+
+    // global.spiderman.systemlog.generateLog(
+    //   4,
+    //   `domain worker-result filterByDeviceGroups divice_groups=${data.divice_groups}`,
+    // );
 
     const retE = eventhandle.filter((rule) => {
-      // let groups = [];
       rule.divice_groups = rule.divice_groups || [];
-
-      // if (device) {
-      // data.divice_groups = data.divice_groups || [];
+      // console.log('filterByDeviceGroups', rule.divice_groups, data.divice_groups);
       const groups = data.divice_groups
         .some((group) => rule.divice_groups
           .includes(group));
-      // }
 
       return groups;
     });
+
+    global.spiderman.systemlog.generateLog(5, `domain worker-result filterByDeviceGroups actions=${retE.length}`);
 
     return {
       eventhandle: retE,
@@ -181,13 +226,27 @@ module.exports = () => {
   function filterByPersonGroups({ eventhandle, data }) {
     if (eventhandle.length === 0) return { eventhandle, data };
 
-    const passager = data.person ? data.person : data.nearest_person.person_info;
+    let passager = {};
+    // console.log('filterByPersonGroups data', data);
+    if (data.person) {
+      passager = data.person;
+    } else if (data.nearest_person) {
+      passager = data.nearest_person.person_info;
+    }
+
+    passager.group_list = passager.group_list || [];
+
+    // global.spiderman.systemlog.generateLog(
+    //   4,
+    //   `domain worker-result filterByPersonGroups group_list=${passager.group_list}`,
+    // );
 
     const retE = eventhandle.filter((rule) => passager.group_list
       .some((group) => rule.group_list
         .includes(group)));
 
-    console.log('filterByPersonGroups', retE);
+    global.spiderman.systemlog.generateLog(5, `domain worker-result filterByPersonGroups actions=${retE.length}`);
+
     return {
       eventhandle: retE,
       data,
@@ -199,12 +258,7 @@ module.exports = () => {
 
     const { dayOfWeek, hour } = (() => {
       const now = global.spiderman.dayjs();
-      // const decimalTime = now.hour() + now.minute() / 60;
-      let day = now.day(); // 0 (Sunday) to 6 (Saturday)
-
-      // change to schedule object weekday
-      day -= 1;
-      if (day < 0) day = 0;
+      const day = now.day(); // 0 (Sunday) to 6 (Saturday)
 
       return {
         date: now.format('YYYY-MM-DD'),
@@ -244,24 +298,19 @@ module.exports = () => {
       return ret;
     });
 
-    console.log('filterBySchedule', eventhandle);
     return {
       eventhandle,
       data,
     };
   }
 
-  // function triggerIoboxes(ioboxes) {
-  //   ioboxes.forEach(({ uuid, iopoint }) => {
-  //     global.domain.workerIobox.trigger({ uuid, iopoint });
-  //   });
-  // }
+  function triggerIoboxes({ action, data }) {
+    global.domain.workerIobox.trigger({ action, data });
+  }
 
-  // function triggerWiegandConverters({ wiegandConverters, cardNumber }) {
-  //   wiegandConverters.forEach(({ uuid, is_special_card_number: isSpecialCardNumber }) => {
-  //     global.domain.workerWiegand.trigger({ uuid, isSpecialCardNumber, cardNumber });
-  //   });
-  // }
+  function triggerWiegandConverters({ action, data }) {
+    global.domain.workerWiegand.trigger({ action, data });
+  }
 
   function triggerLineCommands({ action, data }) {
     global.domain.triggerLineCommand.trigger({ action, data });

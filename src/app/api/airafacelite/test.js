@@ -60,5 +60,5 @@ function insertMany() {
 
 function updateOne() {
   const account = global.spiderman.db.account.updateOne({ username: 'Test' }, { permission: 'C' });
-  console.log(account);
+  // console.log(account);
 }

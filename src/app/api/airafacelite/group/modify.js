@@ -36,6 +36,8 @@ const fieldChecksData = [
 ];
 
 module.exports = async (rData) => {
+  global.spiderman.systemlog.generateLog(4, `group modify ${rData}`);
+
   const { uuid } = global.spiderman.validate.data({
     data: rData,
     fieldChecks,
@@ -45,13 +47,17 @@ module.exports = async (rData) => {
     data: rData.data,
     fieldChecks: fieldChecksData,
   });
-  
+
   if (!data.person_uuid_list) data.person_uuid_list = [];
   if (!data.visitor_uuid_list) data.visitor_uuid_list = [];
 
   await global.domain.group.modifyAndModifyPersonGroup({ uuid, ...data });
 
+  global.spiderman.systemlog.generateLog(4, `group modify ${data.name}`);
+
   return {
     message: 'ok',
+    uuid: data.uuid,
+    name: data.name,
   };
 };

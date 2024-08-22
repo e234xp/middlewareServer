@@ -5,13 +5,15 @@ module.exports = () => {
   function readRegisterPhoto(uuid) {
     const dbPhotoFolder = `${global.params.dataPath}/db/dbPhoto/`;
     let photo = '';
+
+    let registerPhotoFile = '';
     try {
       if (uuid) {
-        const registerPhotoFile = `${dbPhotoFolder}${uuid}.register`;
+        registerPhotoFile = `${dbPhotoFolder}${uuid}.register`;
         photo = fs.readFileSync(registerPhotoFile).toString('utf8');
       }
     } catch (e) {
-      console.log('readRegisterPhoto', e);
+      global.spiderman.systemlog.generateLog(2, `readRegisterPhoto ${registerPhotoFile} ${e}`);
     }
     return photo;
   }
@@ -19,28 +21,42 @@ module.exports = () => {
   function readDisplayPhoto(uuid) {
     const dbPhotoFolder = `${global.params.dataPath}/db/dbPhoto/`;
     let photo = '';
+    let displayPhotoFile = '';
     try {
       if (uuid) {
-        const displayPhotoFile = `${dbPhotoFolder}${uuid}.display`;
+        displayPhotoFile = `${dbPhotoFolder}${uuid}.display`;
         photo = fs.readFileSync(displayPhotoFile).toString('utf8');
       }
     } catch (e) {
-      console.log('readDisplayPhoto', e);
+      global.spiderman.systemlog.generateLog(2, `readDisplayPhoto ${displayPhotoFile} ${e}`);
     }
     return photo;
   }
 
   function trigger({ action, data }) {
+    global.spiderman.systemlog.generateLog(5, `domain trigger-email-command trigger ${action}`);
+
     const triggeredKey = generateTriggeredKey({ data });
     if (triggered[triggeredKey]) return;
 
     const {
       host, port, security, user: email, pass: password, from: sender, subject,
-      data_list: fields, custom_data: note,
+      data_list: fields, custom_data: note, language,
       to: toEmails, cc: ccEmails, bcc: bccEmails,
     } = action;
 
-    const message = generateMessage({ fields, note, data });
+    // console.log('language', language);
+
+    let transform = {};
+    try {
+      transform = require(`./lang/${language}.json`);
+    } catch (e) {
+      transform = require('./lang/en.json');
+    }
+
+    const message = generateMessage({
+      fields, note, transform, data,
+    });
 
     const image = (() => {
       let ret = '';
@@ -75,7 +91,9 @@ module.exports = () => {
       sendConfig.images = [image];
     }
 
-    global.spiderman.mailer.send(sendConfig);
+    const result = global.spiderman.mailer.send(sendConfig);
+    global.spiderman.systemlog.generateLog(5, `domain trigger-email-command trigger ${result}`);
+
     handleTriggeredKey(triggeredKey);
   }
 
@@ -92,49 +110,63 @@ module.exports = () => {
     }, COOL_DOWN_TIME);
   }
 
-  function generateMessage({ fields, note, data }) {
+  function generateMessage({
+    fields, note, transform, data,
+  }) {
     let message = '';
+    let deviceinfo = { name: '' };
 
     Object.keys(fields).forEach((key1) => {
       switch (key1) {
         case 'foreHead_temperature':
-          message += (`Temperature: ${data[key1]}\n`);
+          message += (`${transform.Temperature || 'Temperature'}: ${data[key1] || ''}\n`);
           break;
         case 'verified_timestamp':
-          message += (`Datetime: ${global.spiderman.dayjs(data[key1]).format('YYYY/MM/DD HH:mm:ss')}\n`);
+          message += (`${transform.Timestamp || 'Timestamp'}: ${data.timestamp || ''}\n`);
+          break;
+        case 'verified_datetime':
+          message += (`${transform.Datetime || 'Datetime'}: ${global.spiderman.dayjs(data.timestamp).format('YYYY/MM/DD HH:mm:ss') || ''}\n`);
+          break;
+        case 'source_id':
+        case 'source_device_id':
+          message += (`${transform.SourceDeviceId || 'SourceDeviceId'}: ${data.source_id || ''}\n`);
+          break;
+        case 'source_device':
+          deviceinfo = global.domain.device.findByUuid(data.source_id);
+          message += (`${transform.SourceDevice || 'SourceDevice'}: ${deviceinfo.name || ''}\n`);
           break;
         case 'person':
           Object.keys(fields[key1]).forEach((key2) => {
             switch (key2) {
               case 'card_number':
-                message += (`Card Number: ${fields[key1][key2]}\n`);
+                message += (`${transform.CardNumber || 'Card Number'}: ${data[key1][key2] || ''}\n`);
                 break;
               case 'department':
-                message += (`Department: ${fields[key1][key2]}\n`);
+                message += (`${transform.Department || 'Department'}: ${data[key1][key2] || ''}\n`);
                 break;
               case 'email':
-                message += (`Email Address: ${fields[key1][key2]}\n`);
+                message += (`${transform.EmailAddress || 'Email Address'}: ${data[key1][key2] || ''}\n`);
                 break;
               case 'extension_number':
-                message += (`Extension Number: ${fields[key1][key2]}\n`);
+                message += (`${transform.ExtensionNumber || 'Extension Number'}: ${data[key1][key2] || ''}\n`);
                 break;
               case 'group_list':
-                message += (`Groups: ${fields[key1][key2]}\n`);
+                message += (`${transform.PersonGroup || 'Groups'}: ${data[key1][key2] || ''}\n`);
                 break;
               case 'id':
-                message += (`Id: ${fields[key1][key2]}\n`);
+                message += (`${transform.PersonId || 'Id'}: ${data[key1][key2] || ''}\n`);
                 break;
               case 'name':
-                message += (`Fullname: ${fields[key1][key2]}\n`);
+                message += (`${transform.PersonName || 'Fullname'}: ${data[key1][key2] || ''}\n`);
                 break;
               case 'phone_number':
-                message += (`Phone Number: ${fields.person[key2]}\n`);
+                message += (`${transform.PhoneNumber || 'Phone Number'}: ${data.person[key2] || ''}\n`);
                 break;
               case 'remarks':
-                message += (`Remark: ${fields[key1][key2]}\n`);
+                message += (`${transform.Remarks || 'Remark'}: ${data[key1][key2] || ''}\n`);
                 break;
               case 'title':
-                message += (`Title: ${fields[key1][key2]}\n`);
+                message += (`${transform.JobTitle || 'Title'}: ${data[key1][key2] || ''}\n`);
                 break;
               default:
 
@@ -151,6 +183,8 @@ module.exports = () => {
     if (note) {
       message += `\n${note}`;
     }
+
+    // console.log('trigger-email-command message', message);
 
     return message;
   }

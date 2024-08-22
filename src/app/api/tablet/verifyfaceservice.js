@@ -6,8 +6,13 @@ const fieldChecks = [
   },
   {
     fieldName: 'device_uuid',
-    fieldType: 'nonempty',
+    fieldType: 'string',
     required: true,
+  },
+  {
+    fieldName: 'uuid',
+    fieldType: 'string',
+    required: false,
   },
   {
     fieldName: 'verify_mode',
@@ -27,9 +32,17 @@ module.exports = async (data) => {
     fieldChecks,
   });
 
+  data.device_uuid = data.device_uuid ? data.device_uuid : '';
+  data.uuid = data.uuid ? data.uuid : '';
+
+  if (data.device_uuid === '' && data.uuid === '') {
+    global.spiderman.systemlog.writeError('verifycardnoservice device_uuid and uuid is empty');
+    throw Error('device_uuid or uuid cannot be empty.');
+  }
+
   const verifyFaceId = await global.domain.tabletverify.verifyFace(data);
 
-  console.log('verifyfaceservice', { message: 'ok', verify_face_id: verifyFaceId });
+  // console.log('verifyfaceservice', { message: 'ok', verify_face_id: verifyFaceId });
 
   return {
     message: 'ok',

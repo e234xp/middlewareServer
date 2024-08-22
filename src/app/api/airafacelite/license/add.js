@@ -17,6 +17,8 @@ const fieldChecks = [
 ];
 
 module.exports = async (data) => {
+  global.spiderman.systemlog.generateLog(4, `license add ${JSON.stringify(data)}`);
+
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
@@ -27,12 +29,14 @@ module.exports = async (data) => {
     method: 'POST',
     pool: { maxSockets: 10 },
     time: true,
-    timeout: 5000,
+    timeout: 30000,
     headers: {
       'Content-Type': 'application/json',
     },
     json: data,
   });
+
+  global.spiderman.systemlog.generateLog(4, `license add ${JSON.stringify(response.body)}`);
 
   return response;
 };

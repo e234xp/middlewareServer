@@ -5,13 +5,14 @@ module.exports = () => {
   function readRegisterPhoto(uuid) {
     const dbPhotoFolder = `${global.params.dataPath}/db/dbPhoto/`;
     let photo = '';
+    let registerPhotoFile = '';
     try {
       if (uuid) {
-        const registerPhotoFile = `${dbPhotoFolder}${uuid}.register`;
+        registerPhotoFile = `${dbPhotoFolder}${uuid}.register`;
         photo = fs.readFileSync(registerPhotoFile).toString('utf8');
       }
     } catch (e) {
-      console.log('readRegisterPhoto', e);
+      global.spiderman.systemlog.generateLog(2, `readRegisterPhoto ${registerPhotoFile} ${e}`);
     }
     return photo;
   }
@@ -19,24 +20,29 @@ module.exports = () => {
   function readDisplayPhoto(uuid) {
     const dbPhotoFolder = `${global.params.dataPath}/db/dbPhoto/`;
     let photo = '';
+    let displayPhotoFile = '';
     try {
       if (uuid) {
-        const displayPhotoFile = `${dbPhotoFolder}${uuid}.display`;
+        displayPhotoFile = `${dbPhotoFolder}${uuid}.display`;
         photo = fs.readFileSync(displayPhotoFile).toString('utf8');
       }
     } catch (e) {
-      console.log('readDisplayPhoto', e);
+      global.spiderman.systemlog.generateLog(2, `readDisplayPhoto ${displayPhotoFile} ${e}`);
     }
     return photo;
   }
 
-  function trigger({ action, data }) {
+  async function trigger({ action, data }) {
+    global.spiderman.systemlog.generateLog(5, `domain trigger-line-command trigger ${action.name}`);
+
     const triggeredKey = generateTriggeredKey({ data });
     if (triggered[triggeredKey]) return;
 
     const {
       token: accesstoken, data_list: fields, language, note,
     } = action;
+
+    // console.log('language', language);
 
     let transform = {};
     try {
@@ -61,7 +67,9 @@ module.exports = () => {
       return ret;
     })();
 
-    global.spiderman.line.notify({ accesstoken, message, image });
+    const result = await global.spiderman.line.notify({ accesstoken, message, image });
+    global.spiderman.systemlog.generateLog(5, `domain trigger-line-command result ${result}`);
+
     handleTriggeredKey(triggeredKey);
   }
 
@@ -82,47 +90,59 @@ module.exports = () => {
     fields, note, transform, data,
   }) {
     let message = '';
+    let deviceinfo = { name: '' };
 
     Object.keys(fields).forEach((key1) => {
       switch (key1) {
         case 'foreHead_temperature':
-          message += (`${transform.Temperature || 'Temperature'}: ${data[key1]}\n`);
+          message += (`${transform.Temperature || 'Temperature'}: ${data[key1] || ''}\n`);
           break;
         case 'verified_timestamp':
-          message += (`${transform.Datetime || 'Datetime'}: ${global.spiderman.dayjs(data[key1]).format('YYYY/MM/DD HH:mm:ss')}\n`);
+          message += (`${transform.Timestamp || 'Timestamp'}: ${data.timestamp || ''}\n`);
+          break;
+        case 'verified_datetime':
+          message += (`${transform.Datetime || 'Datetime'}: ${global.spiderman.dayjs(data.timestamp).format('YYYY/MM/DD HH:mm:ss') || ''}\n`);
+          break;
+        case 'source_id':
+        case 'source_device_id':
+          message += (`${transform.SourceDeviceId || 'SourceDeviceId'}: ${data.source_id || ''}\n`);
+          break;
+        case 'source_device':
+          deviceinfo = global.domain.device.findByUuid(data.source_id);
+          message += (`${transform.SourceDevice || 'SourceDevice'}: ${deviceinfo.name || ''}\n`);
           break;
         case 'person':
           Object.keys(fields[key1]).forEach((key2) => {
             switch (key2) {
               case 'card_number':
-                message += (`${transform.Card_Number || 'Card Number'}: ${fields[key1][key2]}\n`);
+                message += (`${transform.CardNumber || 'Card Number'}: ${data[key1][key2] || ''}\n`);
                 break;
               case 'department':
-                message += (`${transform.Department || 'Department'}: ${fields[key1][key2]}\n`);
+                message += (`${transform.Department || 'Department'}: ${data[key1][key2] || ''}\n`);
                 break;
               case 'email':
-                message += (`${transform.Email_Address || 'Email Address'}: ${fields[key1][key2]}\n`);
+                message += (`${transform.EmailAddress || 'Email Address'}: ${data[key1][key2] || ''}\n`);
                 break;
               case 'extension_number':
-                message += (`${transform.Extension_Number || 'Extension Number'}: ${fields[key1][key2]}\n`);
+                message += (`${transform.ExtensionNumber || 'Extension Number'}: ${data[key1][key2] || ''}\n`);
                 break;
               case 'group_list':
-                message += (`${transform.Groups || 'Groups'}: ${fields[key1][key2]}\n`);
+                message += (`${transform.PersonGroup || 'Groups'}: ${data[key1][key2] || ''}\n`);
                 break;
               case 'id':
-                message += (`${transform.Id || 'Id'}: ${fields[key1][key2]}\n`);
+                message += (`${transform.PersonId || 'Id'}: ${data[key1][key2] || ''}\n`);
                 break;
               case 'name':
-                message += (`${transform.Fullname || 'Fullname'}: ${fields[key1][key2]}\n`);
+                message += (`${transform.PersonName || 'Fullname'}: ${data[key1][key2] || ''}\n`);
                 break;
               case 'phone_number':
-                message += (`${transform.Phone_Number || 'Phone Number'}: ${fields.person[key2]}\n`);
+                message += (`${transform.PhoneNumber || 'Phone Number'}: ${data.person[key2] || ''}\n`);
                 break;
               case 'remarks':
-                message += (`${transform.Remark || 'Remark'}: ${fields[key1][key2]}\n`);
+                message += (`${transform.Remarks || 'Remark'}: ${data[key1][key2] || ''}\n`);
                 break;
               case 'title':
-                message += (`${transform.Title || 'Title'}: ${fields[key1][key2]}\n`);
+                message += (`${transform.JobTitle || 'Title'}: ${data[key1][key2] || ''}\n`);
                 break;
               default:
 
@@ -139,6 +159,8 @@ module.exports = () => {
     if (note) {
       message += `\n${note}`;
     }
+
+    // console.log('trigger-line-command message', message);
 
     return message;
   }

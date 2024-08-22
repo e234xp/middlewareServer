@@ -10,12 +10,12 @@ module.exports = (route) => {
   const { publicCgi, router } = require(`.${route}`)();
 
   myService.post('/:cgi', async (req, res) => {
-    const startTime = perf.performance.now();
+    // const startTime = perf.performance.now();
     const { cgi } = req.params;
     try {
       addCgiCounter(cgi);
       if (!router[cgi]) throw Error('no such cgi');
-      global.spiderman.systemlog.writeInfo(`${cgi} has been called.`);
+      // global.spiderman.systemlog.generateLog(4, `${cgi} has been called.`);
       authorize({ req, publicCgi });
 
       const { token } = req.headers;
@@ -27,8 +27,8 @@ module.exports = (route) => {
     } finally {
       minusCgiCounter(cgi);
 
-      const endTime = perf.performance.now();
-      console.log(`${cgi} spend ${(endTime - startTime).toFixed(2)} ms`);
+      // const endTime = perf.performance.now();
+      // console.log(`${cgi} spend ${(endTime - startTime).toFixed(2)} ms`);
     }
   });
 
@@ -37,7 +37,7 @@ module.exports = (route) => {
 
 function addCgiCounter(cgi) {
   cgiCounter.number += 1;
-  console.log(`${cgi} 'on' cgi counter: ${cgiCounter.number}`);
+  // console.log(`${cgi} 'on' cgi counter: ${cgiCounter.number}`);
   checkIsCgiExceeded();
 }
 
@@ -50,7 +50,7 @@ function checkIsCgiExceeded() {
 
 function minusCgiCounter(cgi) {
   cgiCounter.number -= 1;
-  console.log(`${cgi} 'off' cgi counter: ${cgiCounter.number}`);
+  // console.log(`${cgi} 'off' cgi counter: ${cgiCounter.number}`);
 }
 
 function getBody(req) {
@@ -85,7 +85,7 @@ function handleError(error, res, cgi) {
 
   const warningCodes = [401];
   if (warningCodes.includes(errorCode)) {
-    global.spiderman.systemlog.writeWarning(`${cgi} ${error.message}`);
+    global.spiderman.systemlog.writeWarn(`${cgi} ${error.message}`);
   } else {
     global.spiderman.systemlog.writeError(`${cgi} ${error.message}`);
   }

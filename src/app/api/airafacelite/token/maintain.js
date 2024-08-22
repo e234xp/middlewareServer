@@ -7,29 +7,42 @@ const fieldChecks = [
 ];
 
 module.exports = (data) => {
+  global.spiderman.systemlog.generateLog(5, `token maintain ${JSON.stringify(data)}`);
+
   data = global.spiderman.validate.data({
     data,
     fieldChecks,
   });
 
   const validAccountData = global.spiderman.token.decryptToAccountInTime(data.token);
-  if (!validAccountData) throw Error('The token has expired.');
+  if (!validAccountData) {
+    global.spiderman.systemlog.generateLog(2, 'The token has expired.');
+    throw Error('The token has expired.');
+  }
 
   const { u: username, p: password } = validAccountData;
   const account = global.spiderman.db.account.findOne({ username, password });
 
-  if (!account) throw Error('Unauthorized');
+  if (!account) {
+    global.spiderman.systemlog.generateLog(2, `${account} Unauthorized`);
+    throw Error('Unauthorized');
+  }
 
-  return {
+  const ret = {
     message: 'ok',
     username: account.username,
     permission: account.permission,
-    expire: Date.now(),
+    servertime: Date.now(),
+    expire: Date.now() + 3600000,
     token: global.spiderman.token.encryptFromAccount({
       u: account.username,
       p: account.password,
-      t: Date.now(),
+      t: Date.now() + 3600000,
       x: account.permission,
     }),
   };
+
+  global.spiderman.systemlog.generateLog(5, `token generate ${JSON.stringify(ret)}`);
+
+  return ret;
 };
